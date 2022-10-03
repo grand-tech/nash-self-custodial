@@ -1,17 +1,17 @@
-import {Actions, ActionTypes} from './actions';
+import { Actions, ActionTypes } from "./actions";
 interface CounterState {
   value: number;
-  status: 'idle' | 'loading' | 'failed';
+  status: "idle" | "loading" | "failed";
 }
 
 const initialState: CounterState = {
   value: 0,
-  status: 'idle',
+  status: "idle",
 };
 
 export const reducer = (
   state: CounterState | undefined = initialState,
-  action: ActionTypes,
+  action: ActionTypes
 ): CounterState => {
   console.log(state, action);
   switch (action.type) {

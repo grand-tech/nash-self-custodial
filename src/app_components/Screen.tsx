@@ -1,5 +1,5 @@
-import { Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
-import React from 'react';
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
+import React from "react";
 
 /**
  * Screen component properties.
@@ -9,26 +9,29 @@ import React from 'react';
  * @property { {} } style the additional stylings of the screen.
  */
 interface ScreenComponentProps {
-    childComponents?: React.ReactNode;
-    statusBarColor?: any,
-    style?: {}
-  }
+  childComponents?: React.ReactNode;
+  statusBarColor?: any;
+  style?: {};
+}
 
 const Screen: React.FC<ScreenComponentProps> = (props) => {
   return (
     <SafeAreaView style={[styles, props.style]}>
-        {Platform.OS === "android" ? (
-                <StatusBar backgroundColor={props.statusBarColor} barStyle="dark-content" />
-        ) : null}
-        {props.childComponents}
+      {Platform.OS === "android" ? (
+        <StatusBar
+          backgroundColor={props.statusBarColor}
+          barStyle='dark-content'
+        />
+      ) : null}
+      {props.childComponents}
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-    screen: {
-      flex: 1,
-    },
+  screen: {
+    flex: 1,
+  },
 });
 
 export default Screen;

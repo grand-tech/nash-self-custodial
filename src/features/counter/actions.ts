@@ -1,9 +1,9 @@
 export enum Actions {
-  INCREMENT = 'COUNTER/INCREMENT',
-  DECREMENT = 'COUNTER/DECREMENT',
-  INCREMENT_BY_AMOUNT = 'COUNTER/INCREMENT_BY_AMOUNT',
-  INCREMENT_ASYNC = 'COUNTER/INCREMENT_ASYNC',
-  INCREMENT_ASYNC_COMPLETE = 'COUNTER/INCREMENT_ASYNC_COMPLETE',
+  INCREMENT = "COUNTER/INCREMENT",
+  DECREMENT = "COUNTER/DECREMENT",
+  INCREMENT_BY_AMOUNT = "COUNTER/INCREMENT_BY_AMOUNT",
+  INCREMENT_ASYNC = "COUNTER/INCREMENT_ASYNC",
+  INCREMENT_ASYNC_COMPLETE = "COUNTER/INCREMENT_ASYNC_COMPLETE",
 }
 
 export interface IncrementAction {
@@ -52,7 +52,7 @@ export function decrementCount(): DecrementAction {
 }
 
 export function incrementCountByAmount(
-  amount: number,
+  amount: number
 ): IncrementByAmountAction {
   return {
     type: Actions.INCREMENT_BY_AMOUNT,
@@ -68,7 +68,7 @@ export function incrementCountAsync(amount: number): IncrementAsyncAction {
 }
 
 export function incrementCountAsyncComplete(
-  result: number,
+  result: number
 ): IncrementAsyncCompleteAction {
   return {
     type: Actions.INCREMENT_ASYNC_COMPLETE,
