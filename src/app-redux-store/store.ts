@@ -51,7 +51,7 @@ export const store = configureStore({
 const postRehydration = () => {
   console.log(
     '=>>>>>>>>>post rehydration<<<<<<<<<<<<<=',
-    store.getState().counterStore,
+    store.getState().onboarding,
   );
 };
 

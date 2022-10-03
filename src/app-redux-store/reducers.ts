@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import { onBoardingReducer } from '../features/onboarding/reducers';
+import { onBoardingReducer } from '../features/account_creation_and_restoration/redux_store/reducers';
 
 
 /**

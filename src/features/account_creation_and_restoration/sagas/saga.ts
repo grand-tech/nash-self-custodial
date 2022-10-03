@@ -3,10 +3,10 @@ import {
   Actions,
   incrementCountAsyncComplete,
   IncrementAsyncAction,
-} from './actions';
+} from '../redux_store/actions';
 import { fetchCount } from './counterAPI';
 
-import {selectCount} from './selectors';
+import {selectCount} from '../redux_store/selectors';
 
 export function* incrementAsync(action: IncrementAsyncAction) {
   let _incrementAmount = action.amount;

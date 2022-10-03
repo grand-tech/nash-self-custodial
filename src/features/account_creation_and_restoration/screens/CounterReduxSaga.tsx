@@ -6,15 +6,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {AsyncButton} from '../../components/AsyncButton';
+import {useAppDispatch, useAppSelector} from '../../../hooks';
+import {AsyncButton} from '../../../components/AsyncButton';
 import {
   decrementCount,
   incrementCount,
   incrementCountAsync,
   incrementCountByAmount,
-} from './actions';
-import {selectCount} from './selectors';
+} from '../redux_store/actions';
+import {selectCount} from '../redux_store/selectors';
 
 export function Counter() {
   const [incrementAmount, setIncrementAmount] = useState('2');
