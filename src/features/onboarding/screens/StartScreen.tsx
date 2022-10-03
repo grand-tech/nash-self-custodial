@@ -1,6 +1,4 @@
 import React, { Component, ReactNode } from "react";
-import { View } from "react-native";
-import Screen from "../../../app_components/Screen";
 import {
   View,
   Text,
