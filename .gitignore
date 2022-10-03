@@ -178,6 +178,8 @@ buck-out/
 
 # Android
 android/app/src/main/assets/index.android.bundle
+android/app/build/
+android/.gradle/
 
 # Expo
 .expo/
