@@ -1,9 +1,10 @@
 import {combineReducers} from 'redux';
-import {reducer} from '../features/counter/reducers';
+import { onBoardingReducer } from '../features/onboarding/reducers';
+
 
 /**
  * Construct the root reducer from
  */
 export const rootReducer = combineReducers({
-  counterStore: reducer,
+  onboarding: onBoardingReducer
 });
