@@ -4,7 +4,7 @@ import {
   incrementCountAsyncComplete,
   IncrementAsyncAction,
 } from './actions';
-import {fetchCount} from '../onboarding/counterAPI';
+import {fetchCount} from '../account_creation_and_restoration/sagas/counterAPI';
 import {selectCount} from './selectors';
 
 export function* incrementAsync(action: IncrementAsyncAction) {
