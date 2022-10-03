@@ -1,4 +1,4 @@
-import {RootState} from '../../app-redux-store/store';
+import { RootState } from "../../app-redux-store/store";
 
 /**
  * Retrieves value state from redux store.

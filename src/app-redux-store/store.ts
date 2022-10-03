@@ -1,5 +1,5 @@
-import FSStorage from 'redux-persist-fs-storage';
-import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
+import FSStorage from "redux-persist-fs-storage";
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import {
   persistStore,
   persistReducer,
@@ -9,18 +9,18 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist';
-import {rootReducer} from './reducers';
-import createSagaMiddleware from 'redux-saga';
-import {rootSaga} from '../features/counter/saga';
+} from "redux-persist";
+import { rootReducer } from "./reducers";
+import createSagaMiddleware from "redux-saga";
+import { rootSaga } from "../features/counter/saga";
 
 /**
  * Create redux persist configurations object.
  */
 const persistConfig = {
-  key: 'root',
+  key: "root",
   vsrsion: 1,
-  keyPrefix: '',
+  keyPrefix: "",
   storage: FSStorage(),
 };
 
@@ -36,7 +36,7 @@ const sagaMiddleware = createSagaMiddleware();
  */
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: getDefaultMiddleware =>
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       // thunk: false,
       serializableCheck: {
@@ -50,8 +50,8 @@ export const store = configureStore({
  */
 const postRehydration = () => {
   console.log(
-    '=>>>>>>>>>post rehydration<<<<<<<<<<<<<=',
-    store.getState().onboarding,
+    "=>>>>>>>>>post rehydration<<<<<<<<<<<<<=",
+    store.getState().onboarding
   );
 };
 
