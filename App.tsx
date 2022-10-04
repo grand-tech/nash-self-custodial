@@ -11,8 +11,10 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {OnBoardingStack} from './src/features/onboarding/navigation.stack';
+import {initTheme} from './src/ui_lib_configs/FoundationConfig';
 
 const App = () => {
+  initTheme();
   return (
     <NavigationContainer>
       <OnBoardingStack />
