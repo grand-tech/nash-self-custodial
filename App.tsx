@@ -9,20 +9,18 @@
  */
 
 import {NavigationContainer} from '@react-navigation/native';
-import React, {type PropsWithChildren} from 'react';
-import { StyleSheet } from 'react-native';
-import { OnBoardingStack } from './src/features/onboarding/navigation.stack';
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {OnBoardingStack} from './src/features/onboarding/navigation.stack';
 
 const App = () => {
-
   return (
     <NavigationContainer>
-      <OnBoardingStack></OnBoardingStack>
+      <OnBoardingStack />
     </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-});
+const styles = StyleSheet.create({});
 
 export default App;
