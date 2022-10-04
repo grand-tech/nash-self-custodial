@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Incubator, Text} from 'react-native-ui-lib';
-import {FONTS} from '../../../ui_lib_configs/fonts';
 
 export default class StartScreen extends Component {
   render() {
