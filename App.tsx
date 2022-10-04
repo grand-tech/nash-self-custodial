@@ -10,7 +10,6 @@
 
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {OnBoardingStack} from './src/features/onboarding/navigation.stack';
 
 const App = () => {
