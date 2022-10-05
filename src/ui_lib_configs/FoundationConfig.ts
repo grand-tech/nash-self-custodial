@@ -1,6 +1,7 @@
-import {Colors, Typography, Spacings} from 'react-native-ui-lib';
+import {Colors, Typography, Spacings, Assets} from 'react-native-ui-lib';
 import {AppColors} from './colors';
 import {FONTS} from './fonts';
+import {LOGOS} from './imageAssets';
 
 export const initTheme = () => {
   Colors.loadColors({
@@ -20,4 +21,6 @@ export const initTheme = () => {
     card: 12,
     gridGutter: 16,
   });
+
+  Assets.loadAssetsGroup('logo', LOGOS);
 };

@@ -1,5 +1,5 @@
-import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
-import React from "react";
+import {Platform, SafeAreaView, StatusBar, StyleSheet} from 'react-native';
+import React from 'react';
 
 /**
  * Screen component properties.
@@ -14,13 +14,13 @@ interface ScreenComponentProps {
   style?: {};
 }
 
-const Screen: React.FC<ScreenComponentProps> = (props) => {
+const Screen: React.FC<ScreenComponentProps> = props => {
   return (
     <SafeAreaView style={[styles, props.style]}>
-      {Platform.OS === "android" ? (
+      {Platform.OS === 'android' ? (
         <StatusBar
           backgroundColor={props.statusBarColor}
-          barStyle='dark-content'
+          barStyle="dark-content"
         />
       ) : null}
       {props.childComponents}
