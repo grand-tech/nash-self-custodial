@@ -7,6 +7,11 @@ import Lottie from 'lottie-react-native';
 
 let ScreenHeight = Dimensions.get('window').height;
 
+/**
+ *
+ * @returns Component to be displayed when redux persist
+ *  is rehydrating redux storage.
+ */
 export const RehydrationLoadingScreen = () => {
   return (
     <View style={style.container}>

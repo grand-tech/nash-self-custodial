@@ -1,4 +1,4 @@
-import { Actions, ActionTypes } from "./actions";
+import {Actions, ActionTypes} from './actions';
 
 interface OnboardingState {
   language: string;
@@ -6,25 +6,24 @@ interface OnboardingState {
   verifiedMnemonicBackup: boolean;
   publicAddress: string;
   publicKey: string;
-  status: "create new account" | "restore account" | "onboarding complete" | "";
+  status: 'create new account' | 'restore account' | 'onboarding complete' | '';
   value: number; // remove this later.
 }
 
 const initialState: OnboardingState = {
-  language: "",
+  language: '',
   encryptedPrivateKey: false,
   verifiedMnemonicBackup: false,
-  publicAddress: "",
-  publicKey: "",
-  status: "",
+  publicAddress: '',
+  publicKey: '',
+  status: '',
   value: 0,
 };
 
 export const onBoardingReducer = (
   state: OnboardingState | undefined = initialState,
-  action: ActionTypes
+  action: ActionTypes,
 ): OnboardingState => {
-  console.log(state, action);
   switch (action.type) {
     case Actions.INCREMENT:
       let v = state.value + 1;
