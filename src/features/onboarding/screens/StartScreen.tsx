@@ -11,6 +11,7 @@ import {
 } from 'react-native-responsive-screen';
 import {AppButtonProps} from '../../../app_components/DefaultButton';
 import {useNavigation} from '@react-navigation/native';
+import Screen from '../../../app_components/Screen';
 
 /**
  * Contains the onboarding UI.
@@ -21,31 +22,33 @@ export const StartScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={style.container}>
-      <Carousel
-        vertical={false}
-        width={wp('70.0%')}
-        height={hp('60.0%')}
-        autoPlay={false}
-        ref={isCarousel}
-        data={carouselData}
-        renderItem={CarouselCardItem}
-        style={style.carousel}
-      />
-      <AppButtonProps
-        title="Next"
-        onPress={() => {
-          let x: number = isCarousel.current?.getCurrentIndex() ?? 0;
-          if (x == maxIndex) {
-            //navigate to next screen.
-            navigation.navigate('SelectGenerateOrRestoreAccount');
-          } else {
-            //move to the next item in carousel list.
-            isCarousel.current?.next();
-          }
-        }}
-      />
-    </View>
+    <Screen>
+      <View style={style.container}>
+        <Carousel
+          vertical={false}
+          width={wp('70.0%')}
+          height={hp('60.0%')}
+          autoPlay={false}
+          ref={isCarousel}
+          data={carouselData}
+          renderItem={CarouselCardItem}
+          style={style.carousel}
+        />
+        <AppButtonProps
+          title="Next"
+          onPress={() => {
+            let x: number = isCarousel.current?.getCurrentIndex() ?? 0;
+            if (x == maxIndex) {
+              //navigate to next screen.
+              navigation.navigate('SelectGenerateOrRestoreAccount');
+            } else {
+              //move to the next item in carousel list.
+              isCarousel.current?.next();
+            }
+          }}
+        />
+      </View>
+    </Screen>
   );
 };
 

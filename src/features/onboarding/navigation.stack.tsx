@@ -18,10 +18,6 @@ const stackScreenHideHeader = {
   headerShown: false,
 };
 
-stackScreenHideHeaderTitle(() => {
-  navigation.goBack();
-});
-
 export function stackScreenHideHeaderTitle(
   onPress: any,
 ): NativeStackNavigationOptions {
@@ -31,10 +27,6 @@ export function stackScreenHideHeaderTitle(
     headerLeft: () => <BackButton onPress={onPress} />,
   };
 }
-
-stackScreenHideHeaderTitle(() => {
-  navigation.goBack();
-});
 
 export const OnBoardingStack = () => {
   return (
@@ -57,10 +49,16 @@ export const OnBoardingStack = () => {
   );
 };
 
+/**
+ * Props expected by custom back button.
+ */
 interface BackButtonProps {
   onPress: any;
 }
 
+/**
+ * Custom back button.
+ */
 export const BackButton: React.FC<BackButtonProps> = props => {
   return (
     <Pressable
