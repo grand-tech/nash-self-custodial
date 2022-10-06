@@ -7,25 +7,69 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {AppButtonProps} from '../../../app_components/DefaultButton';
-import {Button} from 'react-native-ui-lib';
+import {Button, Text} from 'react-native-ui-lib';
+import Screen from '../../../app_components/Screen';
+import {FONTS} from '../../../ui_lib_configs/fonts';
 
 /**
  * Contains the onboarding UI.
  */
 export const CreateAccountScreen = () => {
   return (
-    <View style={style.container}>
-      <AppButtonProps title="Create Account" onPress={() => {}} />
-      <Button
-        outline={true}
-        outlineColor={AppColors.light_green}
-        lable={'Create Account'}
-        secondary></Button>
-    </View>
+    <Screen style={style.rootComponent}>
+      <View style={style.container}>
+        {/* Tittle section */}
+        <View>
+          <Text color={AppColors.green} h1>
+            Prepare to write down your recovery phrase.
+          </Text>
+        </View>
+
+        {/* Body text group section. */}
+        <View style={style.textGroup}>
+          <Text color={AppColors.black} body1>
+            If your device gets lost or stolen, you can restore your wallet
+            using your recovery phrase.
+          </Text>
+          <Text color={AppColors.green} body1>
+            Get pen and paper before you start.
+          </Text>
+        </View>
+
+        {/* Button group section. */}
+        <View style={style.buttonGroup}>
+          <Button
+            style={style.button}
+            outline={true}
+            outlineColor={AppColors.light_green}
+            label={'Create Account'}
+            secondary
+            labelStyle={{
+              ...FONTS.h4,
+            }}
+          />
+          <Button
+            style={style.button}
+            outline={true}
+            outlineColor={AppColors.yellow}
+            label={'Restore Account'}
+            warning
+            size={'large'}
+            labelStyle={{
+              ...FONTS.h4,
+            }}
+          />
+        </View>
+      </View>
+    </Screen>
   );
 };
 
+/**
+ *
+ * @param state the applications state.
+ * @returns the props intended to be passed to the component from state variables.
+ */
 const mapStateToProps = (state: RootState) => ({
   onboarded: state.onboarding.status,
 });
@@ -39,12 +83,27 @@ export default connect(
 
 const style = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around',
     backgroundColor: AppColors.gray,
+    maxHeight: hp('73.0%'),
+    justifyContent: 'space-around',
+    flex: 1,
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: hp('4.5%'),
+    marginBottom: hp('4%'),
   },
   button: {
-    backgroundColor: AppColors.light_green,
+    width: wp('80.0%'),
+  },
+  rootComponent: {
+    justifyContent: 'flex-end',
+  },
+  buttonGroup: {
+    flex: 0.23,
+    justifyContent: 'space-between',
+  },
+  textGroup: {
+    flex: 0.17,
+    justifyContent: 'space-between',
   },
 });

@@ -1,36 +1,49 @@
-import {Platform, SafeAreaView, StatusBar, StyleSheet} from 'react-native';
-import React from 'react';
+import {
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
+import React, {PropsWithChildren} from 'react';
+import {AppColors} from '../ui_lib_configs/colors';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
+
+const height = heightPercentageToDP('100.0%');
 
 /**
  * Screen component properties.
  * @typedef {Object} ScreenComponentProps properties expected by the screen component.
- * @property { React.ReactNode } childComponents the components to be rendered on the constructed screen.
+ * @property { React.ReactNode } children the components to be rendered on the constructed screen.
  * @property { any } statusBarColor
  * @property { {} } style the additional stylings of the screen.
  */
-interface ScreenComponentProps {
-  childComponents?: React.ReactNode;
-  statusBarColor?: any;
+
+type ScreenComponentProps = PropsWithChildren<{
+  statusBarColor?: string;
   style?: {};
-}
+}>;
 
 const Screen: React.FC<ScreenComponentProps> = props => {
   return (
-    <SafeAreaView style={[styles, props.style]}>
+    <SafeAreaView>
       {Platform.OS === 'android' ? (
         <StatusBar
-          backgroundColor={props.statusBarColor}
+          backgroundColor={props.statusBarColor ?? AppColors.gray}
           barStyle="dark-content"
         />
       ) : null}
-      {props.childComponents}
+      <View style={[styles.container, props.style]}>{props.children}</View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  screen: {},
+  container: {
     flex: 1,
+    backgroundColor: AppColors.gray,
+    minHeight: height,
   },
 });
 
