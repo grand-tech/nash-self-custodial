@@ -8,6 +8,7 @@ import StartScreen from './screens/StartScreen';
 import {AppColors} from '../../ui_lib_configs/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Pressable} from 'react-native';
+import {TermsAndConditions} from './screens/TermsAndConditions';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,15 @@ export const OnBoardingStack = () => {
       <Stack.Screen
         name="SelectGenerateOrRestoreAccount"
         component={CreateAccountScreen}
+        options={({navigation, route}) =>
+          stackScreenHideHeaderTitle(() => {
+            navigation.goBack();
+          })
+        }
+      />
+      <Stack.Screen
+        name="TermsAndConditions"
+        component={TermsAndConditions}
         options={({navigation, route}) =>
           stackScreenHideHeaderTitle(() => {
             navigation.goBack();

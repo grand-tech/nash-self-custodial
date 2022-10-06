@@ -13,7 +13,7 @@ export const FONTS = {
   },
   // Headers
   h1: {
-    fontFamily: 'Monda Regular',
+    fontFamily: 'Monda-Regular',
     fontSize: hp('3.448%'),
     lineHeight: hp('5.0%'),
   },
@@ -23,7 +23,7 @@ export const FONTS = {
     lineHeight: hp('4.4%'),
   },
   h3: {
-    fontFamily: 'Monda Regular',
+    fontFamily: 'Monda-Regular',
     fontSize: hp('2.955%'),
     lineHeight: hp('4.4%'),
   },

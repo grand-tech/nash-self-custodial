@@ -10,32 +10,53 @@ import {
 import {Button, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
 
 /**
  * Contains the onboarding UI.
  */
-export const CreateAccountScreen = () => {
-  const navigation = useNavigation();
-
+export const TermsAndConditions = () => {
   return (
     <Screen style={style.rootComponent}>
       <View style={style.container}>
         {/* Tittle section */}
         <View>
-          <Text color={AppColors.green} h1>
-            Prepare to write down your recovery phrase.
+          <Text color={AppColors.light_green} displayBold>
+            Terms &amp; Conditions
+          </Text>
+          <Text color={AppColors.black}>
+            In order to use our services, please read and accept our User
+            Agreement and Terms by blicking the accept button below.{' '}
           </Text>
         </View>
 
         {/* Body text group section. */}
         <View style={style.textGroup}>
-          <Text color={AppColors.black} body1>
-            If your device gets lost or stolen, you can restore your wallet
-            using your recovery phrase.
+          <Text color={AppColors.light_green} h2>
+            Data and Privacy
           </Text>
-          <Text color={AppColors.green} body1>
-            Get pen and paper before you start.
+          <Text color={AppColors.black} body1>
+            By joining this network, you give us permission to collect anonymous
+            information about your use of the app. Additionally, if you connect
+            your phone number, a hashed copy of it will be stored on the Celo
+            network. If you grant Wakala access to your contact list, Wakala
+            will import each contact's name and phone number to allow users to
+            connect through the Wakala app. To learn how we collect and use this
+            information please review our Privacy Policy.
+          </Text>
+        </View>
+
+        <View style={style.textGroup}>
+          <Text color={AppColors.light_green} h2>
+            Data and Privacy
+          </Text>
+          <Text color={AppColors.black} body1>
+            By joining this network, you give us permission to collect anonymous
+            information about your use of the app. Additionally, if you connect
+            your phone number, a hashed copy of it will be stored on the Celo
+            network. If you grant Wakala access to your contact list, Wakala
+            will import each contact's name and phone number to allow users to
+            connect through the Wakala app. To learn how we collect and use this
+            information please review our Privacy Policy.
           </Text>
         </View>
 
@@ -45,22 +66,8 @@ export const CreateAccountScreen = () => {
             style={style.button}
             outline={true}
             outlineColor={AppColors.light_green}
-            label={'Create Account'}
+            label={'Accept'}
             secondary
-            labelStyle={{
-              ...FONTS.h4,
-            }}
-            onPress={() => {
-              navigation.navigate('TermsAndConditions');
-            }}
-          />
-          <Button
-            style={style.button}
-            outline={true}
-            outlineColor={AppColors.yellow}
-            label={'Restore Account'}
-            warning
-            size={'large'}
             labelStyle={{
               ...FONTS.h4,
             }}
@@ -82,15 +89,12 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CreateAccountScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(TermsAndConditions);
 
 const style = StyleSheet.create({
   container: {
     backgroundColor: AppColors.gray,
-    maxHeight: hp('73.0%'),
+    maxHeight: hp('90.0%'),
     justifyContent: 'space-around',
     flex: 1,
     alignContent: 'center',
