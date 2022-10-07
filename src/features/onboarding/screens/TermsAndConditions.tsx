@@ -10,11 +10,14 @@ import {
 import {Button, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
+import {useNavigation} from '@react-navigation/native';
 
 /**
  * Contains the onboarding UI.
  */
 export const TermsAndConditions = () => {
+  const navigation = useNavigation();
+
   return (
     <Screen style={style.rootComponent}>
       <View style={style.container}>
@@ -23,7 +26,7 @@ export const TermsAndConditions = () => {
           <Text color={AppColors.light_green} displayBold>
             Terms &amp; Conditions
           </Text>
-          <Text color={AppColors.black}>
+          <Text color={AppColors.black} body3>
             In order to use our services, please read and accept our User
             Agreement and Terms by blicking the accept button below.{' '}
           </Text>
@@ -34,7 +37,7 @@ export const TermsAndConditions = () => {
           <Text color={AppColors.light_green} h2>
             Data and Privacy
           </Text>
-          <Text color={AppColors.black} body1>
+          <Text color={AppColors.black} body3>
             By joining this network, you give us permission to collect anonymous
             information about your use of the app. Additionally, if you connect
             your phone number, a hashed copy of it will be stored on the Celo
@@ -47,9 +50,9 @@ export const TermsAndConditions = () => {
 
         <View style={style.textGroup}>
           <Text color={AppColors.light_green} h2>
-            Data and Privacy
+            Celo Dollar and Wakala Account
           </Text>
-          <Text color={AppColors.black} body1>
+          <Text color={AppColors.black} body3>
             By joining this network, you give us permission to collect anonymous
             information about your use of the app. Additionally, if you connect
             your phone number, a hashed copy of it will be stored on the Celo
@@ -70,6 +73,9 @@ export const TermsAndConditions = () => {
             secondary
             labelStyle={{
               ...FONTS.h4,
+            }}
+            onPress={() => {
+              navigation.navigate('EnterUserName');
             }}
           />
         </View>
@@ -101,6 +107,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: hp('4.5%'),
     marginBottom: hp('4%'),
+    paddingTop: hp('2%'),
   },
   button: {
     width: wp('80.0%'),
@@ -110,10 +117,11 @@ const style = StyleSheet.create({
   },
   buttonGroup: {
     flex: 0.23,
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   textGroup: {
-    flex: 0.17,
-    justifyContent: 'space-between',
+    flex: 0.4,
+    justifyContent: 'space-around',
+    paddingTop: hp('4%'),
   },
 });
