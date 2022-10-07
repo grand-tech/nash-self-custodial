@@ -10,4 +10,5 @@ export enum AppColors {
   dark_blue = '#303462',
   brown = '#6f665e',
   red = '#E63B2E',
+  perfumeHaze = '#f7effa',
 }

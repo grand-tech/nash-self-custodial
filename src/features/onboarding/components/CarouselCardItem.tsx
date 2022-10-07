@@ -40,7 +40,7 @@ export interface CarouselCardItemProps {
 export const carouselData: Array<CarouselItem> = [
   {
     title: 'Easy',
-    body: 'Wakala makes it easy for you to top up your cUSD wallet. Both Add or withdraw cUSD',
+    body: 'Nash makes it easy for you to top up your cUSD wallet. Both Add or withdraw cUSD',
     lottieAnimation: require('../../../../assets/lottie_animations/easy.json'),
   },
   {

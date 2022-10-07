@@ -17,15 +17,18 @@ import {
 import {Button, Text, TextField} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
+import {useNavigation} from '@react-navigation/native';
 
 /**
  * Contains the screen to enter user name.
  */
 export const EnterUserNameScreen = () => {
+  const navigation = useNavigation();
   const [name, setName] = useState('');
 
   const submitName = () => {
     console.log(name);
+    navigation.navigate('CreatePin');
   };
 
   return (

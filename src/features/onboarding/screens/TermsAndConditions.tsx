@@ -41,24 +41,24 @@ export const TermsAndConditions = () => {
             By joining this network, you give us permission to collect anonymous
             information about your use of the app. Additionally, if you connect
             your phone number, a hashed copy of it will be stored on the Celo
-            network. If you grant Wakala access to your contact list, Wakala
-            will import each contact's name and phone number to allow users to
-            connect through the Wakala app. To learn how we collect and use this
+            network. If you grant Nash access to your contact list, Nash will
+            import each contact's name and phone number to allow users to
+            connect through the Nash app. To learn how we collect and use this
             information please review our Privacy Policy.
           </Text>
         </View>
 
         <View style={style.textGroup}>
           <Text color={AppColors.light_green} h2>
-            Celo Dollar and Wakala Account
+            Celo Dollar and Nash Account
           </Text>
           <Text color={AppColors.black} body3>
             By joining this network, you give us permission to collect anonymous
             information about your use of the app. Additionally, if you connect
             your phone number, a hashed copy of it will be stored on the Celo
-            network. If you grant Wakala access to your contact list, Wakala
-            will import each contact's name and phone number to allow users to
-            connect through the Wakala app. To learn how we collect and use this
+            network. If you grant Nash access to your contact list, Nash will
+            import each contact's name and phone number to allow users to
+            connect through the Nash app. To learn how we collect and use this
             information please review our Privacy Policy.
           </Text>
         </View>
