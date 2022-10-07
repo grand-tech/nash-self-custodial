@@ -8,23 +8,21 @@ import {
 import PinKeyPad from '../components/PinKeyPad';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
 
-const CreatePinScreen: React.FC = () => {
-  // const eyeSlash = Icon.getImageSourceSync('eye-slash', 24, AppColors.yellow);
-  // const eye = Icon.getImageSourceSync('eye', 24, AppColors.yellow);
+const ConfirmPinScreen = () => {
+  const route = useRoute();
+  const pin: string = route.params?.pin ?? '';
 
   const navigation = useNavigation();
   const initPin = ['', '', '', '', '', ''];
+  const [pinError, setPinError] = React.useState('');
 
-  //Contains the pin number text as an array.
   const [pinCharArray, setPinTextArray] = useState(initPin);
   const [hidePin, setHidePin] = useState(true);
-  // The current index of the pin number entry.
   const [currentIndex, setCurrentIndex] = useState(0);
-  //  const recoveryPhrase = useSelector((state: any) => state.auth.recoveryPhrase);
 
   const onDelete = () => {
     if (currentIndex > 0) {
@@ -47,6 +45,7 @@ const CreatePinScreen: React.FC = () => {
   };
 
   const onChange = (pinChar: string) => {
+    setPinError('');
     if (
       currentIndex < pinCharArray.length &&
       pinCharArray[currentIndex] === ''
@@ -60,19 +59,23 @@ const CreatePinScreen: React.FC = () => {
           newPinArray[index] = pinCharArray[index];
         }
 
+        setPinTextArray(newPinArray);
+
         if (currentIndex < pinCharArray.length - 1) {
           // Limit the max index to the number of characters expected.
           let newCurrentIndex = currentIndex + 1;
           setCurrentIndex(newCurrentIndex);
         } else {
-          let pin: string = newPinArray.toString().replaceAll(',', '');
-
-          navigation.navigate('ConfirmPin', {
-            pin: pin,
-          });
+          let p = newPinArray.toString().replaceAll(',', '');
+          if (p === pin) {
+            // set up recovery phrase.
+            navigation.navigate('ConfirmPin');
+          } else {
+            setPinError('PIN did not match!!!');
+            setCurrentIndex(0);
+            setPinTextArray(['', '', '', '', '', '']);
+          }
         }
-
-        setPinTextArray(newPinArray);
       }
     }
   };
@@ -80,7 +83,6 @@ const CreatePinScreen: React.FC = () => {
   useEffect(() => {
     setPinTextArray(initPin);
     setCurrentIndex(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useLayoutEffect(() => {
@@ -94,7 +96,11 @@ const CreatePinScreen: React.FC = () => {
     <Screen style={styles.screen}>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.enterPin}>
-          <Text style={styles.pinText}>Enter PIN</Text>
+          <Text style={styles.pinText}>Confirm PIN</Text>
+        </View>
+
+        <View style={{alignSelf: 'center'}}>
+          <Text style={styles.pinError}>{pinError}</Text>
         </View>
 
         <View style={styles.pinIcons}>
@@ -181,12 +187,12 @@ const styles = StyleSheet.create({
   },
   pinError: {
     ...FONTS.body7,
-    color: AppColors.perfumeHaze,
+    color: AppColors.red,
   },
   showPin: {
-    ...FONTS.body3,
+    ...FONTS.body1,
     alignSelf: 'center',
   },
 });
 
-export default CreatePinScreen;
+export default ConfirmPinScreen;

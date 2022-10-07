@@ -11,6 +11,7 @@ import {Pressable} from 'react-native';
 import {TermsAndConditions} from './screens/TermsAndConditions';
 import {EnterUserNameScreen} from './screens/EnterUserNameScreen';
 import CreatePinScreen from '../pin/screens/CreatePinScreen';
+import ConfirmPinScreen from '../pin/screens/ConfirmPinScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ export function stackScreenHideHeaderTitle(
   };
 }
 
+// TODO https://reactnavigation.org/docs/typescript/
 export const OnBoardingStack = () => {
   return (
     <Stack.Navigator>
@@ -69,6 +71,15 @@ export const OnBoardingStack = () => {
       <Stack.Screen
         name="CreatePin"
         component={CreatePinScreen}
+        options={({navigation, route}) =>
+          stackScreenHideHeaderTitle(() => {
+            navigation.goBack();
+          })
+        }
+      />
+      <Stack.Screen
+        name="ConfirmPin"
+        component={ConfirmPinScreen}
         options={({navigation, route}) =>
           stackScreenHideHeaderTitle(() => {
             navigation.goBack();
