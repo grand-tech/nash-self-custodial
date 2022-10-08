@@ -12,6 +12,10 @@ import {TermsAndConditions} from './screens/TermsAndConditions';
 import {EnterUserNameScreen} from './screens/EnterUserNameScreen';
 import CreatePinScreen from '../pin/screens/CreatePinScreen';
 import ConfirmPinScreen from '../pin/screens/ConfirmPinScreen';
+import SetUpRecoveryPhrase from './screens/SetUpRecoveryPhrase';
+import SetUpSeedPhraseInstructions from './screens/SetUpSeedPhraseInstructions';
+import EnterPinScreen from '../pin/screens/EnterPinScreen';
+import WriteDownRecoveryPhraseScreen from './screens/WriteDownRecoveryPhraseScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -85,6 +89,30 @@ export const OnBoardingStack = () => {
             navigation.goBack();
           })
         }
+      />
+      <Stack.Screen
+        name="SetUpRecoveryPhrase"
+        component={SetUpRecoveryPhrase}
+        options={stackScreenHideHeader}
+      />
+      <Stack.Screen
+        name="SetUpSeedPhraseInstructions"
+        component={SetUpSeedPhraseInstructions}
+        options={stackScreenHideHeader}
+      />
+      <Stack.Screen
+        name="EnterPinScreen"
+        component={EnterPinScreen}
+        options={({navigation, route}) =>
+          stackScreenHideHeaderTitle(() => {
+            navigation.goBack();
+          })
+        }
+      />
+      <Stack.Screen
+        name="WriteDownRecoveryPhraseScreen"
+        component={WriteDownRecoveryPhraseScreen}
+        options={stackScreenHideHeader}
       />
     </Stack.Navigator>
   );

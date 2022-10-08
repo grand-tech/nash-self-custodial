@@ -9,12 +9,11 @@ import PinKeyPad from '../components/PinKeyPad';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
-
 import {Chip} from 'react-native-ui-lib';
 
-const ConfirmPinScreen = () => {
+const EnterPinScreen = () => {
   const route = useRoute();
-  const pin: string = route.params?.pin ?? '';
+  const nextRoute: string = route.params?.nextRoute ?? '';
 
   const navigation = useNavigation();
   const initPin = ['', '', '', '', '', ''];
@@ -67,14 +66,14 @@ const ConfirmPinScreen = () => {
           setCurrentIndex(newCurrentIndex);
         } else {
           let p = newPinArray.toString().replaceAll(',', '');
-          if (p === pin) {
-            // set up recovery phrase.
-            navigation.navigate('SetUpRecoveryPhrase');
-          } else {
-            setPinError('PIN did not match!!!');
-            setCurrentIndex(0);
-            setPinTextArray(['', '', '', '', '', '']);
-          }
+          // if (p === pin) {
+          // set up recovery phrase.
+          navigation.navigate(nextRoute);
+          // } else {
+          //   setPinError('PIN did not match!!!');
+          //   setCurrentIndex(0);
+          //   setPinTextArray(['', '', '', '', '', '']);
+          // }
         }
       }
     }
@@ -96,7 +95,7 @@ const ConfirmPinScreen = () => {
     <Screen style={styles.screen}>
       <View style={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={styles.enterPin}>
-          <Text style={styles.pinText}>Confirm PIN</Text>
+          <Text style={styles.pinText}>Enter PIN</Text>
         </View>
 
         <View style={{alignSelf: 'center'}}>
@@ -195,4 +194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfirmPinScreen;
+export default EnterPinScreen;
