@@ -16,6 +16,7 @@ import SetUpRecoveryPhrase from './screens/SetUpRecoveryPhrase';
 import SetUpSeedPhraseInstructions from './screens/SetUpSeedPhraseInstructions';
 import EnterPinScreen from '../pin/screens/EnterPinScreen';
 import WriteDownRecoveryPhraseScreen from './screens/WriteDownRecoveryPhraseScreen';
+import ConfirmRecoveryPhraseScreen from './screens/ConfirmRecoveryPhraseScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,11 +29,25 @@ const stackScreenHideHeader = {
 
 export function stackScreenHideHeaderTitle(
   onPress: any,
+  title?: string,
 ): NativeStackNavigationOptions {
   return {
-    title: '',
+    title: title ?? '',
     headerTransparent: true,
     headerLeft: () => <BackButton onPress={onPress} />,
+  };
+}
+
+export function headerWithDeleteButton(
+  onPressBack: any,
+  onPressDelete: any,
+  title?: string,
+): NativeStackNavigationOptions {
+  return {
+    title: title ?? '',
+    headerTransparent: true,
+    headerLeft: () => <BackButton onPress={onPressBack} />,
+    headerRight: () => <DeleteButton onPress={onPressDelete} />,
   };
 }
 
@@ -112,7 +127,27 @@ export const OnBoardingStack = () => {
       <Stack.Screen
         name="WriteDownRecoveryPhraseScreen"
         component={WriteDownRecoveryPhraseScreen}
-        options={stackScreenHideHeader}
+        options={({navigation, route}) =>
+          stackScreenHideHeaderTitle(() => {
+            navigation.goBack();
+          })
+        }
+      />
+      <Stack.Screen
+        name="ConfirmRecoveryPhraseScreen"
+        component={ConfirmRecoveryPhraseScreen}
+        options={({navigation, route}) =>
+          headerWithDeleteButton(
+            () => {
+              // navigation back
+              navigation.goBack();
+            },
+            () => {
+              // delete actions
+              navigation.goBack();
+            },
+          )
+        }
       />
     </Stack.Navigator>
   );
@@ -135,6 +170,25 @@ export const BackButton: React.FC<BackButtonProps> = props => {
         props.onPress();
       }}>
       <Icon name="chevron-left" size={30} color={AppColors.green} />
+    </Pressable>
+  );
+};
+
+/**
+ * Custom delete button.
+ */
+export const DeleteButton: React.FC<BackButtonProps> = props => {
+  return (
+    <Pressable
+      onPress={() => {
+        props.onPress();
+      }}>
+      <Icon
+        name="backspace"
+        size={24}
+        color={AppColors.green}
+        // style={styles.number}
+      />
     </Pressable>
   );
 };
