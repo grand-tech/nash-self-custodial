@@ -14,6 +14,7 @@
     "@celo/contractkit": "^2.1.0",
     "@celo/cryptographic-utils": "^2.1.0",
     "@celo/phone-utils": "^2.1.0",
+    "@react-native-clipboard/clipboard": "^1.11.1",
     "@react-native-community/blur": "^4.2.0",
     "@react-native-masked-view/masked-view": "^0.2.8",
     "@react-navigation/drawer": "^6.5.0",

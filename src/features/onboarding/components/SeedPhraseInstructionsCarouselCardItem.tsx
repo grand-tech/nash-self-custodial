@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {CarouselRenderItemInfo} from 'react-native-reanimated-carousel/lib/typescript/types';
-import Lottie from 'lottie-react-native';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
   widthPercentageToDP as wp,
@@ -13,15 +12,11 @@ import {CarouselItem} from './Interfaces';
 const cardWidth: number = wp('70%');
 const animationHeight: number = hp('30%');
 
-const CarouselCardItem = (props: CarouselRenderItemInfo<CarouselItem>) => {
+const SeedPhraseInstructionsCarouselCardItem = (
+  props: CarouselRenderItemInfo<CarouselItem>,
+) => {
   return (
     <View style={styles.container} key={props.index}>
-      <Lottie
-        source={props.item.lottieAnimation ?? ''}
-        style={styles.lottieAnimation}
-        autoPlay={true}
-        loop={true}
-      />
       <Text style={styles.header}>{props.item.title}</Text>
       <Text style={styles.body}>{props.item.body}</Text>
     </View>
@@ -45,7 +40,7 @@ const styles = StyleSheet.create({
   header: {
     paddingLeft: 20,
     textAlign: 'center',
-    ...FONTS.body4,
+    ...FONTS.h4,
     fontWeight: 'bold',
     color: AppColors.light_green,
   },
@@ -56,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CarouselCardItem;
+export default SeedPhraseInstructionsCarouselCardItem;
