@@ -7,7 +7,7 @@ export const seedPhraseInstructions: Array<CarouselItem> = [
   },
   {
     title: 'Without your Recovery Phrase, you can lose access forever',
-    body: 'If you lose your phone, you must have your Recovery Phrase to get your account back. Nobody, not even Kukuza, will be able to recover your funds without it',
+    body: 'If you lose your phone, you must have your Recovery Phrase to get your account back. Nobody, not evenNash, will be able to recover your funds without it',
   },
   {
     title: 'Write it down',

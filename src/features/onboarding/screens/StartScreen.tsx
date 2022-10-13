@@ -9,10 +9,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {AppButtonProps} from '../../../app_components/DefaultButton';
 import {useNavigation} from '@react-navigation/native';
 import Screen from '../../../app_components/Screen';
 import {startScreenData} from '../data';
+import {FONTS} from '../../../ui_lib_configs/fonts';
+import {Button} from 'react-native-ui-lib';
 
 /**
  * Contains the onboarding UI.
@@ -35,8 +36,14 @@ export const StartScreen = () => {
           renderItem={CarouselCardItem}
           style={style.carousel}
         />
-        <AppButtonProps
-          title="Next"
+        <Button
+          outline={true}
+          outlineColor={AppColors.light_green}
+          label={'Next'}
+          secondary
+          labelStyle={{
+            ...FONTS.h4,
+          }}
           onPress={() => {
             let x: number = isCarousel.current?.getCurrentIndex() ?? 0;
             if (x == maxIndex) {
@@ -69,7 +76,4 @@ const style = StyleSheet.create({
     backgroundColor: AppColors.gray,
   },
   carousel: {alignSelf: 'center'},
-  button: {
-    backgroundColor: AppColors.light_green,
-  },
 });

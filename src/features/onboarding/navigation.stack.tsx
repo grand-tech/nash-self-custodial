@@ -136,18 +136,6 @@ export const OnBoardingStack = () => {
       <Stack.Screen
         name="ConfirmRecoveryPhraseScreen"
         component={ConfirmRecoveryPhraseScreen}
-        options={({navigation, route}) =>
-          headerWithDeleteButton(
-            () => {
-              // navigation back
-              navigation.goBack();
-            },
-            () => {
-              // delete actions
-              navigation.goBack();
-            },
-          )
-        }
       />
     </Stack.Navigator>
   );
