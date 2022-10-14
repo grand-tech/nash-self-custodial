@@ -64,6 +64,9 @@ export const CreateAccountScreen = () => {
             labelStyle={{
               ...FONTS.h4,
             }}
+            onPress={() => {
+              navigation.navigate('RestoreAccount');
+            }}
           />
         </View>
       </View>

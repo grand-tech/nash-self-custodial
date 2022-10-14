@@ -18,21 +18,19 @@ import {
   Button,
   ChipsInputChipProps,
   Incubator,
-  PanningProvider,
   Text,
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
 import {headerWithDeleteButton} from '../navigation.stack';
-import Lottie from 'lottie-react-native';
 import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
 
 /**
  * Contains the onboarding UI.
  */
-export const ConfirmRecoveryPhraseScreen = () => {
+export const RestoreAccountScreen = () => {
   const navigation = useNavigation();
 
   //   TODO: logic to fetch recovery phrase/pass it from navigation params
@@ -59,6 +57,14 @@ export const ConfirmRecoveryPhraseScreen = () => {
   }, [navigation]);
 
   /**
+   * Updates the chips after an new word has been entered or deleted.
+   * @param newChips list of new chips.
+   */
+  const onChipsChangeHandler = (newChips: Incubator.ChipsInputChipProps[]) => {
+    setInputSeedPhrase(newChips);
+  };
+
+  /**
    * Confirm seed phrase button handler logic.
    */
   const confirmSeedPhraseBtnHandler = () => {
@@ -67,6 +73,7 @@ export const ConfirmRecoveryPhraseScreen = () => {
       navigation.navigate('EnterUserName');
     } else {
       setErrorDialogVisibility(true);
+      console.log(errorDialogVisible);
     }
   };
 
@@ -80,31 +87,40 @@ export const ConfirmRecoveryPhraseScreen = () => {
             {/* Tittle section */}
             <View>
               <Text
+                style={[style.title]}
                 color={AppColors.light_green}
-                displayBold
-                style={[style.title]}>
-                Recovery Phrase
+                displayBold>
+                Restore Your Account
               </Text>
               <Text
                 center={true}
                 color={AppColors.black}
                 style={[style.counter]}
                 body1>
-                Please enter your recovery phrase
+                To restore your account, enter your 24-word recovery (seed)
+                phrase.
               </Text>
             </View>
             {/* Body text group section. */}
-            <View style={style.textGroup}>
+            <View style={style.chipInputGroup}>
               <Text color={AppColors.yellow} style={style.counter} body1>
                 Word {inputSeedPhrase.length} of 24
               </Text>
-              <ErrorModalComponent
-                onRetry={() => {
-                  setInputSeedPhrase(initInputSeedPhrase);
-                  setErrorDialogVisibility(false);
+              <Incubator.ChipsInput
+                placeholder="Next word..."
+                floatingPlaceholder={inputSeedPhrase.length < 24}
+                floatingPlaceholderStyle={{
+                  ...FONTS.body3,
+                  color: AppColors.brown,
                 }}
-                visible={errorDialogVisible}
-                errorMessage={'Invalid seed phrase!!'}
+                chips={inputSeedPhrase}
+                defaultChipProps={{
+                  labelStyle: {...FONTS.body1},
+                }}
+                onChange={newChips => onChipsChangeHandler(newChips)}
+                maxChips={24}
+                autoFocus={true}
+                autoCapitalize={'none'}
               />
             </View>
 
@@ -122,10 +138,9 @@ export const ConfirmRecoveryPhraseScreen = () => {
                 onPress={() => {
                   confirmSeedPhraseBtnHandler();
                 }}
-                onDismiss={() => setErrorDialogVisibility(false)}
-                disabled={inputSeedPhrase.length != 24}
               />
             </View>
+
             <ErrorModalComponent
               onRetry={() => {
                 setInputSeedPhrase(initInputSeedPhrase);
@@ -155,7 +170,7 @@ const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ConfirmRecoveryPhraseScreen);
+)(RestoreAccountScreen);
 
 const style = StyleSheet.create({
   container: {
@@ -167,12 +182,13 @@ const style = StyleSheet.create({
   },
   button: {
     width: wp('80.0%'),
+    marginBottom: hp('1%'),
   },
   buttonGroup: {
     flex: 0.23,
     justifyContent: 'space-between',
   },
-  textGroup: {
+  chipInputGroup: {
     justifyContent: 'center',
     paddingHorizontal: wp('2.5%'),
     paddingVertical: hp('1%'),
