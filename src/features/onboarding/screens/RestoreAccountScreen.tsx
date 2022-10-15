@@ -33,9 +33,10 @@ import ErrorModalComponent from '../components/ErrorModalComponent';
 export const RestoreAccountScreen = () => {
   const navigation = useNavigation();
 
-  //   TODO: logic to fetch recovery phrase/pass it from navigation params
+  // TODO: logic to fetch recovery phrase/pass it from navigation params
   const [seedPhrase, setSeedPhrase] = useState(
-    'horse giraffe dog money book fire drink cup phone car jacket computer wire charger curtain router window plate floor key wine glass oak watch',
+    'horse giraffe dog money book fire drink cup phone car jacket computer ' +
+      'wire charger curtain router window plate floor key wine glass oak watch',
   );
   const initInputSeedPhrase: ChipsInputChipProps[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);

@@ -25,7 +25,6 @@ import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
 import {headerWithDeleteButton} from '../navigation.stack';
-import Lottie from 'lottie-react-native';
 import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
 
@@ -83,7 +82,7 @@ export const ConfirmRecoveryPhraseScreen = () => {
                 color={AppColors.light_green}
                 displayBold
                 style={[style.title]}>
-                Recovery Phrase
+                Confirm Recovery Phrase
               </Text>
               <Text
                 center={true}
@@ -94,17 +93,25 @@ export const ConfirmRecoveryPhraseScreen = () => {
               </Text>
             </View>
             {/* Body text group section. */}
-            <View style={style.textGroup}>
+            <View style={style.chipInputGroup}>
               <Text color={AppColors.yellow} style={style.counter} body1>
                 Word {inputSeedPhrase.length} of 24
               </Text>
-              <ErrorModalComponent
-                onRetry={() => {
-                  setInputSeedPhrase(initInputSeedPhrase);
-                  setErrorDialogVisibility(false);
+              <Incubator.ChipsInput
+                placeholder="Next word..."
+                floatingPlaceholder={inputSeedPhrase.length < 24}
+                floatingPlaceholderStyle={{
+                  ...FONTS.body3,
+                  color: AppColors.brown,
                 }}
-                visible={errorDialogVisible}
-                errorMessage={'Invalid seed phrase!!'}
+                chips={inputSeedPhrase}
+                defaultChipProps={{
+                  labelStyle: {...FONTS.body1},
+                }}
+                onChange={newChips => setInputSeedPhrase(newChips)}
+                maxChips={24}
+                autoFocus={true}
+                autoCapitalize={'none'}
               />
             </View>
 
@@ -186,5 +193,14 @@ const style = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
+  },
+  chipInputGroup: {
+    justifyContent: 'center',
+    paddingHorizontal: wp('2.5%'),
+    paddingVertical: hp('1%'),
+    paddingBottom: hp('2%'),
+    backgroundColor: '#ffff',
+    borderRadius: wp('5%'),
+    minWidth: wp('80%'),
   },
 });
