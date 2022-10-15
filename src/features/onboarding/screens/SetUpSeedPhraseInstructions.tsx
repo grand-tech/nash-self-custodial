@@ -40,9 +40,9 @@ export const SetUpSeedPhraseInstructions = () => {
         <Button
           style={style.button}
           outline={true}
-          outlineColor={AppColors.light_green}
+          outlineColor={AppColors.yellow}
           label={buttonText}
-          secondary
+          warning
           labelStyle={{
             ...FONTS.h4,
           }}

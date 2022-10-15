@@ -65,16 +65,20 @@ const ConfirmPinScreen = () => {
           // Limit the max index to the number of characters expected.
           let newCurrentIndex = currentIndex + 1;
           setCurrentIndex(newCurrentIndex);
+        }
+      }
+
+      if (currentIndex == 5) {
+        let p = newPinArray.toString().replaceAll(',', '');
+        if (p === pin) {
+          // set up recovery phrase.
+          navigation.navigate('SetUpRecoveryPhrase');
+          console.log('start navigation', currentIndex);
         } else {
-          let p = newPinArray.toString().replaceAll(',', '');
-          if (p === pin) {
-            // set up recovery phrase.
-            navigation.navigate('SetUpRecoveryPhrase');
-          } else {
-            setPinError('PIN did not match!!!');
-            setCurrentIndex(0);
-            setPinTextArray(['', '', '', '', '', '']);
-          }
+          console.log('Pin Error', currentIndex);
+          setPinError('PIN did not match!!!');
+          setCurrentIndex(0);
+          setPinTextArray(['', '', '', '', '', '']);
         }
       }
     }
