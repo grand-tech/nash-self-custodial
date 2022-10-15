@@ -23,7 +23,7 @@ export const SetUpRecoveryPhrase: React.FC = () => {
       <View style={style.container}>
         {/* Tittle section */}
 
-        <Text color={AppColors.light_green} h1>
+        <Text color={AppColors.light_green} h1 style={style.title}>
           Set up your recovery phrase
         </Text>
 
@@ -43,9 +43,9 @@ export const SetUpRecoveryPhrase: React.FC = () => {
           <Button
             style={style.button}
             outline={true}
-            outlineColor={AppColors.light_green}
+            outlineColor={AppColors.yellow}
             label={'Set up'}
-            secondary
+            warning
             labelStyle={{
               ...FONTS.h4,
             }}
@@ -98,5 +98,8 @@ const style = StyleSheet.create({
   textGroup: {
     flex: 0.17,
     justifyContent: 'space-between',
+  },
+  title: {
+    fontWeight: '900',
   },
 });

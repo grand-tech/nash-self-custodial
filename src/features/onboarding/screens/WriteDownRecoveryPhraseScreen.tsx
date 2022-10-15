@@ -89,9 +89,9 @@ export const WriteDownRecoveryPhraseScreen = () => {
           <Button
             style={style.button}
             outline={true}
-            outlineColor={AppColors.light_green}
+            outlineColor={AppColors.yellow}
             label={'Continue'}
-            secondary
+            warning
             labelStyle={{
               ...FONTS.h4,
             }}

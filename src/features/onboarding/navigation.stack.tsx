@@ -17,6 +17,7 @@ import SetUpSeedPhraseInstructions from './screens/SetUpSeedPhraseInstructions';
 import EnterPinScreen from '../pin/screens/EnterPinScreen';
 import WriteDownRecoveryPhraseScreen from './screens/WriteDownRecoveryPhraseScreen';
 import ConfirmRecoveryPhraseScreen from './screens/ConfirmRecoveryPhraseScreen';
+import {RestoreAccountScreen} from './screens/RestoreAccountScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -137,6 +138,7 @@ export const OnBoardingStack = () => {
         name="ConfirmRecoveryPhraseScreen"
         component={ConfirmRecoveryPhraseScreen}
       />
+      <Stack.Screen name="RestoreAccount" component={RestoreAccountScreen} />
     </Stack.Navigator>
   );
 };

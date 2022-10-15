@@ -23,7 +23,7 @@ export const CreateAccountScreen = () => {
       <View style={style.container}>
         {/* Tittle section */}
         <View>
-          <Text color={AppColors.green} h1>
+          <Text color={AppColors.light_green} h1 style={style.title}>
             Prepare to write down your recovery phrase.
           </Text>
         </View>
@@ -63,6 +63,9 @@ export const CreateAccountScreen = () => {
             size={'large'}
             labelStyle={{
               ...FONTS.h4,
+            }}
+            onPress={() => {
+              navigation.navigate('RestoreAccount');
             }}
           />
         </View>
@@ -111,5 +114,8 @@ const style = StyleSheet.create({
   textGroup: {
     flex: 0.17,
     justifyContent: 'space-between',
+  },
+  title: {
+    fontWeight: '900',
   },
 });
