@@ -8,8 +8,8 @@ import StartScreen from './screens/StartScreen';
 import {AppColors} from '../../ui_lib_configs/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Pressable} from 'react-native';
-import {TermsAndConditions} from './screens/TermsAndConditions';
-import {EnterUserNameScreen} from './screens/EnterUserNameScreen';
+import TermsAndConditions from './screens/TermsAndConditions';
+import EnterUserNameScreen from './screens/EnterUserNameScreen';
 import CreatePinScreen from '../pin/screens/CreatePinScreen';
 import ConfirmPinScreen from '../pin/screens/ConfirmPinScreen';
 import SetUpRecoveryPhrase from './screens/SetUpRecoveryPhrase';
@@ -17,7 +17,7 @@ import SetUpSeedPhraseInstructions from './screens/SetUpSeedPhraseInstructions';
 import EnterPinScreen from '../pin/screens/EnterPinScreen';
 import WriteDownRecoveryPhraseScreen from './screens/WriteDownRecoveryPhraseScreen';
 import ConfirmRecoveryPhraseScreen from './screens/ConfirmRecoveryPhraseScreen';
-import {RestoreAccountScreen} from './screens/RestoreAccountScreen';
+import RestoreAccountScreen from './screens/RestoreAccountScreen';
 
 const Stack = createNativeStackNavigator();
 

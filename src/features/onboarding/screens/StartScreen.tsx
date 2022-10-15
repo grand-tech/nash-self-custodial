@@ -18,7 +18,7 @@ import {Button} from 'react-native-ui-lib';
 /**
  * Contains the onboarding UI.
  */
-export const StartScreen = () => {
+const StartScreen = () => {
   const isCarousel = React.useRef<ICarouselInstance>(null);
   const maxIndex = startScreenData.length - 1;
   const navigation = useNavigation();

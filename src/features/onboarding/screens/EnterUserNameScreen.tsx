@@ -18,16 +18,28 @@ import {Button, Text, TextField} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
 import {useNavigation} from '@react-navigation/native';
+import {useAppDispatch} from '../../../hooks/index';
+import {setUserName} from '../redux_store/actions';
+
+/**
+ * Create account screen props.
+ * @typedef {Object} CreateAccountScreenProps properties expected by the create account component.
+ * @property { string} onboarding_status the components to be rendered on the constructed screen.
+ */
+interface EnterUserNameScreenProps {
+  userName: string;
+}
 
 /**
  * Contains the screen to enter user name.
  */
-export const EnterUserNameScreen = () => {
+const EnterUserNameScreen = (props: EnterUserNameScreenProps) => {
   const navigation = useNavigation();
-  const [name, setName] = useState('');
+  const dispatch = useAppDispatch();
+  const [name, setName] = useState(props.userName ?? '');
 
   const submitName = () => {
-    console.log(name);
+    dispatch(setUserName(name));
     navigation.navigate('CreatePin');
   };
 
@@ -60,6 +72,7 @@ export const EnterUserNameScreen = () => {
                   onChangeText={(text: string) => {
                     setName(text);
                   }}
+                  value={name}
                 />
               </View>
 
@@ -95,7 +108,7 @@ export const EnterUserNameScreen = () => {
  * @returns the props intended to be passed to the component from state variables.
  */
 const mapStateToProps = (state: RootState) => ({
-  onboarded: state.onboarding.status,
+  userName: state.onboarding.user_name,
 });
 
 const mapDispatchToProps = {};

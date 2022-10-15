@@ -30,7 +30,7 @@ import ErrorModalComponent from '../components/ErrorModalComponent';
 /**
  * Contains the onboarding UI.
  */
-export const RestoreAccountScreen = () => {
+const RestoreAccountScreen = () => {
   const navigation = useNavigation();
 
   // TODO: logic to fetch recovery phrase/pass it from navigation params

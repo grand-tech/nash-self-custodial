@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 /**
  * Contains the onboarding UI.
  */
-export const TermsAndConditions = () => {
+const TermsAndConditions = () => {
   const navigation = useNavigation();
 
   return (
