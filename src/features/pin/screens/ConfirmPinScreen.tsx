@@ -43,7 +43,6 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
     // set up recovery phrase.
     // navigation.navigate('SetUpRecoveryPhrase');
     console.log('run dispatch');
-    setShowProgressModal(true);
     dispatch(createNewAccountAction(pin));
   };
 
@@ -106,11 +105,9 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
   };
 
   useEffect(() => {
-    let progressModalVisibility =
-      props.onboarding_status_name ===
-      OnboardingStatusNames.creating_new_account;
-    setShowProgressModal(progressModalVisibility);
-  }, [props.onboarding_status_name]);
+    setPinTextArray(initPin);
+    setCurrentIndex(0);
+  }, []);
 
   useLayoutEffect(() => {
     const headerConfigs = {
@@ -166,8 +163,11 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
       </View>
 
       <LoadingModalComponent
-        visible={showProgressModal}
-        message={'Creating Account'}
+        visible={
+          props.onboarding_status_name ===
+          OnboardingStatusNames.creating_new_account
+        }
+        message={'Creating account'}
       />
     </Screen>
   );
