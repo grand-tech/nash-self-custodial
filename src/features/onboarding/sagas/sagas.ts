@@ -23,10 +23,8 @@ export function* createAccountSaga(action: ActionCreateNewAccount) {
     const newAccount: AccountInformation = yield call(
       createNewAccountWithMnemonic,
     );
-    console.log(
-      'createAccountSaga() ==============================>',
-      newAccount,
-    );
+
+    // TODO: figure out if this is necessary
     isNewAccount = yield call(isAccountNew, newAccount.address);
 
     if (isNewAccount) {

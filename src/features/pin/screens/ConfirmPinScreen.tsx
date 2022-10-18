@@ -11,10 +11,17 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
-import {useDispatch} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {createNewAccountAction} from '../../onboarding/redux_store/actions';
+import {RootState} from '../../../app-redux-store/store';
+import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
+import LoadingModalComponent from '../../onboarding/components/LoadingModalComponent';
 
-const ConfirmPinScreen = () => {
+interface ConfirmPinScreenProps {
+  onboarding_status_name: OnboardingStatusNames;
+}
+
+const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
   const route = useRoute();
   const dispatch = useDispatch();
 
@@ -27,6 +34,18 @@ const ConfirmPinScreen = () => {
   const [pinCharArray, setPinTextArray] = useState(initPin);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+
+  /**
+   * What happens when the pin numbers match.
+   */
+  const onPinMatched = () => {
+    // set up recovery phrase.
+    // navigation.navigate('SetUpRecoveryPhrase');
+    console.log('run dispatch');
+    setShowProgressModal(true);
+    dispatch(createNewAccountAction(pin));
+  };
 
   const onDelete = () => {
     if (currentIndex > 0) {
@@ -75,10 +94,7 @@ const ConfirmPinScreen = () => {
       if (currentIndex === 5) {
         let p = newPinArray.toString().replaceAll(',', '');
         if (p === pin) {
-          // set up recovery phrase.
-          // navigation.navigate('SetUpRecoveryPhrase');
-          console.log('run dispatch');
-          dispatch(createNewAccountAction(pin));
+          onPinMatched(pin);
         } else {
           console.log('Pin Error', currentIndex);
           setPinError('PIN did not match!!!');
@@ -90,9 +106,11 @@ const ConfirmPinScreen = () => {
   };
 
   useEffect(() => {
-    setPinTextArray(initPin);
-    setCurrentIndex(0);
-  }, []);
+    let progressModalVisibility =
+      props.onboarding_status_name ===
+      OnboardingStatusNames.creating_new_account;
+    setShowProgressModal(progressModalVisibility);
+  }, [props.onboarding_status_name]);
 
   useLayoutEffect(() => {
     const headerConfigs = {
@@ -146,6 +164,11 @@ const ConfirmPinScreen = () => {
         {/* onChange={handleChange} onDelete={onDelete} */}
         <PinKeyPad onChange={onChange} onDelete={onDelete} />
       </View>
+
+      <LoadingModalComponent
+        visible={showProgressModal}
+        message={'Creating Account'}
+      />
     </Screen>
   );
 };
@@ -204,4 +227,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfirmPinScreen;
+const mapStateToProps = (state: RootState) => ({
+  onboarding_status_name: state.onboarding.status.name,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmPinScreen);

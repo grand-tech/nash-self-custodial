@@ -1,6 +1,21 @@
 import {Actions, ActionTypes} from './actions';
 
 /**
+ * List of values expected on the onboarding status name.
+ */
+export enum OnboardingStatusNames {
+  choose_create_new_account = 'choose_create_new_account',
+  creating_new_account = 'creating_new_account',
+  created_new_account = 'created_new_account',
+  choose_restore_account = 'choose_restore_account',
+  restoring_account = 'restoring_account',
+  restored_account = 'restored_account',
+  error_restoring_account = 'error_restoring_account',
+  onboarding_complete = 'onboarding_complete',
+  undefined = '',
+}
+
+/**
  * Onboarding state object.
  */
 interface OnboardingState {
@@ -10,7 +25,10 @@ interface OnboardingState {
   publicAddress: string;
   publicKey: string;
   user_name: string;
-  status: 'create_new_account' | 'restore_account' | 'onboarding_complete' | '';
+  status: {
+    name: OnboardingStatusNames;
+    error: any | undefined;
+  };
 }
 
 /**
@@ -23,7 +41,10 @@ const initialState: OnboardingState = {
   publicAddress: '',
   publicKey: '',
   user_name: '',
-  status: '',
+  status: {
+    name: OnboardingStatusNames.undefined,
+    error: undefined,
+  },
 };
 
 export const onBoardingReducer = (
@@ -41,21 +62,42 @@ export const onBoardingReducer = (
         ...state,
         publicAddress: action.publicAddress,
         publicKey: action.publicKey,
+        status: {
+          name: OnboardingStatusNames.created_new_account,
+          error: undefined,
+        },
       };
     case Actions.CHOOSE_CREATE_NEW_ACCOUNT:
       return {
         ...state,
-        status: 'create_new_account',
+        status: {
+          name: OnboardingStatusNames.choose_create_new_account,
+          error: undefined,
+        },
+      };
+    case Actions.CREATE_NEW_ACCOUNT:
+      return {
+        ...state,
+        status: {
+          name: OnboardingStatusNames.creating_new_account,
+          error: undefined,
+        },
       };
     case Actions.CHOOSE_RESTORE_EXISTING_ACCOUNT:
       return {
         ...state,
-        status: 'restore_account',
+        status: {
+          name: OnboardingStatusNames.choose_restore_account,
+          error: undefined,
+        },
       };
     case Actions.COMPLETED_ONBOARDING:
       return {
         ...state,
-        status: 'onboarding_complete',
+        status: {
+          name: OnboardingStatusNames.onboarding_complete,
+          error: undefined,
+        },
       };
     case Actions.SET_USER_NAME:
       return {
