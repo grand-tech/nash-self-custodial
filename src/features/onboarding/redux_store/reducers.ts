@@ -36,7 +36,7 @@ export const onBoardingReducer = (
         ...state,
         language: action.language,
       };
-    case Actions.CREATED_ACCOUNT:
+    case Actions.CREATED_NEW_ACCOUNT:
       return {
         ...state,
         publicAddress: action.publicAddress,

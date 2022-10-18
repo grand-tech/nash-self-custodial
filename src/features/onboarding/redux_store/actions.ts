@@ -1,13 +1,11 @@
 export enum Actions {
   SELECTED_LANGUAGE = 'ONBOARDING/SELECTED_LANGUAGE',
   CHOOSE_CREATE_NEW_ACCOUNT = 'ONBOARDING/CHOOSE_CREATE_NEW_ACCOUNT',
+  CREATE_NEW_ACCOUNT = 'ONBOARDING/CREATE_NEW_ACCOUNT',
+  CREATED_NEW_ACCOUNT = 'ONBOARDING/CREATED_NEW_ACCOUNT',
   CHOOSE_RESTORE_EXISTING_ACCOUNT = 'ONBOARDING/CHOOSE_RESTORE_EXISTING_ACCOUNT',
   SET_USER_NAME = 'ONBOARDING/SET_USER_NAME',
   COMPLETED_ONBOARDING = 'ONBOARDING/COMPLETED_ONBOARDING',
-  CONFIRM_PIN = 'ONBOARDING/CONFIRM_PIN',
-  CREATE_SEED_PHRASE = 'ONBOARDING/CREATED_SEED_PHRASE',
-  CHECK_ACCOUNT_BALANCE = 'ONBOARDING/CHECK_ACCOUNT_BALANCE',
-  START_PRIVATE_KEY_ENCRYPTION = 'ONBOARDING/START_PRIVATE_KEY_ENCRYPTION',
   CREATED_ACCOUNT = 'ONBOARDING/CREATED_ACCOUNT',
   ENCRYPTED_PRIVATE_KEY = 'ONBOARDING/ENCRYPTED_PRIVATE_KEY',
   STORE_PRIVATE_KEY = 'ONBOARDING/STORE_PRIVATE_KEY',
@@ -20,29 +18,24 @@ export interface ActionSelectedLanguage {
   language: string;
 }
 
-export interface ActionChooseCreateNewAccount {
-  type: Actions.CHOOSE_CREATE_NEW_ACCOUNT;
+export interface ActionCreateNewAccount {
+  type: Actions.CREATE_NEW_ACCOUNT;
+  pin: string;
 }
 
-export interface ActionCreateSeedPhrase {
-  type: Actions.CREATE_SEED_PHRASE;
+export interface ActionCreatedNewAccount {
+  type: Actions.CREATED_NEW_ACCOUNT;
+  publicKey: string;
+  publicAddress: string;
+}
+
+export interface ActionChooseCreateNewAccount {
+  type: Actions.CHOOSE_CREATE_NEW_ACCOUNT;
 }
 
 export interface ActionSetUserName {
   type: Actions.SET_USER_NAME;
   userName: string;
-}
-
-export interface ActionCheckAccountBalance {
-  type: Actions.CHECK_ACCOUNT_BALANCE;
-  publicAddress: string;
-}
-
-export interface ActionStartPrivateKeyEncryption {
-  type: Actions.START_PRIVATE_KEY_ENCRYPTION;
-  privateKey: string;
-  seedPhrase: string;
-  pin: string;
 }
 
 export interface ActionEncryptedPrivateKey {
@@ -83,12 +76,9 @@ export interface ActionCreatedAccount {
 export type ActionTypes =
   | ActionSelectedLanguage
   | ActionChooseCreateNewAccount
-  | ActionCreateSeedPhrase
-  | ActionCreatedAccount
+  | ActionCreatedNewAccount
+  | ActionCreateNewAccount
   | ActionSetUserName
-  | ActionCheckAccountBalance
-  | ActionStartPrivateKeyEncryption
-  | ActionEncryptedPrivateKey
   | ActionStorePrivateKey
   | ActionStoredPrivateKey
   | ActionConfirmSeedPhrase
@@ -121,8 +111,26 @@ export function chooseRestoreExistingAccount(): ActionChooseRestoreExistingAccou
   };
 }
 
-export function createSeedPhrase(): ActionCreateSeedPhrase {
+export function createNewAccountAction(pin: string): ActionCreateNewAccount {
   return {
-    type: Actions.CREATE_SEED_PHRASE,
+    type: Actions.CREATE_NEW_ACCOUNT,
+    pin: pin,
+  };
+}
+
+/**
+ * Generates created new account action.
+ * @param address the users public address.
+ * @param publicKey the users public key.
+ * @returns created new account action obj.
+ */
+export function createdNewAccountAction(
+  address: string,
+  publicKey: string,
+): ActionCreatedNewAccount {
+  return {
+    type: Actions.CREATED_NEW_ACCOUNT,
+    publicAddress: address,
+    publicKey: publicKey,
   };
 }

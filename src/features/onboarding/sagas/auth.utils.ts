@@ -8,18 +8,17 @@ import {
   MnemonicStrength,
   generateKeys,
 } from '@celo/cryptographic-utils/lib/account';
-import CryptoJS from 'crypto-js';
-// import {retrieveStoredItem, storeItem} from './session.key.storage.utils';
+import {AccountInformation} from './interfaces';
+import {
+  storeEncryptedItem,
+  KeyChainKeys,
+} from '../../../utils/session.key.storage.utils';
+import {Result} from 'react-native-keychain';
 
 /**
  * The number of words to be contained in the mnemonic.
  */
 const MNEMONIC_BIT_LENGTH = MnemonicStrength.s256_24words;
-
-/**
- * The key used to store the mnemonic.
- */
-export const MNEMONIC_STORAGE_KEY = 'mnemonic';
 
 /**
  * Checks if the mnemonic has duplicate words.
@@ -50,7 +49,6 @@ export function getMnemonicLanguage(language: string | null) {
  */
 export async function generateNewMnemonic(): Promise<string> {
   const mnemonicLanguage = getMnemonicLanguage('');
-  console.log('start =====>', mnemonicLanguage, MNEMONIC_BIT_LENGTH);
   let mnemonic = await generateMnemonic(
     MNEMONIC_BIT_LENGTH,
     mnemonicLanguage,
@@ -67,7 +65,6 @@ export async function generateNewMnemonic(): Promise<string> {
     isDuplicateInMnemonic = checkDuplicate(mnemonic);
   }
 
-  console.log('=>>>>>>>>', mnemonic);
   return mnemonic;
 }
 
@@ -78,94 +75,13 @@ export async function generateNewMnemonic(): Promise<string> {
 export async function createNewAccountWithMnemonic() {
   const mnemonic = await generateNewMnemonic();
   const keys = await getAccountFromMnemonic(mnemonic);
-  return mnemonic;
-}
-
-/**
- * Sets the password/pin used to encrypt the created mnemonic.
- * @param password the password/pin.
- * @param mnemonic the mnemonic to be encrypted and stored.
- */
-export async function setEncryptionPassword(
-  password: string,
-  mnemonic: string,
-) {
-  const storedItem = await storeMnemonic(mnemonic, password);
-}
-
-/**
- * Sets the password/pin used to encrypt the created mnemonic.
- * @param password the password/pin.
- * @param mnemonic the mnemonic to be encrypted and stored.
- */
-export async function encryptNewMnemonicWithPassword(password: string) {
-  const mnemonic = await createNewAccountWithMnemonic();
-  const storedItem = await storeMnemonic(mnemonic, password);
-  return mnemonic;
-}
-
-/**
- * Encrypt and store the mnemonic given a password.
- * @param mnemonic the mnemonic string.
- * @param password the string used to encrypt the mnemonic before storage.
- * @returns the result of the storage action.
- */
-export async function storeMnemonic(mnemonic: string, password: string) {
-  password = password.trim();
-  mnemonic = mnemonic.trim();
-
-  if (password == '' || mnemonic == '') {
-    throw new Error('Password or mnemonic can not be empty');
-  }
-
-  // encrypt and store the mnemonic.
-  const encryptedMnemonic = await encryptMnemonic(mnemonic, password);
-  const storageItem = {
-    key: MNEMONIC_STORAGE_KEY,
-    value: encryptedMnemonic,
+  const accountInfo: AccountInformation = {
+    mnemonic: mnemonic,
+    privateKey: keys.privateKey,
+    publicKey: keys.publicKey,
+    address: keys.address,
   };
-  // const storedItem = await storeItem(storageItem);
-
-  // return storedItem;
-}
-
-// export async function getStoredMnemonic(
-//   password: string,
-// ): Promise<string | null> {
-//   try {
-//     const encryptedMnemonic = await retrieveStoredItem(MNEMONIC_STORAGE_KEY);
-//     if (!encryptedMnemonic) {
-//       throw new Error('No mnemonic found in storage');
-//     }
-//     return decryptMnemonic(encryptedMnemonic, password);
-//   } catch (error) {
-//     return null;
-//   }
-// }
-
-/**
- * Encrypt mnemonic.
- * @param phrase the mnemonic.
- * @param password the password used to encrypt the mnemonic.
- * @returns the encrypted mnemonic.
- */
-export async function encryptMnemonic(phrase: string, password: string) {
-  const encryptedMnemonic = CryptoJS.AES.encrypt(phrase, password).toString();
-  return encryptedMnemonic;
-}
-
-/**
- * Decrypts the mnemonic
- * @param encryptedMnemonic encrypted mnemonic string.
- * @param password password used to decrypt the mnemonic.
- * @returns the decrypted mnemonic.
- */
-export async function decryptMnemonic(
-  encryptedMnemonic: string,
-  password: string,
-) {
-  const bytes = CryptoJS.AES.decrypt(encryptedMnemonic, password);
-  return bytes.toString(CryptoJS.enc.Utf8);
+  return accountInfo;
 }
 
 /**
@@ -180,7 +96,7 @@ export function isMnemonicValid(phrase: string) {
     ? []
     : invalidMnemonicWords(normalizedPhrase);
 
-  return phraseIsValid;
+  return phraseIsValid && !invalidWords;
 }
 
 /**
@@ -190,4 +106,43 @@ export function isMnemonicValid(phrase: string) {
 export function getAccountFromMnemonic(mnemonic: string) {
   const keys = generateKeys(mnemonic, undefined, undefined, undefined, bip39);
   return keys;
+}
+
+/**
+ * Ret
+ * @param mnemonic the mnemonic to be stored.
+ * @param password the user password/pin.
+ * @returns storage status (true if storage was successful).
+ */
+export async function storeEncryptedMnemonic(
+  mnemonic: string,
+  password: string,
+) {
+  let result: Result = await storeEncryptedItem(
+    mnemonic,
+    password,
+    KeyChainKeys.MNEMONIC_STORAGE_KEY,
+  );
+  console.log('================>', result);
+  return result;
+}
+
+/**
+ * Ret
+ * @param   privateKey: string,
+ the mnemonic to be stored.
+ * @param password the user password/pin.
+ * @returns storage status (true if storage was successful).
+ */
+export async function storeEncryptedPrivateKey(
+  privateKey: string,
+  password: string,
+) {
+  let result: Result = await storeEncryptedItem(
+    privateKey,
+    password,
+    KeyChainKeys.PRIVATE_KEY_STORAGE_KEY,
+  );
+  console.log('================>', result);
+  return result;
 }

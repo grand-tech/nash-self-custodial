@@ -11,9 +11,13 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
+import {useDispatch} from 'react-redux';
+import {createNewAccountAction} from '../../onboarding/redux_store/actions';
 
 const ConfirmPinScreen = () => {
   const route = useRoute();
+  const dispatch = useDispatch();
+
   const pin: string = route.params?.pin ?? '';
 
   const navigation = useNavigation();
@@ -68,12 +72,13 @@ const ConfirmPinScreen = () => {
         }
       }
 
-      if (currentIndex == 5) {
+      if (currentIndex === 5) {
         let p = newPinArray.toString().replaceAll(',', '');
         if (p === pin) {
           // set up recovery phrase.
-          navigation.navigate('SetUpRecoveryPhrase');
-          console.log('start navigation', currentIndex);
+          // navigation.navigate('SetUpRecoveryPhrase');
+          console.log('run dispatch');
+          dispatch(createNewAccountAction(pin));
         } else {
           console.log('Pin Error', currentIndex);
           setPinError('PIN did not match!!!');

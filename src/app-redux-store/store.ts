@@ -12,7 +12,7 @@ import {
 } from 'redux-persist';
 import {rootReducer} from './reducers';
 import createSagaMiddleware from 'redux-saga';
-import {rootSaga} from '../features/counter/saga';
+import {rootSaga} from './saga';
 
 /**
  * Create redux persist configurations object.
