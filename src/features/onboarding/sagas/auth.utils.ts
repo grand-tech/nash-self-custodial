@@ -73,8 +73,11 @@ export async function generateNewMnemonic(): Promise<string> {
  * @returns the private key.
  */
 export async function createNewAccountWithMnemonic() {
+  console.log('creating mnemonic', Date());
   const mnemonic = await generateNewMnemonic();
+  console.log('generating account from mnemonic', Date());
   const keys = await getAccountFromMnemonic(mnemonic);
+  console.log('generated keys', Date());
   const accountInfo: AccountInformation = {
     mnemonic: mnemonic,
     privateKey: keys.privateKey,

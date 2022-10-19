@@ -1,0 +1,94 @@
+import {ActionAdoptedNewAccount, ActionAdoptNewAccount} from './actions';
+import {
+  ActionChooseCreateNewAccount,
+  ActionChooseRestoreExistingAccount,
+  ActionCreateNewAccount,
+  Actions,
+  ActionSelectedLanguage,
+  ActionSetUserName,
+} from './actions';
+
+/**
+ * Generates select language action.
+ * @param language the selected language action.
+ * @returns the select language action.
+ */
+export function selectLanguage(language: string): ActionSelectedLanguage {
+  return {
+    type: Actions.SELECTED_LANGUAGE,
+    language: language,
+  };
+}
+
+/**
+ * Generates choose new account action.
+ * @returns choose create new account action.
+ */
+export function chooseCreateNewAccount(): ActionChooseCreateNewAccount {
+  return {
+    type: Actions.CHOOSE_CREATE_NEW_ACCOUNT,
+  };
+}
+
+/**
+ * Set user name action.
+ * @param userName the user name.
+ * @returns set user name action.
+ */
+export function setUserName(userName: string): ActionSetUserName {
+  return {
+    type: Actions.SET_USER_NAME,
+    userName: userName,
+  };
+}
+
+/**
+ * Generates restore existing account action
+ * @returns choose restore existing account actions.
+ */
+export function chooseRestoreExistingAccount(): ActionChooseRestoreExistingAccount {
+  return {
+    type: Actions.CHOOSE_RESTORE_EXISTING_ACCOUNT,
+  };
+}
+
+/**
+ * Generates create new account action.
+ * @returns create new account action.
+ */
+export function createNewAccountAction(): ActionCreateNewAccount {
+  return {
+    type: Actions.CREATE_NEW_ACCOUNT,
+  };
+}
+
+/**
+ * Generates created new account action.
+ * @param address the users public address.
+ * @param publicKey the users public key.
+ * @returns created new account action obj.
+ */
+export function generateActionAdoptedNewAccount(
+  address: string,
+  publicKey: string,
+): ActionAdoptedNewAccount {
+  return {
+    type: Actions.ADOPTED_NEW_ACCOUNT,
+    publicAddress: address,
+    publicKey: publicKey,
+  };
+}
+
+/**
+ * Generates created new account action.
+ * @param pin the users pin number.
+ * @returns adopt new account action obj.
+ */
+export function generateActionAdoptNewAccount(
+  pin: string,
+): ActionAdoptNewAccount {
+  return {
+    type: Actions.ADOPT_NEW_ACCOUNT,
+    pin: pin,
+  };
+}

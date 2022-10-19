@@ -13,9 +13,10 @@ import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
 import {useAppDispatch} from '../../../hooks';
 import {
-  chooseRestoreExistingAccount,
   chooseCreateNewAccount,
-} from '../redux_store/actions';
+  chooseRestoreExistingAccount,
+  createNewAccountAction,
+} from '../redux_store/action.generators';
 
 /**
  * Create account screen props.
@@ -67,6 +68,7 @@ const CreateAccountScreen = () => {
             }}
             onPress={() => {
               dispatch(chooseCreateNewAccount());
+              dispatch(createNewAccountAction());
               navigation.navigate('TermsAndConditions');
             }}
           />

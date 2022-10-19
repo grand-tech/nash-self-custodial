@@ -19,7 +19,7 @@ import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
 import {useNavigation} from '@react-navigation/native';
 import {useAppDispatch} from '../../../hooks/index';
-import {setUserName} from '../redux_store/actions';
+import {setUserName} from '../redux_store/action.generators';
 
 /**
  * Create account screen props.

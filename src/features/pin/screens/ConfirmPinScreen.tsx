@@ -12,10 +12,10 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
 import {connect, useDispatch} from 'react-redux';
-import {createNewAccountAction} from '../../onboarding/redux_store/actions';
 import {RootState} from '../../../app-redux-store/store';
 import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
 import LoadingModalComponent from '../../onboarding/components/LoadingModalComponent';
+import {generateActionAdoptNewAccount} from '../../onboarding/redux_store/action.generators';
 
 interface ConfirmPinScreenProps {
   onboarding_status_name: OnboardingStatusNames;
@@ -43,7 +43,7 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
     // set up recovery phrase.
     // navigation.navigate('SetUpRecoveryPhrase');
     console.log('run dispatch');
-    dispatch(createNewAccountAction(pin));
+    dispatch(generateActionAdoptNewAccount(pin));
   };
 
   const onDelete = () => {

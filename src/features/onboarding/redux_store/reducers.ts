@@ -57,7 +57,7 @@ export const onBoardingReducer = (
         ...state,
         language: action.language,
       };
-    case Actions.CREATED_NEW_ACCOUNT:
+    case Actions.ADOPTED_NEW_ACCOUNT:
       return {
         ...state,
         publicAddress: action.publicAddress,
@@ -75,14 +75,14 @@ export const onBoardingReducer = (
           error: undefined,
         },
       };
-    case Actions.CREATE_NEW_ACCOUNT:
-      return {
-        ...state,
-        status: {
-          name: OnboardingStatusNames.creating_new_account,
-          error: undefined,
-        },
-      };
+    // case Actions.CREATE_NEW_ACCOUNT:
+    //   return {
+    //     ...state,
+    //     status: {
+    //       name: OnboardingStatusNames.creating_new_account,
+    //       error: undefined,
+    //     },
+    //   };
     case Actions.CHOOSE_RESTORE_EXISTING_ACCOUNT:
       return {
         ...state,
