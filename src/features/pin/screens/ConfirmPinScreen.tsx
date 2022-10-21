@@ -20,6 +20,8 @@ import {
   generateActionSetLoading,
   generateActionSetNormal,
 } from '../../ui_state_manager/action.generators';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -37,7 +39,6 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
   const [pinCharArray, setPinTextArray] = useState(initPin);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  // const [showProgressModal, setShowProgressModal] = useState(false);
 
   /**
    * What happens when the pin numbers match.
@@ -260,6 +261,10 @@ const mapDispatchToProps = {
   dispatchActionSetNormal: generateActionSetNormal,
 };
 
-type Props = DispatchProps & StateProps;
+type StackProps = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'ConfirmPin'
+>;
+type Props = DispatchProps & StateProps & StackProps;
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfirmPinScreen);

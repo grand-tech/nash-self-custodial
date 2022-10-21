@@ -23,7 +23,7 @@ import {
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
-import {headerWithDeleteButton} from '../navigation.stack';
+import {headerWithDeleteButton} from '../navigation/navigation.stack';
 import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
 

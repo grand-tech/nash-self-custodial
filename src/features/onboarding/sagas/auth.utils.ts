@@ -12,6 +12,7 @@ import {AccountInformation} from './interfaces';
 import {
   storeEncryptedItem,
   KeyChainKeys,
+  getEncryptedItem,
 } from '../../../utils/session.key.storage.utils';
 import {Result} from 'react-native-keychain';
 
@@ -155,4 +156,17 @@ export async function storeEncryptedPrivateKey(
     KeyChainKeys.PRIVATE_KEY_STORAGE_KEY,
   );
   return result;
+}
+
+/**
+ * Retrieves the mnemonic stored in keychain.
+ * @param pin the encryption password.
+ * @returns the decrypted mnemonic stored.
+ */
+export async function getStoredMnemonic(pin: string) {
+  let mnemonic: string | null = await getEncryptedItem(
+    KeyChainKeys.MNEMONIC_STORAGE_KEY,
+    pin,
+  );
+  return mnemonic;
 }

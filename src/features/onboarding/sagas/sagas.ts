@@ -2,16 +2,23 @@ import {call, put, spawn, takeLatest} from 'redux-saga/effects';
 import {
   generateNewMnemonic,
   getAccountFromMnemonic,
+  getStoredMnemonic,
   storeEncryptedMnemonic,
   storeEncryptedPrivateKey,
 } from './auth.utils';
 import {AccountInformation} from './interfaces';
-import {Actions, ActionCreateNewAccount} from '../redux_store/actions';
+import {
+  Actions,
+  ActionCreateNewAccount,
+  ActionConfirmSeedPhrase,
+} from '../redux_store/actions';
 import {NashCache} from '../../../utils/cache';
+import {navigate} from '../../../navigation/navigation.service';
 import {
   generateActionAdoptedNewAccount,
-  generateActionCompletedOnboarding,
+  generateActionConfirmedSeedPhrase,
 } from '../redux_store/action.generators';
+import {isMnemonicValid} from './auth.utils';
 import {
   generateActionSetNormal,
   generateActionSetLoading,
@@ -44,9 +51,35 @@ function* createAccount(action: ActionCreateNewAccount) {
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
     yield put(generateActionSetNormal());
-    yield put(generateActionCompletedOnboarding());
+    navigate('SetUpSeedPhraseInstructions');
+    // figure out what to do with this after adding attestation and comment encryption.
+    // yield put(generateActionCompletedOnboarding());
   } catch (error) {
     yield put(generateActionSetError(error, 'Failed to create account'));
+  }
+}
+
+/**
+ * Logic to validate and verify that seed phrase has been backed up
+ * @param action instance of confirm seed phrase action.
+ */
+export function* confirmSeedPhrase(action: ActionConfirmSeedPhrase) {
+  const pin = NashCache.getPinCache() ?? '';
+  const seedPhrase: string = yield call(getStoredMnemonic, pin);
+
+  if (seedPhrase === null) {
+    yield put(
+      generateActionSetError(
+        null,
+        'Your device does not have custody of any account!!',
+      ),
+    );
+  } else if (isMnemonicValid(action.seedPhrase)) {
+    yield put(generateActionSetError(null, 'Invalid mnemonic!'));
+  } else if (seedPhrase === action.seedPhrase) {
+    yield put(generateActionConfirmedSeedPhrase());
+  } else {
+    yield put(generateActionSetError(null, 'Mnemonic values did not match!'));
   }
 }
 

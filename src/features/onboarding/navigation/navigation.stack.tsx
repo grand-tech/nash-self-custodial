@@ -1,19 +1,19 @@
 import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
-import CreateAccountScreen from './screens/CreateAccountScreen';
-import StartScreen from './screens/StartScreen';
-import TermsAndConditions from './screens/TermsAndConditions';
-import EnterUserNameScreen from './screens/EnterUserNameScreen';
-import CreatePinScreen from '../pin/screens/CreatePinScreen';
-import ConfirmPinScreen from '../pin/screens/ConfirmPinScreen';
-import SetUpRecoveryPhrase from './screens/SetUpRecoveryPhrase';
-import SetUpSeedPhraseInstructions from './screens/SetUpSeedPhraseInstructions';
-import EnterPinScreen from '../pin/screens/EnterPinScreen';
-import WriteDownRecoveryPhraseScreen from './screens/WriteDownRecoveryPhraseScreen';
-import ConfirmRecoveryPhraseScreen from './screens/ConfirmRecoveryPhraseScreen';
-import RestoreAccountScreen from './screens/RestoreAccountScreen';
-import {RootStack} from '../../navigation/root.navigation.stack';
+import CreateAccountScreen from '../screens/CreateAccountScreen';
+import StartScreen from '../screens/StartScreen';
+import TermsAndConditions from '../screens/TermsAndConditions';
+import EnterUserNameScreen from '../screens/EnterUserNameScreen';
+import CreatePinScreen from '../../pin/screens/CreatePinScreen';
+import ConfirmPinScreen from '../../pin/screens/ConfirmPinScreen';
+import SetUpRecoveryPhrase from '../screens/SetUpRecoveryPhrase';
+import SetUpSeedPhraseInstructions from '../screens/SetUpSeedPhraseInstructions';
+import EnterPinScreen from '../../pin/screens/EnterPinScreen';
+import WriteDownRecoveryPhraseScreen from '../screens/WriteDownRecoveryPhraseScreen';
+import ConfirmRecoveryPhraseScreen from '../screens/ConfirmRecoveryPhraseScreen';
+import RestoreAccountScreen from '../screens/RestoreAccountScreen';
+import {RootStack} from '../../../navigation/root.navigation.stack';
 import React from 'react';
-import {BackButton, DeleteButton} from '../../navigation/navigation.utils';
+import {BackButton, DeleteButton} from '../../../navigation/navigation.utils';
 
 /**
  * Hides the header.
