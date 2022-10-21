@@ -32,7 +32,7 @@ const SetUpSeedPhraseInstructions = () => {
       //navigate to next screen.
 
       let pin: string | null = NashCache.getPinCache();
-      if (pin !== null) {
+      if (pin === null) {
         let mnemonic = await getStoredMnemonic(pin);
         navigation.navigate('WriteDownRecoveryPhraseScreen', {
           mnemonic: mnemonic,
@@ -40,6 +40,7 @@ const SetUpSeedPhraseInstructions = () => {
       } else {
         navigation.navigate('EnterPinScreen', {
           nextRoute: 'WriteDownRecoveryPhraseScreen',
+          target: 'mnemonic',
         });
       }
     } else {

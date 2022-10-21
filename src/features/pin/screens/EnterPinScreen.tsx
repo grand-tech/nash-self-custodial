@@ -11,6 +11,7 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Chip} from 'react-native-ui-lib';
 import {getStoredMnemonic, getStoredPrivateKey} from '../../onboarding/utils';
+import {addPinChar, deletePinChar} from '../utils';
 
 const EnterPinScreen = () => {
   const route = useRoute();
@@ -18,59 +19,29 @@ const EnterPinScreen = () => {
   const target: string = route.params?.target ?? 'privateKey';
 
   const navigation = useNavigation();
-  const initPin = ['', '', '', '', '', ''];
   const [pinError, setPinError] = React.useState('');
 
-  const [pinCharArray, setPinTextArray] = useState(initPin);
+  const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const onDelete = () => {
-    if (currentIndex > 0) {
-      let newPinArray = initPin;
-
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex == index) {
-          newPinArray[index] = '';
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
-        let newCurrentIndex = currentIndex - 1;
-        setCurrentIndex(newCurrentIndex);
-        setPinTextArray(newPinArray);
-      }
-    } else {
-      setCurrentIndex(0);
-      setPinTextArray(initPin);
-    }
+    const updates = deletePinChar(currentIndex, pinCharArray);
+    setCurrentIndex(updates.currentIndex);
+    setPinTextArray(updates.pinArray);
   };
 
   const onChange = async (pinChar: string) => {
     setPinError('');
-    if (
-      currentIndex < pinCharArray.length &&
-      pinCharArray[currentIndex] === ''
-    ) {
-      let newPinArray = initPin;
+    const updates = addPinChar(pinChar, currentIndex, pinCharArray);
 
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex === index) {
-          newPinArray[index] = pinChar;
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
+    setPinTextArray(updates.pinArray);
+    setCurrentIndex(updates.currentIndex);
 
-        setPinTextArray(newPinArray);
-
-        if (currentIndex < pinCharArray.length - 1) {
-          // Limit the max index to the number of characters expected.
-          let newCurrentIndex = currentIndex + 1;
-          setCurrentIndex(newCurrentIndex);
-        } else {
-          let p = newPinArray.toString().replaceAll(',', '');
-          await handlePinValidation(p);
-        }
-      }
+    if (currentIndex === pinCharArray.length - 1) {
+      // validate pin and navigate to next screen
+      let p = updates.pinArray.toString().replaceAll(',', '');
+      await handlePinValidation(p);
     }
   };
 
@@ -86,21 +57,18 @@ const EnterPinScreen = () => {
       retrievedItem = await getStoredPrivateKey(pin);
     }
 
-    if (retrievedItem !== null) {
-      console.log('failed ========>', retrievedItem);
+    if (retrievedItem === null) {
       setPinError('Invalid PIN!!!');
       setCurrentIndex(0);
       setPinTextArray(['', '', '', '', '', '']);
     } else {
-      console.log('failed ========>', retrievedItem);
-      // navigation.navigate(nextRoute);
+      if (target === 'mnemonic') {
+        navigation.navigate(nextRoute, {mnemonic: retrievedItem});
+      } else {
+        navigation.navigate(nextRoute, {privateKey: retrievedItem});
+      }
     }
   };
-
-  useEffect(() => {
-    setPinTextArray(initPin);
-    setCurrentIndex(0);
-  }, []);
 
   useLayoutEffect(() => {
     const headerConfigs = {
