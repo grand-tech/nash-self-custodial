@@ -10,7 +10,7 @@ import {
 import {Button, Switch, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
 
 /**
@@ -18,9 +18,9 @@ import Clipboard from '@react-native-clipboard/clipboard';
  */
 const WriteDownRecoveryPhraseScreen = () => {
   const navigation = useNavigation();
-  const [seedPhrase, setSeedPhrase] = useState(
-    'Horse  giraffe  dog money  book  fire  drink cup  phone  car  jacket computer  wire  charger curtain  router  window  plate  floor  key  wine glass  oak  watch',
-  );
+  const route = useRoute();
+  const mnemonic = route?.params?.mnemonic;
+  const [seedPhrase, setSeedPhrase] = useState(mnemonic);
   const [writtenDownSeedPhrase, setWrittenDownSeedPhrase] = useState(false);
 
   const copySeedPhraseToClipBoard = () => {

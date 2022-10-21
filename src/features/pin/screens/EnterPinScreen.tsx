@@ -10,10 +10,12 @@ import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Chip} from 'react-native-ui-lib';
+import {getStoredMnemonic, getStoredPrivateKey} from '../../onboarding/utils';
 
 const EnterPinScreen = () => {
   const route = useRoute();
   const nextRoute: string = route.params?.nextRoute ?? '';
+  const target: string = route.params?.target ?? 'privateKey';
 
   const navigation = useNavigation();
   const initPin = ['', '', '', '', '', ''];
@@ -43,7 +45,7 @@ const EnterPinScreen = () => {
     }
   };
 
-  const onChange = (pinChar: string) => {
+  const onChange = async (pinChar: string) => {
     setPinError('');
     if (
       currentIndex < pinCharArray.length &&
@@ -66,16 +68,32 @@ const EnterPinScreen = () => {
           setCurrentIndex(newCurrentIndex);
         } else {
           let p = newPinArray.toString().replaceAll(',', '');
-          // if (p === pin) {
-          // set up recovery phrase.
-          navigation.navigate(nextRoute);
-          // } else {
-          //   setPinError('PIN did not match!!!');
-          //   setCurrentIndex(0);
-          //   setPinTextArray(['', '', '', '', '', '']);
-          // }
+          await handlePinValidation(p);
         }
       }
+    }
+  };
+
+  /**
+   * Decrypts the target item for use if the user enters the correct PIN.
+   * @param pin the pin number used as the encryption key.
+   */
+  const handlePinValidation = async (pin: string) => {
+    let retrievedItem: string | null;
+    if (target === 'mnemonic') {
+      retrievedItem = await getStoredMnemonic(pin);
+    } else {
+      retrievedItem = await getStoredPrivateKey(pin);
+    }
+
+    if (retrievedItem !== null) {
+      console.log('failed ========>', retrievedItem);
+      setPinError('Invalid PIN!!!');
+      setCurrentIndex(0);
+      setPinTextArray(['', '', '', '', '', '']);
+    } else {
+      console.log('failed ========>', retrievedItem);
+      // navigation.navigate(nextRoute);
     }
   };
 
