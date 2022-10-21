@@ -22,6 +22,7 @@ const persistConfig = {
   vsrsion: 1,
   keyPrefix: '',
   storage: FSStorage(),
+  blacklist: ['ui_state'],
 };
 
 /**

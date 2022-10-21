@@ -15,17 +15,16 @@ import {useAppDispatch} from '../../../hooks';
 import {
   chooseCreateNewAccount,
   chooseRestoreExistingAccount,
-  createNewAccountAction,
 } from '../redux_store/action.generators';
 
-/**
- * Create account screen props.
- * @typedef {Object} CreateAccountScreenProps properties expected by the create account component.
- * @property { string} onboarding_status the components to be rendered on the constructed screen.
- */
-interface CreateAccountScreenProps {
-  onboarding_status: string;
-}
+// /**
+//  * Create account screen props.
+//  * @typedef {Object} CreateAccountScreenProps properties expected by the create account component.
+//  * @property { string} onboarding_status the components to be rendered on the constructed screen.
+//  */
+// interface CreateAccountScreenProps {
+//   onboarding_status: string;
+// }
 
 /**
  * Contains the onboarding UI.
@@ -68,7 +67,6 @@ const CreateAccountScreen = () => {
             }}
             onPress={() => {
               dispatch(chooseCreateNewAccount());
-              dispatch(createNewAccountAction());
               navigation.navigate('TermsAndConditions');
             }}
           />

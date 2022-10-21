@@ -11,19 +11,22 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
-import {connect, useDispatch} from 'react-redux';
+import {connect} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
 import LoadingModalComponent from '../../onboarding/components/LoadingModalComponent';
-import {generateActionAdoptNewAccount} from '../../onboarding/redux_store/action.generators';
+import {createNewAccountAction} from '../../onboarding/redux_store/action.generators';
+import {
+  generateActionSetLoading,
+  generateActionSetNormal,
+} from '../../ui_state_manager/action.generators';
 
-interface ConfirmPinScreenProps {
-  onboarding_status_name: OnboardingStatusNames;
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
+const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
   const route = useRoute();
-  const dispatch = useDispatch();
 
   const pin: string = route.params?.pin ?? '';
 
@@ -34,16 +37,15 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
   const [pinCharArray, setPinTextArray] = useState(initPin);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showProgressModal, setShowProgressModal] = useState(false);
+  // const [showProgressModal, setShowProgressModal] = useState(false);
 
   /**
    * What happens when the pin numbers match.
    */
-  const onPinMatched = () => {
-    // set up recovery phrase.
-    // navigation.navigate('SetUpRecoveryPhrase');
-    console.log('run dispatch');
-    dispatch(generateActionAdoptNewAccount(pin));
+  const onPinMatched = async () => {
+    props.dispatchActionSetLoading('Creating account', '');
+    await delay(500);
+    props.dispatchActionCreateNewAccount(pin);
   };
 
   const onDelete = () => {
@@ -93,9 +95,8 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
       if (currentIndex === 5) {
         let p = newPinArray.toString().replaceAll(',', '');
         if (p === pin) {
-          onPinMatched(pin);
+          onPinMatched();
         } else {
-          console.log('Pin Error', currentIndex);
           setPinError('PIN did not match!!!');
           setCurrentIndex(0);
           setPinTextArray(['', '', '', '', '', '']);
@@ -105,8 +106,12 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
   };
 
   useEffect(() => {
+    props.dispatchActionSetNormal();
     setPinTextArray(initPin);
     setCurrentIndex(0);
+    return () => {
+      props.dispatchActionSetNormal();
+    };
   }, []);
 
   useLayoutEffect(() => {
@@ -162,13 +167,7 @@ const ConfirmPinScreen = (props: ConfirmPinScreenProps) => {
         <PinKeyPad onChange={onChange} onDelete={onDelete} />
       </View>
 
-      <LoadingModalComponent
-        visible={
-          props.onboarding_status_name ===
-          OnboardingStatusNames.creating_new_account
-        }
-        message={'Creating account'}
-      />
+      <LoadingModalComponent visible={props.ui_screen_status === 'loading'} />
     </Screen>
   );
 };
@@ -227,10 +226,40 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * Contains list of expected state props to monitor.
+ * @typedef { object } ConfirmPinScreenProps
+ * @property { OnboardingStatusNames } onboarding_status onboarding status.
+ * @property { string } ui_screen_status the status of the screen
+ */
+interface StateProps {
+  onboarding_status: OnboardingStatusNames;
+  ui_screen_status: string;
+}
+
 const mapStateToProps = (state: RootState) => ({
-  onboarding_status_name: state.onboarding.status.name,
+  onboarding_status: state.onboarding.status.name,
+  ui_screen_status: state.ui_state.status,
 });
 
-const mapDispatchToProps = {};
+/**
+ * Contains list of expected state props to monitor.
+ * @typedef { object } ConfirmPinScreenProps
+ * @property { OnboardingStatusNames } onboarding_status onboarding status.
+ * @property { string } ui_screen_status the status of the screen
+ */
+interface DispatchProps {
+  dispatchActionSetLoading: typeof generateActionSetLoading;
+  dispatchActionCreateNewAccount: typeof createNewAccountAction;
+  dispatchActionSetNormal: typeof generateActionSetNormal;
+}
+
+const mapDispatchToProps = {
+  dispatchActionSetLoading: generateActionSetLoading,
+  dispatchActionCreateNewAccount: createNewAccountAction,
+  dispatchActionSetNormal: generateActionSetNormal,
+};
+
+type Props = DispatchProps & StateProps;
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfirmPinScreen);

@@ -7,5 +7,5 @@ import {uiStateReducer} from '../features/ui_state_manager/reducers';
  */
 export const rootReducer = combineReducers({
   onboarding: onBoardingReducer,
-  uiStateReducer: uiStateReducer,
+  ui_state: uiStateReducer,
 });

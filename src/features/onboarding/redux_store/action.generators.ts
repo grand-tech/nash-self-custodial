@@ -1,4 +1,4 @@
-import {ActionAdoptedNewAccount, ActionAdoptNewAccount} from './actions';
+import {ActionAdoptNewAccount, ActionCreatedNewAccount} from './actions';
 import {
   ActionChooseCreateNewAccount,
   ActionChooseRestoreExistingAccount,
@@ -54,11 +54,13 @@ export function chooseRestoreExistingAccount(): ActionChooseRestoreExistingAccou
 
 /**
  * Generates create new account action.
+ * @param pin the users pin number.
  * @returns create new account action.
  */
-export function createNewAccountAction(): ActionCreateNewAccount {
+export function createNewAccountAction(pin: string): ActionCreateNewAccount {
   return {
     type: Actions.CREATE_NEW_ACCOUNT,
+    pin: pin,
   };
 }
 
@@ -71,9 +73,9 @@ export function createNewAccountAction(): ActionCreateNewAccount {
 export function generateActionAdoptedNewAccount(
   address: string,
   publicKey: string,
-): ActionAdoptedNewAccount {
+): ActionCreatedNewAccount {
   return {
-    type: Actions.ADOPTED_NEW_ACCOUNT,
+    type: Actions.CREATED_NEW_ACCOUNT,
     publicAddress: address,
     publicKey: publicKey,
   };

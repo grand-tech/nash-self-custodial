@@ -73,11 +73,8 @@ export async function generateNewMnemonic(): Promise<string> {
  * @returns the private key.
  */
 export async function createNewAccountWithMnemonic() {
-  console.log('creating mnemonic', Date());
   const mnemonic = await generateNewMnemonic();
-  console.log('generating account from mnemonic', Date());
   const keys = await getAccountFromMnemonic(mnemonic);
-  console.log('generated keys', Date());
   const accountInfo: AccountInformation = {
     mnemonic: mnemonic,
     privateKey: keys.privateKey,
@@ -106,9 +103,21 @@ export function isMnemonicValid(phrase: string) {
  * Creates an account given a mnemonic.
  * @param mnemonic the mnemonic string.
  */
-export function getAccountFromMnemonic(mnemonic: string) {
-  const keys = generateKeys(mnemonic, undefined, undefined, undefined, bip39);
-  return keys;
+export async function getAccountFromMnemonic(mnemonic: string) {
+  const keys = await generateKeys(
+    mnemonic,
+    undefined,
+    undefined,
+    undefined,
+    bip39,
+  );
+  const accountInfo: AccountInformation = {
+    mnemonic: mnemonic,
+    privateKey: keys.privateKey,
+    publicKey: keys.publicKey,
+    address: keys.address,
+  };
+  return accountInfo;
 }
 
 /**
@@ -126,7 +135,6 @@ export async function storeEncryptedMnemonic(
     password,
     KeyChainKeys.MNEMONIC_STORAGE_KEY,
   );
-  console.log('================>', result);
   return result;
 }
 
@@ -146,6 +154,5 @@ export async function storeEncryptedPrivateKey(
     password,
     KeyChainKeys.PRIVATE_KEY_STORAGE_KEY,
   );
-  console.log('================>', result);
   return result;
 }

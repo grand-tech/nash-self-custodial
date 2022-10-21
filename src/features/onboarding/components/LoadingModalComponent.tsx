@@ -7,16 +7,11 @@ import {
 } from 'react-native-responsive-screen';
 import {Incubator, PanningProvider, Text} from 'react-native-ui-lib';
 import {useEffect} from 'react';
+import {generateActionSetNormal} from '../../ui_state_manager/action.generators';
+import {RootState} from '../../../app-redux-store/store';
+import {connect, ConnectedProps} from 'react-redux';
 
-/**
- * Error dialog props.
- */
-interface LoadingDialogProps {
-  visible: boolean;
-  message: string;
-}
-
-const LoadingModalComponent = (props: LoadingDialogProps) => {
+const LoadingModalComponent: React.FC<Props> = (props: Props) => {
   const [errorModalVisibility, setErrorModalVisibility] = useState(false);
 
   useEffect(() => {
@@ -50,7 +45,7 @@ const LoadingModalComponent = (props: LoadingDialogProps) => {
           style={style.animation}
         />
         <Text style={style.dialogText} h2>
-          {props.message}
+          {props.title}
         </Text>
       </View>
     </Incubator.Dialog>
@@ -74,4 +69,24 @@ const style = StyleSheet.create({
   },
 });
 
-export default LoadingModalComponent;
+const mapStateToProps = (state: RootState) => ({
+  title: state.ui_state.title,
+  message: state.ui_state.message,
+});
+
+const mapDispatchToProps = {
+  dispatchActionSetNormal: generateActionSetNormal,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
+
+/**
+ * Error dialog props.
+ */
+interface Props extends ReduxProps {
+  visible: boolean;
+}
+
+export default connector(LoadingModalComponent);

@@ -30,10 +30,13 @@ export interface ActionChooseCreateNewAccount {
 
 export interface ActionCreateNewAccount {
   type: Actions.CREATE_NEW_ACCOUNT;
+  pin: string;
 }
 
 export interface ActionCreatedNewAccount {
   type: Actions.CREATED_NEW_ACCOUNT;
+  publicAddress: string;
+  publicKey: string;
 }
 
 export interface ActionSetUserName {

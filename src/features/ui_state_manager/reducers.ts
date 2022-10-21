@@ -6,8 +6,8 @@ import {ActionTypes} from './actions';
  * @typedef { object } UIScreenState state.
  * @property { string } status the screen status.
  * @property { any | null } error an error that has occurred.
- * @property { string } message the message to display on status display modal.
- * @property { string } title the tittle message.
+ * @property { string | null } message the message to display on status display modal.
+ * @property { string  | null} title the tittle message.
  * @property { number } last_updated the last time the status changed.
  */
 interface UIScreenState {

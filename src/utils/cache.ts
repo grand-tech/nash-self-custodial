@@ -66,9 +66,7 @@ export class NashCache {
       cacheExpiryTime: expiryTime,
       account: a,
     };
-    console.log('cache =====> ', NashCache.CACHE_LIFESPAN);
     NashCache.accountCache = cache;
-    console.log('cache =====> ', NashCache.accountCache);
   }
 
   /**

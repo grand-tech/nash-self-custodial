@@ -10,7 +10,6 @@ export function* incrementAsync(action: IncrementAsyncAction) {
   let _incrementAmount = action.amount;
   let _current: number = yield select(selectCount);
   const x: number = yield call(fetchCount, _current, _incrementAmount);
-  console.log('===========>', x);
   yield put(incrementCountAsyncComplete(x));
 }
 

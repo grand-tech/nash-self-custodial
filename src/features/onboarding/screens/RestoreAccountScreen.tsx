@@ -74,7 +74,6 @@ const RestoreAccountScreen = () => {
       navigation.navigate('EnterUserName');
     } else {
       setErrorDialogVisibility(true);
-      console.log(errorDialogVisible);
     }
   };
 
