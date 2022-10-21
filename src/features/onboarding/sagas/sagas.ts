@@ -8,7 +8,10 @@ import {
 import {AccountInformation} from './interfaces';
 import {Actions, ActionCreateNewAccount} from '../redux_store/actions';
 import {NashCache} from '../../../utils/cache';
-import {generateActionAdoptedNewAccount} from '../redux_store/action.generators';
+import {
+  generateActionAdoptedNewAccount,
+  generateActionCompletedOnboarding,
+} from '../redux_store/action.generators';
 import {
   generateActionSetNormal,
   generateActionSetLoading,
@@ -41,6 +44,7 @@ function* createAccount(action: ActionCreateNewAccount) {
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
     yield put(generateActionSetNormal());
+    yield put(generateActionCompletedOnboarding());
   } catch (error) {
     yield put(generateActionSetError(error, 'Failed to create account'));
   }

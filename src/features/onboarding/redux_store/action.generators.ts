@@ -1,4 +1,8 @@
-import {ActionAdoptNewAccount, ActionCreatedNewAccount} from './actions';
+import {
+  ActionAdoptNewAccount,
+  ActionCreatedNewAccount,
+  ActionCompletedOnboarding,
+} from './actions';
 import {
   ActionChooseCreateNewAccount,
   ActionChooseRestoreExistingAccount,
@@ -92,5 +96,15 @@ export function generateActionAdoptNewAccount(
   return {
     type: Actions.ADOPT_NEW_ACCOUNT,
     pin: pin,
+  };
+}
+
+/**
+ * Generates completed onboarding action.
+ * @returns completed onboarding action obj.
+ */
+export function generateActionCompletedOnboarding(): ActionCompletedOnboarding {
+  return {
+    type: Actions.COMPLETED_ONBOARDING,
   };
 }
