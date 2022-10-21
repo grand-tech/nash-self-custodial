@@ -18,7 +18,6 @@ import {
   Button,
   ChipsInputChipProps,
   Incubator,
-  PanningProvider,
   Text,
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
@@ -31,7 +30,7 @@ import ErrorModalComponent from '../components/ErrorModalComponent';
 /**
  * Contains the onboarding UI.
  */
-export const ConfirmRecoveryPhraseScreen = () => {
+const ConfirmRecoveryPhraseScreen = () => {
   const navigation = useNavigation();
 
   //   TODO: logic to fetch recovery phrase/pass it from navigation params

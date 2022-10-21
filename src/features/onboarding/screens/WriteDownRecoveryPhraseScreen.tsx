@@ -16,7 +16,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 /**
  * Contains the onboarding UI.
  */
-export const WriteDownRecoveryPhraseScreen = () => {
+const WriteDownRecoveryPhraseScreen = () => {
   const navigation = useNavigation();
   const [seedPhrase, setSeedPhrase] = useState(
     'Horse  giraffe  dog money  book  fire  drink cup  phone  car  jacket computer  wire  charger curtain  router  window  plate  floor  key  wine glass  oak  watch',

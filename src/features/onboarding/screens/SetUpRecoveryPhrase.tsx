@@ -15,7 +15,7 @@ import {useNavigation} from '@react-navigation/native';
 /**
  * Contains the onboarding UI.
  */
-export const SetUpRecoveryPhrase: React.FC = () => {
+const SetUpRecoveryPhrase: React.FC = () => {
   const navigation = useNavigation();
 
   return (

@@ -18,7 +18,7 @@ import {Button} from 'react-native-ui-lib';
 /**
  * Contains the onboarding UI.
  */
-export const SetUpSeedPhraseInstructions = () => {
+const SetUpSeedPhraseInstructions = () => {
   const isCarousel = React.useRef<ICarouselInstance>(null);
   const maxIndex = seedPhraseInstructions.length - 1;
   const navigation = useNavigation();

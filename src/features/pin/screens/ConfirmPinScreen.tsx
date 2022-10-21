@@ -11,9 +11,23 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
+import {connect} from 'react-redux';
+import {RootState} from '../../../app-redux-store/store';
+import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
+import LoadingModalComponent from '../../onboarding/components/LoadingModalComponent';
+import {createNewAccountAction} from '../../onboarding/redux_store/action.generators';
+import {
+  generateActionSetLoading,
+  generateActionSetNormal,
+} from '../../ui_state_manager/action.generators';
 
-const ConfirmPinScreen = () => {
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
   const route = useRoute();
+
   const pin: string = route.params?.pin ?? '';
 
   const navigation = useNavigation();
@@ -23,6 +37,16 @@ const ConfirmPinScreen = () => {
   const [pinCharArray, setPinTextArray] = useState(initPin);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  // const [showProgressModal, setShowProgressModal] = useState(false);
+
+  /**
+   * What happens when the pin numbers match.
+   */
+  const onPinMatched = async () => {
+    props.dispatchActionSetLoading('Creating account', '');
+    await delay(500);
+    props.dispatchActionCreateNewAccount(pin);
+  };
 
   const onDelete = () => {
     if (currentIndex > 0) {
@@ -68,14 +92,11 @@ const ConfirmPinScreen = () => {
         }
       }
 
-      if (currentIndex == 5) {
+      if (currentIndex === 5) {
         let p = newPinArray.toString().replaceAll(',', '');
         if (p === pin) {
-          // set up recovery phrase.
-          navigation.navigate('SetUpRecoveryPhrase');
-          console.log('start navigation', currentIndex);
+          onPinMatched();
         } else {
-          console.log('Pin Error', currentIndex);
           setPinError('PIN did not match!!!');
           setCurrentIndex(0);
           setPinTextArray(['', '', '', '', '', '']);
@@ -85,8 +106,12 @@ const ConfirmPinScreen = () => {
   };
 
   useEffect(() => {
+    props.dispatchActionSetNormal();
     setPinTextArray(initPin);
     setCurrentIndex(0);
+    return () => {
+      props.dispatchActionSetNormal();
+    };
   }, []);
 
   useLayoutEffect(() => {
@@ -141,6 +166,8 @@ const ConfirmPinScreen = () => {
         {/* onChange={handleChange} onDelete={onDelete} */}
         <PinKeyPad onChange={onChange} onDelete={onDelete} />
       </View>
+
+      <LoadingModalComponent visible={props.ui_screen_status === 'loading'} />
     </Screen>
   );
 };
@@ -199,4 +226,40 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfirmPinScreen;
+/**
+ * Contains list of expected state props to monitor.
+ * @typedef { object } ConfirmPinScreenProps
+ * @property { OnboardingStatusNames } onboarding_status onboarding status.
+ * @property { string } ui_screen_status the status of the screen
+ */
+interface StateProps {
+  onboarding_status: OnboardingStatusNames;
+  ui_screen_status: string;
+}
+
+const mapStateToProps = (state: RootState) => ({
+  onboarding_status: state.onboarding.status.name,
+  ui_screen_status: state.ui_state.status,
+});
+
+/**
+ * Contains list of expected state props to monitor.
+ * @typedef { object } ConfirmPinScreenProps
+ * @property { OnboardingStatusNames } onboarding_status onboarding status.
+ * @property { string } ui_screen_status the status of the screen
+ */
+interface DispatchProps {
+  dispatchActionSetLoading: typeof generateActionSetLoading;
+  dispatchActionCreateNewAccount: typeof createNewAccountAction;
+  dispatchActionSetNormal: typeof generateActionSetNormal;
+}
+
+const mapDispatchToProps = {
+  dispatchActionSetLoading: generateActionSetLoading,
+  dispatchActionCreateNewAccount: createNewAccountAction,
+  dispatchActionSetNormal: generateActionSetNormal,
+};
+
+type Props = DispatchProps & StateProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmPinScreen);

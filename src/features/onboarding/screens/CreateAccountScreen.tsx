@@ -11,12 +11,27 @@ import {Button, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
+import {useAppDispatch} from '../../../hooks';
+import {
+  chooseCreateNewAccount,
+  chooseRestoreExistingAccount,
+} from '../redux_store/action.generators';
+
+// /**
+//  * Create account screen props.
+//  * @typedef {Object} CreateAccountScreenProps properties expected by the create account component.
+//  * @property { string} onboarding_status the components to be rendered on the constructed screen.
+//  */
+// interface CreateAccountScreenProps {
+//   onboarding_status: string;
+// }
 
 /**
  * Contains the onboarding UI.
  */
-export const CreateAccountScreen = () => {
+const CreateAccountScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
   return (
     <Screen style={style.rootComponent}>
@@ -51,6 +66,7 @@ export const CreateAccountScreen = () => {
               ...FONTS.h4,
             }}
             onPress={() => {
+              dispatch(chooseCreateNewAccount());
               navigation.navigate('TermsAndConditions');
             }}
           />
@@ -65,6 +81,7 @@ export const CreateAccountScreen = () => {
               ...FONTS.h4,
             }}
             onPress={() => {
+              dispatch(chooseRestoreExistingAccount());
               navigation.navigate('RestoreAccount');
             }}
           />
@@ -80,7 +97,7 @@ export const CreateAccountScreen = () => {
  * @returns the props intended to be passed to the component from state variables.
  */
 const mapStateToProps = (state: RootState) => ({
-  onboarded: state.onboarding.status,
+  onboarding_status: state.onboarding.status,
 });
 
 const mapDispatchToProps = {};

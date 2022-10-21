@@ -1,15 +1,8 @@
-/* eslint-disable react/react-in-jsx-scope */
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationOptions,
-} from '@react-navigation/native-stack';
+import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
 import CreateAccountScreen from './screens/CreateAccountScreen';
 import StartScreen from './screens/StartScreen';
-import {AppColors} from '../../ui_lib_configs/colors';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Pressable} from 'react-native';
-import {TermsAndConditions} from './screens/TermsAndConditions';
-import {EnterUserNameScreen} from './screens/EnterUserNameScreen';
+import TermsAndConditions from './screens/TermsAndConditions';
+import EnterUserNameScreen from './screens/EnterUserNameScreen';
 import CreatePinScreen from '../pin/screens/CreatePinScreen';
 import ConfirmPinScreen from '../pin/screens/ConfirmPinScreen';
 import SetUpRecoveryPhrase from './screens/SetUpRecoveryPhrase';
@@ -17,18 +10,19 @@ import SetUpSeedPhraseInstructions from './screens/SetUpSeedPhraseInstructions';
 import EnterPinScreen from '../pin/screens/EnterPinScreen';
 import WriteDownRecoveryPhraseScreen from './screens/WriteDownRecoveryPhraseScreen';
 import ConfirmRecoveryPhraseScreen from './screens/ConfirmRecoveryPhraseScreen';
-import {RestoreAccountScreen} from './screens/RestoreAccountScreen';
-
-const Stack = createNativeStackNavigator();
+import RestoreAccountScreen from './screens/RestoreAccountScreen';
+import {RootStack} from '../../navigation/root.navigation.stack';
+import React from 'react';
+import {BackButton, DeleteButton} from '../../navigation/navigation.utils';
 
 /**
  * Hides the header.
  */
-const stackScreenHideHeader = {
+const RootStackScreenHideHeader = {
   headerShown: false,
 };
 
-export function stackScreenHideHeaderTitle(
+export function RootStackScreenHideHeaderTitle(
   onPress: any,
   title?: string,
 ): NativeStackNavigationOptions {
@@ -52,133 +46,90 @@ export function headerWithDeleteButton(
   };
 }
 
-// TODO https://reactnavigation.org/docs/typescript/
-export const OnBoardingStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Start"
-        component={StartScreen}
-        options={stackScreenHideHeader}
-      />
-      <Stack.Screen
-        name="SelectGenerateOrRestoreAccount"
-        component={CreateAccountScreen}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="TermsAndConditions"
-        component={TermsAndConditions}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="EnterUserName"
-        component={EnterUserNameScreen}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="CreatePin"
-        component={CreatePinScreen}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="ConfirmPin"
-        component={ConfirmPinScreen}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="SetUpRecoveryPhrase"
-        component={SetUpRecoveryPhrase}
-        options={stackScreenHideHeader}
-      />
-      <Stack.Screen
-        name="SetUpSeedPhraseInstructions"
-        component={SetUpSeedPhraseInstructions}
-        options={stackScreenHideHeader}
-      />
-      <Stack.Screen
-        name="EnterPinScreen"
-        component={EnterPinScreen}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="WriteDownRecoveryPhraseScreen"
-        component={WriteDownRecoveryPhraseScreen}
-        options={({navigation, route}) =>
-          stackScreenHideHeaderTitle(() => {
-            navigation.goBack();
-          })
-        }
-      />
-      <Stack.Screen
-        name="ConfirmRecoveryPhraseScreen"
-        component={ConfirmRecoveryPhraseScreen}
-      />
-      <Stack.Screen name="RestoreAccount" component={RestoreAccountScreen} />
-    </Stack.Navigator>
-  );
-};
-
-/**
- * Props expected by custom back button.
- */
-interface BackButtonProps {
-  onPress: any;
-}
-
-/**
- * Custom back button.
- */
-export const BackButton: React.FC<BackButtonProps> = props => {
-  return (
-    <Pressable
-      onPress={() => {
-        props.onPress();
-      }}>
-      <Icon name="chevron-left" size={30} color={AppColors.green} />
-    </Pressable>
-  );
-};
-
-/**
- * Custom delete button.
- */
-export const DeleteButton: React.FC<BackButtonProps> = props => {
-  return (
-    <Pressable
-      onPress={() => {
-        props.onPress();
-      }}>
-      <Icon
-        name="backspace"
-        size={24}
-        color={AppColors.green}
-        // style={styles.number}
-      />
-    </Pressable>
-  );
-};
+export const onboardingNavigationStack = (
+  <>
+    <RootStack.Screen
+      name="Start"
+      component={StartScreen}
+      options={RootStackScreenHideHeader}
+    />
+    <RootStack.Screen
+      name="SelectGenerateOrRestoreAccount"
+      component={CreateAccountScreen}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="TermsAndConditions"
+      component={TermsAndConditions}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="EnterUserName"
+      component={EnterUserNameScreen}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="CreatePin"
+      component={CreatePinScreen}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="ConfirmPin"
+      component={ConfirmPinScreen}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="SetUpRecoveryPhrase"
+      component={SetUpRecoveryPhrase}
+      options={RootStackScreenHideHeader}
+    />
+    <RootStack.Screen
+      name="SetUpSeedPhraseInstructions"
+      component={SetUpSeedPhraseInstructions}
+      options={RootStackScreenHideHeader}
+    />
+    <RootStack.Screen
+      name="EnterPinScreen"
+      component={EnterPinScreen}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="WriteDownRecoveryPhraseScreen"
+      component={WriteDownRecoveryPhraseScreen}
+      options={({navigation}) =>
+        RootStackScreenHideHeaderTitle(() => {
+          navigation.goBack();
+        })
+      }
+    />
+    <RootStack.Screen
+      name="ConfirmRecoveryPhraseScreen"
+      component={ConfirmRecoveryPhraseScreen}
+    />
+    <RootStack.Screen name="RestoreAccount" component={RestoreAccountScreen} />
+  </>
+);
