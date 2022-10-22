@@ -26,6 +26,7 @@ import {useNavigation} from '@react-navigation/native';
 import {headerWithDeleteButton} from '../navigation/navigation.stack';
 import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
+import {validateSeedPhraseInput} from '../../../utils/seed.phrase.validation.utils';
 
 /**
  * Contains the onboarding UI.
@@ -68,6 +69,21 @@ const ConfirmRecoveryPhraseScreen = () => {
     }
   };
 
+  /**
+   * Validates updated chips before committing the changes to the component state.
+   * @param newChips list of new chips after input.
+   */
+  const processInput = (newChips: ChipsInputChipProps[]) => {
+    const validatedChips = validateSeedPhraseInput(
+      initInputSeedPhrase,
+      newChips,
+    );
+
+    if (validatedChips.length > 0) {
+      setInputSeedPhrase(validatedChips);
+    }
+  };
+
   return (
     <Screen>
       <KeyboardAvoidingView
@@ -107,7 +123,7 @@ const ConfirmRecoveryPhraseScreen = () => {
                 defaultChipProps={{
                   labelStyle: {...FONTS.body1},
                 }}
-                onChange={newChips => setInputSeedPhrase(newChips)}
+                onChange={newChips => processInput(newChips)}
                 maxChips={24}
                 autoFocus={true}
                 autoCapitalize={'none'}
