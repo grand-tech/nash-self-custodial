@@ -16,6 +16,8 @@ export enum Actions {
 
   ADOPT_NEW_ACCOUNT = 'ONBOARDING/ADOPT_NEW_ACCOUNT',
   ADOPTED_NEW_ACCOUNT = 'ONBOARDING/ADOPTED_NEW_ACCOUNT',
+
+  LOG_OUT = 'ONBOARDING/LOG_OUT',
 }
 
 export interface ActionSelectedLanguage {
@@ -77,6 +79,10 @@ export interface ActionAdoptedNewAccount {
   publicAddress: string;
 }
 
+export interface ActionLogOut {
+  type: Actions.LOG_OUT;
+}
+
 /**
  * Create a generic action type.
  */
@@ -90,4 +96,5 @@ export type ActionTypes =
   | ActionAdoptNewAccount
   | ActionAdoptedNewAccount
   | ActionSetUserName
-  | ActionCreateNewAccount;
+  | ActionCreateNewAccount
+  | ActionLogOut;

@@ -13,6 +13,7 @@ import {
   storeEncryptedItem,
   KeyChainKeys,
   getEncryptedItem,
+  removeStoredItem,
 } from '../../../utils/session.key.storage.utils';
 import {Result} from 'react-native-keychain';
 
@@ -169,4 +170,12 @@ export async function getStoredMnemonic(pin: string) {
     pin,
   );
   return mnemonic;
+}
+
+/**
+ * Clears the stored user session.
+ */
+export async function clearSession() {
+  await removeStoredItem(KeyChainKeys.MNEMONIC_STORAGE_KEY);
+  await removeStoredItem(KeyChainKeys.PRIVATE_KEY_STORAGE_KEY);
 }

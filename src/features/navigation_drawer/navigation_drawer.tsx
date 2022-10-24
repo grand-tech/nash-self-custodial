@@ -1,7 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 import {Button, View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
+import {LogOutScreen} from '../onboarding/screens/LogOutScreen';
 
 function HomeScreen() {
   const navigation = useNavigation();
@@ -31,6 +32,7 @@ export const NavigationDrawer = () => {
     <Drawer.Navigator initialRouteName="Home">
       <Drawer.Screen name="Home" component={HomeScreen} />
       <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+      <Drawer.Screen name="Logout" component={LogOutScreen} />
     </Drawer.Navigator>
   );
 };

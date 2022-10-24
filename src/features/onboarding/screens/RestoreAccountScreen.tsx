@@ -95,7 +95,6 @@ const RestoreAccountScreen = (props: Props) => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
     // console.log('props', props);
     if (seedPhraseStr.trim() !== '') {
-      console.log('restoring account', props.route.params);
       props.dispatchSetLoading('Restoring account..', '');
       await delay(600);
       props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
