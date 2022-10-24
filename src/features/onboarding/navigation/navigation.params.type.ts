@@ -7,8 +7,8 @@ export type OnboardingNavigationStackParamsList = {
   ConfirmPin: {pin: string} | undefined;
   SetUpRecoveryPhrase: undefined;
   SetUpSeedPhraseInstructions: undefined;
-  EnterPinScreen: undefined;
-  WriteDownRecoveryPhraseScreen: undefined;
-  ConfirmRecoveryPhraseScreen: undefined;
+  EnterPinScreen: {target?: string; nextRoute: string};
+  WriteDownRecoveryPhraseScreen: {mnemonic: string};
+  ConfirmRecoveryPhraseScreen: {mnemonic: string};
   RestoreAccount: undefined;
 };

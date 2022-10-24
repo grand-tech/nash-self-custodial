@@ -56,7 +56,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="SelectGenerateOrRestoreAccount"
       component={CreateAccountScreen}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })
@@ -65,7 +65,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="TermsAndConditions"
       component={TermsAndConditions}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })
@@ -74,7 +74,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="EnterUserName"
       component={EnterUserNameScreen}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })
@@ -83,7 +83,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="CreatePin"
       component={CreatePinScreen}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })
@@ -92,7 +92,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="ConfirmPin"
       component={ConfirmPinScreen}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })
@@ -111,7 +111,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="EnterPinScreen"
       component={EnterPinScreen}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })
@@ -120,7 +120,7 @@ export const onboardingNavigationStack = (
     <RootStack.Screen
       name="WriteDownRecoveryPhraseScreen"
       component={WriteDownRecoveryPhraseScreen}
-      options={({navigation}) =>
+      options={({navigation, route}) =>
         RootStackScreenHideHeaderTitle(() => {
           navigation.goBack();
         })

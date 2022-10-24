@@ -1,5 +1,10 @@
 import {ChipsInputChipProps} from 'react-native-ui-lib';
 
+/**
+ * Validate keyed in seed phrase.
+ * @param inputSeedPhrase the committed seed phrase.
+ * @param newChips the new seed phrase to be validated.
+ */
 export function validateSeedPhraseInput(
   inputSeedPhrase: ChipsInputChipProps[],
   newChips: ChipsInputChipProps[],
@@ -49,3 +54,19 @@ export function validateSeedPhraseInput(
   }
   return validatedChips;
 }
+
+/**
+ * Construct seed phrase from user`s input.
+ * @returns constructed seed phrase from user input.
+ */
+export const constructSeedPhraseFromChipInputs = (
+  inputSeedPhrase: ChipsInputChipProps[],
+) => {
+  let inputSeedPhraseStr = '';
+  inputSeedPhrase.forEach((chip: ChipsInputChipProps) => {
+    let label: string = chip.label ?? '';
+    label = label.toLowerCase().trim();
+    inputSeedPhraseStr = inputSeedPhraseStr + ' ' + label;
+  });
+  return inputSeedPhraseStr.trim();
+};
