@@ -22,22 +22,26 @@ import {
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
 import {headerWithDeleteButton} from '../navigation/navigation.stack';
-import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
-import {validateSeedPhraseInput} from '../../../utils/seed.phrase.validation.utils';
+import {
+  constructSeedPhraseFromChipInputs,
+  validateSeedPhraseInput,
+} from '../../../utils/seed.phrase.validation.utils';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+
+type Props = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'ConfirmRecoveryPhraseScreen'
+>;
 
 /**
  * Contains the onboarding UI.
  */
-const ConfirmRecoveryPhraseScreen = () => {
-  const navigation = useNavigation();
+const ConfirmRecoveryPhraseScreen = ({route, navigation}: Props) => {
+  const seedPhrase = route.params.mnemonic;
 
-  //   TODO: logic to fetch recovery phrase/pass it from navigation params
-  const [seedPhrase, setSeedPhrase] = useState(
-    'horse giraffe dog money book fire drink cup phone car jacket computer wire charger curtain router window plate floor key wine glass oak watch',
-  );
   const initInputSeedPhrase: ChipsInputChipProps[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
@@ -55,14 +59,15 @@ const ConfirmRecoveryPhraseScreen = () => {
         },
       ),
     );
-  }, [navigation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * Confirm seed phrase button handler logic.
    */
   const confirmSeedPhraseBtnHandler = () => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-    if (seedPhrase == seedPhraseStr) {
+    if (seedPhrase === seedPhraseStr) {
       navigation.navigate('EnterUserName');
     } else {
       setErrorDialogVisibility(true);
@@ -145,7 +150,7 @@ const ConfirmRecoveryPhraseScreen = () => {
                   confirmSeedPhraseBtnHandler();
                 }}
                 onDismiss={() => setErrorDialogVisibility(false)}
-                disabled={inputSeedPhrase.length != 24}
+                disabled={inputSeedPhrase.length !== 24}
               />
             </View>
             <ErrorModalComponent

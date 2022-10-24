@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Screen from '../../../app_components/Screen';
 import {
@@ -8,17 +8,21 @@ import {
 import PinKeyPad from '../components/PinKeyPad';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
-import {useNavigation, useRoute} from '@react-navigation/native';
 import {Chip} from 'react-native-ui-lib';
 import {getStoredMnemonic, getStoredPrivateKey} from '../../onboarding/utils';
 import {addPinChar, deletePinChar} from '../utils';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
 
-const EnterPinScreen = () => {
-  const route = useRoute();
+type Props = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'EnterPinScreen'
+>;
+
+const EnterPinScreen = ({route, navigation}: Props) => {
   const nextRoute: string = route.params?.nextRoute ?? '';
   const target: string = route.params?.target ?? 'privateKey';
 
-  const navigation = useNavigation();
   const [pinError, setPinError] = React.useState('');
 
   const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
