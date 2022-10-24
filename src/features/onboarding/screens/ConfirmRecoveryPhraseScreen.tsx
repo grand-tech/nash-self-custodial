@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {connect} from 'react-redux';
+import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -30,8 +30,9 @@ import {
 } from '../../../utils/seed.phrase.validation.utils';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+import {generateActionCompletedOnboarding} from '../redux_store/action.generators';
 
-type Props = NativeStackScreenProps<
+type NavigationProps = NativeStackScreenProps<
   OnboardingNavigationStackParamsList,
   'ConfirmRecoveryPhraseScreen'
 >;
@@ -39,19 +40,19 @@ type Props = NativeStackScreenProps<
 /**
  * Contains the onboarding UI.
  */
-const ConfirmRecoveryPhraseScreen = ({route, navigation}: Props) => {
-  const seedPhrase = route.params.mnemonic;
+const ConfirmRecoveryPhraseScreen = (props: Props) => {
+  const seedPhrase = props.route.params.mnemonic;
 
   const initInputSeedPhrase: ChipsInputChipProps[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
 
   useEffect(() => {
-    navigation.setOptions(
+    props.navigation.setOptions(
       headerWithDeleteButton(
         () => {
           // navigation back
-          navigation.goBack();
+          props.navigation.goBack();
         },
         () => {
           // clear entered seed phrase
@@ -68,7 +69,7 @@ const ConfirmRecoveryPhraseScreen = ({route, navigation}: Props) => {
   const confirmSeedPhraseBtnHandler = () => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
     if (seedPhrase === seedPhraseStr) {
-      navigation.navigate('EnterUserName');
+      props.completeOnboarding();
     } else {
       setErrorDialogVisibility(true);
     }
@@ -177,7 +178,14 @@ const mapStateToProps = (state: RootState) => ({
   onboarded: state.onboarding.status,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  completeOnboarding: generateActionCompletedOnboarding,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = ReduxProps & NavigationProps;
+type ReduxProps = ConnectedProps<typeof connector>;
 
 export default connect(
   mapStateToProps,
