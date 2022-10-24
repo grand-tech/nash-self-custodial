@@ -10,6 +10,7 @@ export enum Actions {
   COMPLETED_ONBOARDING = 'ONBOARDING/COMPLETED_ONBOARDING',
 
   CONFIRM_SEED_PHRASE = 'ONBOARDING/CONFIRM_SEED_PHRASE',
+  CONFIRMED_SEED_PHRASE = 'ONBOARDING/CONFIRMED_SEED_PHRASE',
 
   ADOPT_NEW_ACCOUNT = 'ONBOARDING/ADOPT_NEW_ACCOUNT',
   ADOPTED_NEW_ACCOUNT = 'ONBOARDING/ADOPTED_NEW_ACCOUNT',
@@ -50,9 +51,11 @@ export interface ActionCompletedOnboarding {
 
 export interface ActionConfirmSeedPhrase {
   type: Actions.CONFIRM_SEED_PHRASE;
-  privateKey: string;
   seedPhrase: string;
-  pin: string;
+}
+
+export interface ActionConfirmedSeedPhrase {
+  type: Actions.CONFIRMED_SEED_PHRASE;
 }
 
 export interface ActionAdoptNewAccount {
@@ -73,6 +76,7 @@ export type ActionTypes =
   | ActionSelectedLanguage
   | ActionChooseCreateNewAccount
   | ActionConfirmSeedPhrase
+  | ActionConfirmedSeedPhrase
   | ActionCompletedOnboarding
   | ActionChooseRestoreExistingAccount
   | ActionAdoptNewAccount

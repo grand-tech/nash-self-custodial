@@ -10,21 +10,24 @@ import {
 import {Button, Switch, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+
+type Props = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'WriteDownRecoveryPhraseScreen'
+>;
 
 /**
  * Contains the onboarding UI.
  */
-const WriteDownRecoveryPhraseScreen = () => {
-  const navigation = useNavigation();
-  const [seedPhrase, setSeedPhrase] = useState(
-    'Horse  giraffe  dog money  book  fire  drink cup  phone  car  jacket computer  wire  charger curtain  router  window  plate  floor  key  wine glass  oak  watch',
-  );
+const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
+  const mnemonic = route?.params?.mnemonic;
   const [writtenDownSeedPhrase, setWrittenDownSeedPhrase] = useState(false);
 
   const copySeedPhraseToClipBoard = () => {
-    Clipboard.setString(seedPhrase);
+    Clipboard.setString(mnemonic);
     ToastAndroid.showWithGravity(
       'Copied seedphrase.',
       ToastAndroid.SHORT,
@@ -55,7 +58,7 @@ const WriteDownRecoveryPhraseScreen = () => {
             editable={false}
             multiline
             numberOfLines={4}
-            value={seedPhrase}
+            value={mnemonic}
             color={AppColors.black}
             style={{
               ...FONTS.body1,
@@ -96,7 +99,9 @@ const WriteDownRecoveryPhraseScreen = () => {
               ...FONTS.h4,
             }}
             onPress={() => {
-              navigation.navigate('ConfirmRecoveryPhraseScreen');
+              navigation.navigate('ConfirmRecoveryPhraseScreen', {
+                mnemonic: mnemonic,
+              });
             }}
             disabled={!writtenDownSeedPhrase}
           />

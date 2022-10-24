@@ -17,6 +17,7 @@ import {initTheme} from './src/ui_lib_configs/FoundationConfig';
 import {RootState} from './src/app-redux-store/store';
 import {connect, ConnectedProps} from 'react-redux';
 import {OnboardingStatusNames} from './src/features/onboarding/redux_store/reducers';
+import {navigationRef} from './src/navigation/navigation.service';
 
 const App: React.FC<Props> = (props: Props) => {
   initTheme();
@@ -26,7 +27,7 @@ const App: React.FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {props.onboarding_status === OnboardingStatusNames.onboarding_complete ? (
         <NavigationDrawer />
       ) : (

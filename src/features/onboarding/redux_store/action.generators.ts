@@ -1,3 +1,4 @@
+import {ActionConfirmedSeedPhrase} from './actions';
 import {
   ActionAdoptNewAccount,
   ActionCreatedNewAccount,
@@ -106,5 +107,15 @@ export function generateActionAdoptNewAccount(
 export function generateActionCompletedOnboarding(): ActionCompletedOnboarding {
   return {
     type: Actions.COMPLETED_ONBOARDING,
+  };
+}
+
+/**
+ * Generates completed onboarding action.
+ * @returns completed onboarding action obj.
+ */
+export function generateActionConfirmedSeedPhrase(): ActionConfirmedSeedPhrase {
+  return {
+    type: Actions.CONFIRMED_SEED_PHRASE,
   };
 }

@@ -11,77 +11,43 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {useNavigation} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
+import {addPinChar, deletePinChar} from '../utils';
 
 const CreatePinScreen: React.FC = () => {
   // const eyeSlash = Icon.getImageSourceSync('eye-slash', 24, AppColors.yellow);
   // const eye = Icon.getImageSourceSync('eye', 24, AppColors.yellow);
 
   const navigation = useNavigation();
-  const initPin = ['', '', '', '', '', ''];
 
   //Contains the pin number text as an array.
-  const [pinCharArray, setPinTextArray] = useState(initPin);
+  const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
   const [hidePin, setHidePin] = useState(true);
   // The current index of the pin number entry.
   const [currentIndex, setCurrentIndex] = useState(0);
-  //  const recoveryPhrase = useSelector((state: any) => state.auth.recoveryPhrase);
 
   const onDelete = () => {
-    if (currentIndex > 0) {
-      let newPinArray = initPin;
-
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex == index) {
-          newPinArray[index] = '';
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
-        let newCurrentIndex = currentIndex - 1;
-        setCurrentIndex(newCurrentIndex);
-        setPinTextArray(newPinArray);
-      }
-    } else {
-      setCurrentIndex(0);
-      setPinTextArray(initPin);
-    }
+    const updates = deletePinChar(currentIndex, pinCharArray);
+    setCurrentIndex(updates.currentIndex);
+    setPinTextArray(updates.pinArray);
   };
 
+  /**
+   * Effects the change on the pin number when a new character
+   * @param pinChar the new pin number character.
+   */
   const onChange = (pinChar: string) => {
-    if (
-      currentIndex < pinCharArray.length &&
-      pinCharArray[currentIndex] === ''
-    ) {
-      let newPinArray = initPin;
+    const updates = addPinChar(pinChar, currentIndex, pinCharArray);
 
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex === index) {
-          newPinArray[index] = pinChar;
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
+    setPinTextArray(updates.pinArray);
+    setCurrentIndex(updates.currentIndex);
 
-        if (currentIndex < pinCharArray.length - 1) {
-          // Limit the max index to the number of characters expected.
-          let newCurrentIndex = currentIndex + 1;
-          setCurrentIndex(newCurrentIndex);
-        } else {
-          let pin: string = newPinArray.toString().replaceAll(',', '');
-
-          navigation.navigate('ConfirmPin', {
-            pin: pin,
-          });
-        }
-
-        setPinTextArray(newPinArray);
-      }
+    if (currentIndex === pinCharArray.length - 1) {
+      let pin: string = updates.pinArray.toString().replaceAll(',', '');
+      navigation.navigate('ConfirmPin', {
+        pin: pin,
+      });
     }
   };
-
-  useEffect(() => {
-    setPinTextArray(initPin);
-    setCurrentIndex(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useLayoutEffect(() => {
     const headerConfigs = {

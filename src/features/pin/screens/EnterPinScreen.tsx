@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Screen from '../../../app_components/Screen';
 import {
@@ -8,81 +8,71 @@ import {
 import PinKeyPad from '../components/PinKeyPad';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
-import {useNavigation, useRoute} from '@react-navigation/native';
 import {Chip} from 'react-native-ui-lib';
+import {getStoredMnemonic, getStoredPrivateKey} from '../../onboarding/utils';
+import {addPinChar, deletePinChar} from '../utils';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
 
-const EnterPinScreen = () => {
-  const route = useRoute();
+type Props = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'EnterPinScreen'
+>;
+
+const EnterPinScreen = ({route, navigation}: Props) => {
   const nextRoute: string = route.params?.nextRoute ?? '';
+  const target: string = route.params?.target ?? 'privateKey';
 
-  const navigation = useNavigation();
-  const initPin = ['', '', '', '', '', ''];
   const [pinError, setPinError] = React.useState('');
 
-  const [pinCharArray, setPinTextArray] = useState(initPin);
+  const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const onDelete = () => {
-    if (currentIndex > 0) {
-      let newPinArray = initPin;
-
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex == index) {
-          newPinArray[index] = '';
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
-        let newCurrentIndex = currentIndex - 1;
-        setCurrentIndex(newCurrentIndex);
-        setPinTextArray(newPinArray);
-      }
-    } else {
-      setCurrentIndex(0);
-      setPinTextArray(initPin);
-    }
+    const updates = deletePinChar(currentIndex, pinCharArray);
+    setCurrentIndex(updates.currentIndex);
+    setPinTextArray(updates.pinArray);
   };
 
-  const onChange = (pinChar: string) => {
+  const onChange = async (pinChar: string) => {
     setPinError('');
-    if (
-      currentIndex < pinCharArray.length &&
-      pinCharArray[currentIndex] === ''
-    ) {
-      let newPinArray = initPin;
+    const updates = addPinChar(pinChar, currentIndex, pinCharArray);
 
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex === index) {
-          newPinArray[index] = pinChar;
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
+    setPinTextArray(updates.pinArray);
+    setCurrentIndex(updates.currentIndex);
 
-        setPinTextArray(newPinArray);
-
-        if (currentIndex < pinCharArray.length - 1) {
-          // Limit the max index to the number of characters expected.
-          let newCurrentIndex = currentIndex + 1;
-          setCurrentIndex(newCurrentIndex);
-        } else {
-          let p = newPinArray.toString().replaceAll(',', '');
-          // if (p === pin) {
-          // set up recovery phrase.
-          navigation.navigate(nextRoute);
-          // } else {
-          //   setPinError('PIN did not match!!!');
-          //   setCurrentIndex(0);
-          //   setPinTextArray(['', '', '', '', '', '']);
-          // }
-        }
-      }
+    if (currentIndex === pinCharArray.length - 1) {
+      // validate pin and navigate to next screen
+      let p = updates.pinArray.toString().replaceAll(',', '');
+      await handlePinValidation(p);
     }
   };
 
-  useEffect(() => {
-    setPinTextArray(initPin);
-    setCurrentIndex(0);
-  }, []);
+  /**
+   * Decrypts the target item for use if the user enters the correct PIN.
+   * @param pin the pin number used as the encryption key.
+   */
+  const handlePinValidation = async (pin: string) => {
+    let retrievedItem: string | null;
+    if (target === 'mnemonic') {
+      retrievedItem = await getStoredMnemonic(pin);
+    } else {
+      retrievedItem = await getStoredPrivateKey(pin);
+    }
+
+    if (retrievedItem === null) {
+      setPinError('Invalid PIN!!!');
+      setCurrentIndex(0);
+      setPinTextArray(['', '', '', '', '', '']);
+    } else {
+      if (target === 'mnemonic') {
+        navigation.navigate(nextRoute, {mnemonic: retrievedItem});
+      } else {
+        navigation.navigate(nextRoute, {privateKey: retrievedItem});
+      }
+    }
+  };
 
   useLayoutEffect(() => {
     const headerConfigs = {

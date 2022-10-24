@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {connect} from 'react-redux';
+import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -22,31 +22,37 @@ import {
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
-import {headerWithDeleteButton} from '../navigation.stack';
-import {constructSeedPhraseFromChipInputs} from '../utils';
+import {headerWithDeleteButton} from '../navigation/navigation.stack';
 import ErrorModalComponent from '../components/ErrorModalComponent';
+import {
+  constructSeedPhraseFromChipInputs,
+  validateSeedPhraseInput,
+} from '../../../utils/seed.phrase.validation.utils';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+import {generateActionCompletedOnboarding} from '../redux_store/action.generators';
+
+type NavigationProps = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'ConfirmRecoveryPhraseScreen'
+>;
 
 /**
  * Contains the onboarding UI.
  */
-const ConfirmRecoveryPhraseScreen = () => {
-  const navigation = useNavigation();
+const ConfirmRecoveryPhraseScreen = (props: Props) => {
+  const seedPhrase = props.route.params.mnemonic;
 
-  //   TODO: logic to fetch recovery phrase/pass it from navigation params
-  const [seedPhrase, setSeedPhrase] = useState(
-    'horse giraffe dog money book fire drink cup phone car jacket computer wire charger curtain router window plate floor key wine glass oak watch',
-  );
   const initInputSeedPhrase: ChipsInputChipProps[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
 
   useEffect(() => {
-    navigation.setOptions(
+    props.navigation.setOptions(
       headerWithDeleteButton(
         () => {
           // navigation back
-          navigation.goBack();
+          props.navigation.goBack();
         },
         () => {
           // clear entered seed phrase
@@ -54,17 +60,33 @@ const ConfirmRecoveryPhraseScreen = () => {
         },
       ),
     );
-  }, [navigation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * Confirm seed phrase button handler logic.
    */
   const confirmSeedPhraseBtnHandler = () => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-    if (seedPhrase == seedPhraseStr) {
-      navigation.navigate('EnterUserName');
+    if (seedPhrase === seedPhraseStr) {
+      props.completeOnboarding();
     } else {
       setErrorDialogVisibility(true);
+    }
+  };
+
+  /**
+   * Validates updated chips before committing the changes to the component state.
+   * @param newChips list of new chips after input.
+   */
+  const processInput = (newChips: ChipsInputChipProps[]) => {
+    const validatedChips = validateSeedPhraseInput(
+      initInputSeedPhrase,
+      newChips,
+    );
+
+    if (validatedChips.length > 0) {
+      setInputSeedPhrase(validatedChips);
     }
   };
 
@@ -107,7 +129,7 @@ const ConfirmRecoveryPhraseScreen = () => {
                 defaultChipProps={{
                   labelStyle: {...FONTS.body1},
                 }}
-                onChange={newChips => setInputSeedPhrase(newChips)}
+                onChange={newChips => processInput(newChips)}
                 maxChips={24}
                 autoFocus={true}
                 autoCapitalize={'none'}
@@ -129,7 +151,7 @@ const ConfirmRecoveryPhraseScreen = () => {
                   confirmSeedPhraseBtnHandler();
                 }}
                 onDismiss={() => setErrorDialogVisibility(false)}
-                disabled={inputSeedPhrase.length != 24}
+                disabled={inputSeedPhrase.length !== 24}
               />
             </View>
             <ErrorModalComponent
@@ -156,7 +178,14 @@ const mapStateToProps = (state: RootState) => ({
   onboarded: state.onboarding.status,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  completeOnboarding: generateActionCompletedOnboarding,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = ReduxProps & NavigationProps;
+type ReduxProps = ConnectedProps<typeof connector>;
 
 export default connect(
   mapStateToProps,

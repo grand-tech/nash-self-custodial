@@ -23,9 +23,10 @@ import {
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
-import {headerWithDeleteButton} from '../navigation.stack';
+import {headerWithDeleteButton} from '../navigation/navigation.stack';
 import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
+import {validateSeedPhraseInput} from '../../../utils/seed.phrase.validation.utils';
 
 /**
  * Contains the onboarding UI.
@@ -62,7 +63,14 @@ const RestoreAccountScreen = () => {
    * @param newChips list of new chips.
    */
   const onChipsChangeHandler = (newChips: Incubator.ChipsInputChipProps[]) => {
-    setInputSeedPhrase(newChips);
+    const validatedChips = validateSeedPhraseInput(
+      initInputSeedPhrase,
+      newChips,
+    );
+
+    if (validatedChips.length > 0) {
+      setInputSeedPhrase(validatedChips);
+    }
   };
 
   /**

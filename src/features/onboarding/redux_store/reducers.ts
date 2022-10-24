@@ -62,6 +62,7 @@ export const onBoardingReducer = (
         ...state,
         publicAddress: action.publicAddress,
         publicKey: action.publicKey,
+        storedEncryptedPrivateKey: true,
         status: {
           name: OnboardingStatusNames.created_new_account,
           error: undefined,
@@ -90,6 +91,11 @@ export const onBoardingReducer = (
           name: OnboardingStatusNames.onboarding_complete,
           error: undefined,
         },
+      };
+    case Actions.CONFIRMED_SEED_PHRASE:
+      return {
+        ...state,
+        verifiedMnemonicBackup: true,
       };
     case Actions.SET_USER_NAME:
       return {

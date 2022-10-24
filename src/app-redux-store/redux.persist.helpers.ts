@@ -22,7 +22,6 @@ export function* waitForRehydrate() {
     return;
   }
   yield take(REHYDRATE);
-  console.log('wait for rehydrate');
   didRehydrate = true;
   return;
 }

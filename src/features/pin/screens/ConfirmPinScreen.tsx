@@ -20,6 +20,9 @@ import {
   generateActionSetLoading,
   generateActionSetNormal,
 } from '../../ui_state_manager/action.generators';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
+import {addPinChar, deletePinChar} from '../utils';
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -31,13 +34,11 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
   const pin: string = route.params?.pin ?? '';
 
   const navigation = useNavigation();
-  const initPin = ['', '', '', '', '', ''];
   const [pinError, setPinError] = React.useState('');
 
-  const [pinCharArray, setPinTextArray] = useState(initPin);
+  const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  // const [showProgressModal, setShowProgressModal] = useState(false);
 
   /**
    * What happens when the pin numbers match.
@@ -49,66 +50,33 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onDelete = () => {
-    if (currentIndex > 0) {
-      let newPinArray = initPin;
-
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex == index) {
-          newPinArray[index] = '';
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
-        let newCurrentIndex = currentIndex - 1;
-        setCurrentIndex(newCurrentIndex);
-        setPinTextArray(newPinArray);
-      }
-    } else {
-      setCurrentIndex(0);
-      setPinTextArray(initPin);
-    }
+    const updates = deletePinChar(currentIndex, pinCharArray);
+    setCurrentIndex(updates.currentIndex);
+    setPinTextArray(updates.pinArray);
   };
 
   const onChange = (pinChar: string) => {
     setPinError('');
-    if (
-      currentIndex < pinCharArray.length &&
-      pinCharArray[currentIndex] === ''
-    ) {
-      let newPinArray = initPin;
 
-      for (let index = 0; index < pinCharArray.length; index++) {
-        if (currentIndex === index) {
-          newPinArray[index] = pinChar;
-        } else {
-          newPinArray[index] = pinCharArray[index];
-        }
+    const updates = addPinChar(pinChar, currentIndex, pinCharArray);
 
-        setPinTextArray(newPinArray);
+    setPinTextArray(updates.pinArray);
+    setCurrentIndex(updates.currentIndex);
 
-        if (currentIndex < pinCharArray.length - 1) {
-          // Limit the max index to the number of characters expected.
-          let newCurrentIndex = currentIndex + 1;
-          setCurrentIndex(newCurrentIndex);
-        }
-      }
-
-      if (currentIndex === 5) {
-        let p = newPinArray.toString().replaceAll(',', '');
-        if (p === pin) {
-          onPinMatched();
-        } else {
-          setPinError('PIN did not match!!!');
-          setCurrentIndex(0);
-          setPinTextArray(['', '', '', '', '', '']);
-        }
+    if (currentIndex === pinCharArray.length - 1) {
+      let p = updates.pinArray.toString().replaceAll(',', '');
+      if (p === pin) {
+        onPinMatched();
+      } else {
+        setPinError('PIN did not match!!!');
+        setCurrentIndex(0);
+        setPinTextArray(['', '', '', '', '', '']);
       }
     }
   };
 
   useEffect(() => {
     props.dispatchActionSetNormal();
-    setPinTextArray(initPin);
-    setCurrentIndex(0);
     return () => {
       props.dispatchActionSetNormal();
     };
@@ -260,6 +228,10 @@ const mapDispatchToProps = {
   dispatchActionSetNormal: generateActionSetNormal,
 };
 
-type Props = DispatchProps & StateProps;
+type StackProps = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'ConfirmPin'
+>;
+type Props = DispatchProps & StateProps & StackProps;
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfirmPinScreen);
