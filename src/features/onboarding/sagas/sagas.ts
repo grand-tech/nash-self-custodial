@@ -1,5 +1,6 @@
 import {call, put, spawn, takeLatest} from 'redux-saga/effects';
 import {
+  clearSession,
   generateNewMnemonic,
   getAccountFromMnemonic,
   storeEncryptedMnemonic,
@@ -100,9 +101,24 @@ export function* watchRestoreExistingAccount() {
 }
 
 /**
+ * Delete the users private key and mnemonic from key chain.
+ */
+export function* logOut() {
+  yield call(clearSession);
+}
+
+/**
+ * Watches the restore existing account action.
+ */
+export function* watchLogOut() {
+  yield takeLatest(Actions.LOG_OUT, logOut);
+}
+
+/**
  * Root saga of the module/feature.
  */
 export function* onboardingSaga() {
   yield spawn(watchCreateNewAccount);
   yield spawn(watchRestoreExistingAccount);
+  yield spawn(watchLogOut);
 }

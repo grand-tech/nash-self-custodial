@@ -1,4 +1,4 @@
-import {pinchHandlerName} from 'react-native-gesture-handler/lib/typescript/handlers/PinchGestureHandler';
+import {ActionLogOut} from './actions';
 import {
   ActionConfirmedSeedPhrase,
   ActionRestoreExistingAccount,
@@ -136,5 +136,11 @@ export function generateActionRestoreExistingAccount(
     type: Actions.RESTORE_EXISTING_ACCOUNT,
     pin: pin,
     mnemonic: mnemonic,
+  };
+}
+
+export function generateActionLogout(): ActionLogOut {
+  return {
+    type: Actions.LOG_OUT,
   };
 }

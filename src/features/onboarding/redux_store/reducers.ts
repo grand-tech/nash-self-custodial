@@ -102,6 +102,10 @@ export const onBoardingReducer = (
         ...state,
         user_name: action.userName,
       };
+    case Actions.LOG_OUT:
+      return {
+        ...initialState,
+      };
     default:
       return state;
   }
