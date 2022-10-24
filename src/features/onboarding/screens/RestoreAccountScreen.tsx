@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import {
   Keyboard,
@@ -7,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {connect} from 'react-redux';
+import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -22,33 +23,47 @@ import {
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
 import {headerWithDeleteButton} from '../navigation/navigation.stack';
-import {constructSeedPhraseFromChipInputs} from '../utils';
 import ErrorModalComponent from '../components/ErrorModalComponent';
-import {validateSeedPhraseInput} from '../../../utils/seed.phrase.validation.utils';
+import {
+  constructSeedPhraseFromChipInputs,
+  validateSeedPhraseInput,
+} from '../../../utils/seed.phrase.validation.utils';
+import {generateActionRestoreExistingAccount} from '../redux_store/action.generators';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+import {
+  generateActionSetLoading,
+  generateActionSetError,
+} from '../../ui_state_manager/action.generators';
+import LoadingModalComponent from '../components/LoadingModalComponent';
+
+/**
+ * Navigation props. TODO move to centralized file.
+ */
+type NavigationProps = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'RestoreAccount'
+>;
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 /**
  * Contains the onboarding UI.
  */
-const RestoreAccountScreen = () => {
-  const navigation = useNavigation();
-
-  // TODO: logic to fetch recovery phrase/pass it from navigation params
-  const [seedPhrase, setSeedPhrase] = useState(
-    'horse giraffe dog money book fire drink cup phone car jacket computer ' +
-      'wire charger curtain router window plate floor key wine glass oak watch',
-  );
+const RestoreAccountScreen = (props: Props) => {
   const initInputSeedPhrase: ChipsInputChipProps[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
 
   useEffect(() => {
-    navigation.setOptions(
+    props.navigation.setOptions(
       headerWithDeleteButton(
         () => {
-          // navigation back
-          navigation.goBack();
+          // props.navigation back
+          props.navigation.goBack();
         },
         () => {
           // clear entered seed phrase
@@ -56,7 +71,7 @@ const RestoreAccountScreen = () => {
         },
       ),
     );
-  }, [navigation]);
+  }, []);
 
   /**
    * Updates the chips after an new word has been entered or deleted.
@@ -76,12 +91,16 @@ const RestoreAccountScreen = () => {
   /**
    * Confirm seed phrase button handler logic.
    */
-  const confirmSeedPhraseBtnHandler = () => {
+  const confirmSeedPhraseBtnHandler = async () => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-    if (seedPhrase == seedPhraseStr) {
-      navigation.navigate('EnterUserName');
+    // console.log('props', props);
+    if (seedPhraseStr.trim() !== '') {
+      console.log('restoring account', props.route.params);
+      props.dispatchSetLoading('Restoring account..', '');
+      await delay(600);
+      props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
     } else {
-      setErrorDialogVisibility(true);
+      props.dispatchSetError('Invalid mnemonic', '');
     }
   };
 
@@ -140,6 +159,7 @@ const RestoreAccountScreen = () => {
                 outlineColor={AppColors.light_green}
                 label={'Confirm'}
                 secondary
+                enabled={initInputSeedPhrase.length === 24}
                 labelStyle={{
                   ...FONTS.h4,
                 }}
@@ -157,6 +177,8 @@ const RestoreAccountScreen = () => {
               visible={errorDialogVisible}
               errorMessage={'Invalid seed phrase!!'}
             />
+
+            <LoadingModalComponent visible={props.ui_status === 'loading'} />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -170,15 +192,22 @@ const RestoreAccountScreen = () => {
  * @returns the props intended to be passed to the component from state variables.
  */
 const mapStateToProps = (state: RootState) => ({
-  onboarded: state.onboarding.status,
+  onboarding_status: state.onboarding.status,
+  ui_status: state.ui_state.status,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  dispatchRestoreAccount: generateActionRestoreExistingAccount,
+  dispatchSetLoading: generateActionSetLoading,
+  dispatchSetError: generateActionSetError,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(RestoreAccountScreen);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = ReduxProps & NavigationProps;
+type ReduxProps = ConnectedProps<typeof connector>;
+
+export default connector(RestoreAccountScreen);
 
 const style = StyleSheet.create({
   container: {

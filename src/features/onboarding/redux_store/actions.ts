@@ -2,6 +2,8 @@ export enum Actions {
   SELECTED_LANGUAGE = 'ONBOARDING/SELECTED_LANGUAGE',
 
   CHOOSE_RESTORE_EXISTING_ACCOUNT = 'ONBOARDING/CHOOSE_RESTORE_EXISTING_ACCOUNT',
+  RESTORE_EXISTING_ACCOUNT = 'ONBOARDING/RESTORE_EXISTING_ACCOUNT',
+
   CHOOSE_CREATE_NEW_ACCOUNT = 'ONBOARDING/CHOOSE_CREATE_NEW_ACCOUNT',
   CREATE_NEW_ACCOUNT = 'ONBOARDING/CREATE_NEW_ACCOUNT',
   CREATED_NEW_ACCOUNT = 'ONBOARDING/CREATED_NEW_ACCOUNT',
@@ -23,6 +25,12 @@ export interface ActionSelectedLanguage {
 
 export interface ActionChooseRestoreExistingAccount {
   type: Actions.CHOOSE_RESTORE_EXISTING_ACCOUNT;
+}
+
+export interface ActionRestoreExistingAccount {
+  type: Actions.RESTORE_EXISTING_ACCOUNT;
+  mnemonic: string;
+  pin: string;
 }
 
 export interface ActionChooseCreateNewAccount {

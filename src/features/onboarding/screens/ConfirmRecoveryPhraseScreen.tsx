@@ -187,10 +187,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type Props = ReduxProps & NavigationProps;
 type ReduxProps = ConnectedProps<typeof connector>;
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ConfirmRecoveryPhraseScreen);
+export default connector(ConfirmRecoveryPhraseScreen);
 
 const style = StyleSheet.create({
   container: {

@@ -23,6 +23,7 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
 import {addPinChar, deletePinChar} from '../utils';
+import {NashCache} from '../../../utils/cache';
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -44,9 +45,16 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
    * What happens when the pin numbers match.
    */
   const onPinMatched = async () => {
-    props.dispatchActionSetLoading('Creating account', '');
-    await delay(500);
-    props.dispatchActionCreateNewAccount(pin);
+    if (
+      props.onboarding_status === OnboardingStatusNames.choose_restore_account
+    ) {
+      NashCache.setPinCache(pin);
+      navigation.navigate('RestoreAccount', {pin: pin});
+    } else {
+      props.dispatchActionSetLoading('Creating account', '');
+      await delay(500);
+      props.dispatchActionCreateNewAccount(pin);
+    }
   };
 
   const onDelete = () => {

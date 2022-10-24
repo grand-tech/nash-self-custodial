@@ -46,7 +46,7 @@ const StartScreen = () => {
           }}
           onPress={() => {
             let x: number = isCarousel.current?.getCurrentIndex() ?? 0;
-            if (x == maxIndex) {
+            if (x === maxIndex) {
               //navigate to next screen.
               navigation.navigate('SelectGenerateOrRestoreAccount');
             } else {
