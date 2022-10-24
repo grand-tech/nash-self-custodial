@@ -1,4 +1,8 @@
-import {ActionConfirmedSeedPhrase} from './actions';
+import {pinchHandlerName} from 'react-native-gesture-handler/lib/typescript/handlers/PinchGestureHandler';
+import {
+  ActionConfirmedSeedPhrase,
+  ActionRestoreExistingAccount,
+} from './actions';
 import {
   ActionAdoptNewAccount,
   ActionCreatedNewAccount,
@@ -117,5 +121,20 @@ export function generateActionCompletedOnboarding(): ActionCompletedOnboarding {
 export function generateActionConfirmedSeedPhrase(): ActionConfirmedSeedPhrase {
   return {
     type: Actions.CONFIRMED_SEED_PHRASE,
+  };
+}
+
+/**
+ * Generates completed onboarding action.
+ * @returns completed onboarding action obj.
+ */
+export function generateActionRestoreExistingAccount(
+  pin: string,
+  mnemonic: string,
+): ActionRestoreExistingAccount {
+  return {
+    type: Actions.RESTORE_EXISTING_ACCOUNT,
+    pin: pin,
+    mnemonic: mnemonic,
   };
 }

@@ -10,5 +10,5 @@ export type OnboardingNavigationStackParamsList = {
   EnterPinScreen: {target?: string; nextRoute: string};
   WriteDownRecoveryPhraseScreen: {mnemonic: string};
   ConfirmRecoveryPhraseScreen: {mnemonic: string};
-  RestoreAccount: undefined;
+  RestoreAccount: {pin: string};
 };

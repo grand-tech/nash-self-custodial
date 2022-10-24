@@ -82,7 +82,7 @@ const CreateAccountScreen = () => {
             }}
             onPress={() => {
               dispatch(chooseRestoreExistingAccount());
-              navigation.navigate('RestoreAccount');
+              navigation.navigate('TermsAndConditions');
             }}
           />
         </View>
