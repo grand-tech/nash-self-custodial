@@ -23,8 +23,10 @@ import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/n
 import {addPinChar, deletePinChar} from '../utils';
 import {NashCache} from '../../../utils/cache';
 import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
+import {useIsFocused} from '@react-navigation/native';
 
 const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
+  const isFocused = useIsFocused();
   const pin: string = props.route.params.pin;
 
   const [pinError, setPinError] = React.useState('');
@@ -48,7 +50,9 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onShowModal = () => {
-    props.dispatchActionCreateNewAccount(pin);
+    if (isFocused) {
+      props.dispatchActionCreateNewAccount(pin);
+    }
   };
 
   const onDelete = () => {

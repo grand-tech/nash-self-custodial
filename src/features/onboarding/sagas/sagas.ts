@@ -11,8 +11,8 @@ import {Actions, ActionCreateNewAccount} from '../redux_store/actions';
 import {NashCache} from '../../../utils/cache';
 import {navigate} from '../../../navigation/navigation.service';
 import {
-  generateActionAdoptedNewAccount,
   generateActionCompletedOnboarding,
+  generateActionCreatedNewAccount,
 } from '../redux_store/action.generators';
 import {ActionRestoreExistingAccount} from '../redux_store/actions';
 import {
@@ -44,7 +44,7 @@ function* createAccount(action: ActionCreateNewAccount) {
     yield call(storeEncryptedMnemonic, mnemonic, action.pin);
     yield call(storeEncryptedPrivateKey, newAccount.privateKey, action.pin);
     yield put(
-      generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
+      generateActionCreatedNewAccount(newAccount.address, newAccount.publicKey),
     );
     yield put(generateActionSetNormal('create account'));
     navigate('SetUpSeedPhraseInstructions');
@@ -75,7 +75,7 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     yield call(storeEncryptedMnemonic, mnemonic, action.pin);
     yield call(storeEncryptedPrivateKey, newAccount.privateKey, action.pin);
     yield put(
-      generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
+      generateActionCreatedNewAccount(newAccount.address, newAccount.publicKey),
     );
     yield put(generateActionSetNormal('restore account'));
     //TODO: figure out what to do with this after adding attestation and comment encryption.

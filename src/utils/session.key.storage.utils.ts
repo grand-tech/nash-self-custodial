@@ -28,7 +28,7 @@ export async function storeItem(
       ...options,
     });
 
-    if (result == false) {
+    if (result === false) {
       throw new Error('Store result false');
     }
 
@@ -36,8 +36,7 @@ export async function storeItem(
     const retrievedResult = await retrieveStoredItem(storageKey);
     if (retrievedResult !== value) {
       await removeStoredItem(storageKey);
-
-      console.log(
+      console.error(
         `${TAG}@storeItem`,
         `Retrieved value for key '${storageKey}' does not match stored value`,
       );

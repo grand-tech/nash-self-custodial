@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     padding: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.85,
+    opacity: 0.75,
     height: hp('100%'),
     width: wp('100%'),
   },

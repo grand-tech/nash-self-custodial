@@ -79,7 +79,7 @@ export function createNewAccountAction(pin: string): ActionCreateNewAccount {
  * @param publicKey the users public key.
  * @returns created new account action obj.
  */
-export function generateActionAdoptedNewAccount(
+export function generateActionCreatedNewAccount(
   address: string,
   publicKey: string,
 ): ActionCreatedNewAccount {
