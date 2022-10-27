@@ -46,7 +46,7 @@ function* createAccount(action: ActionCreateNewAccount) {
     yield put(
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
-    yield put(generateActionSetNormal());
+    yield put(generateActionSetNormal('create account'));
     navigate('SetUpSeedPhraseInstructions');
     // figure out what to do with this after adding attestation and comment encryption.
     // yield put(generateActionCompletedOnboarding());
@@ -77,7 +77,7 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     yield put(
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
-    yield put(generateActionSetNormal());
+    yield put(generateActionSetNormal('restore account'));
     //TODO: figure out what to do with this after adding attestation and comment encryption.
     yield put(generateActionCompletedOnboarding());
   } catch (error) {

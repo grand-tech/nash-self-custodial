@@ -4,7 +4,7 @@ export type OnboardingNavigationStackParamsList = {
   TermsAndConditions: undefined;
   EnterUserName: undefined;
   CreatePin: undefined;
-  ConfirmPin: {pin: string} | undefined;
+  ConfirmPin: {pin: string};
   SetUpRecoveryPhrase: undefined;
   SetUpSeedPhraseInstructions: undefined;
   EnterPinScreen: {target?: string; nextRoute: string};

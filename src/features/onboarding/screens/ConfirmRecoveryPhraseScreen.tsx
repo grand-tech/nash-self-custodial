@@ -23,7 +23,6 @@ import {
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {headerWithDeleteButton} from '../navigation/navigation.stack';
-import ErrorModalComponent from '../components/ErrorModalComponent';
 import {
   constructSeedPhraseFromChipInputs,
   validateSeedPhraseInput,
@@ -31,6 +30,7 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {generateActionCompletedOnboarding} from '../redux_store/action.generators';
+import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
 
 type NavigationProps = NativeStackScreenProps<
   OnboardingNavigationStackParamsList,

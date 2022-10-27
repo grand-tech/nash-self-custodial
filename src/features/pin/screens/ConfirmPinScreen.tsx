@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Screen from '../../../app_components/Screen';
 import {
@@ -8,13 +8,11 @@ import {
 import PinKeyPad from '../components/PinKeyPad';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
-import {useNavigation, useRoute} from '@react-navigation/native';
 
 import {Chip} from 'react-native-ui-lib';
 import {connect} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
-import LoadingModalComponent from '../../onboarding/components/LoadingModalComponent';
 import {createNewAccountAction} from '../../onboarding/redux_store/action.generators';
 import {
   generateActionSetLoading,
@@ -24,17 +22,11 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
 import {addPinChar, deletePinChar} from '../utils';
 import {NashCache} from '../../../utils/cache';
-
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
 
 const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
-  const route = useRoute();
+  const pin: string = props.route.params.pin;
 
-  const pin: string = route.params?.pin ?? '';
-
-  const navigation = useNavigation();
   const [pinError, setPinError] = React.useState('');
 
   const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
@@ -49,12 +41,14 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
       props.onboarding_status === OnboardingStatusNames.choose_restore_account
     ) {
       NashCache.setPinCache(pin);
-      navigation.navigate('RestoreAccount', {pin: pin});
+      props.navigation.navigate('RestoreAccount', {pin: pin});
     } else {
       props.dispatchActionSetLoading('Creating account', '');
-      await delay(500);
-      props.dispatchActionCreateNewAccount(pin);
     }
+  };
+
+  const onShowModal = () => {
+    props.dispatchActionCreateNewAccount(pin);
   };
 
   const onDelete = () => {
@@ -83,19 +77,12 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
     }
   };
 
-  useEffect(() => {
-    props.dispatchActionSetNormal();
-    return () => {
-      props.dispatchActionSetNormal();
-    };
-  }, []);
-
   useLayoutEffect(() => {
     const headerConfigs = {
       title: '',
     };
-    navigation.setOptions(headerConfigs);
-  }, [navigation]);
+    props.navigation.setOptions(headerConfigs);
+  }, [props.navigation]);
 
   return (
     <Screen style={styles.screen}>
@@ -143,7 +130,10 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
         <PinKeyPad onChange={onChange} onDelete={onDelete} />
       </View>
 
-      <LoadingModalComponent visible={props.ui_screen_status === 'loading'} />
+      <LoadingModalComponent
+        visible={props.ui_screen_status === 'loading'}
+        onShowModal={onShowModal}
+      />
     </Screen>
   );
 };
