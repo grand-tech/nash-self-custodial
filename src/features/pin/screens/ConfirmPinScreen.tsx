@@ -45,7 +45,7 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
       NashCache.setPinCache(pin);
       props.navigation.navigate('RestoreAccount', {pin: pin});
     } else {
-      props.dispatchActionSetLoading('Creating account', '');
+      props.dispatchActionSetLoading('Creating account', '', 'on pin matched');
     }
   };
 

@@ -1,20 +1,16 @@
-import {ActionLogOut} from './actions';
 import {
   ActionConfirmedSeedPhrase,
   ActionRestoreExistingAccount,
-} from './actions';
-import {
-  ActionAdoptNewAccount,
-  ActionCreatedNewAccount,
-  ActionCompletedOnboarding,
-} from './actions';
-import {
   ActionChooseCreateNewAccount,
   ActionChooseRestoreExistingAccount,
   ActionCreateNewAccount,
   Actions,
   ActionSelectedLanguage,
   ActionSetUserName,
+  ActionAdoptedNewAccount,
+  ActionAdoptNewAccount,
+  ActionCompletedOnboarding,
+  ActionLogOut,
 } from './actions';
 
 /**
@@ -79,12 +75,12 @@ export function createNewAccountAction(pin: string): ActionCreateNewAccount {
  * @param publicKey the users public key.
  * @returns created new account action obj.
  */
-export function generateActionCreatedNewAccount(
+export function generateActionAdoptedNewAccount(
   address: string,
   publicKey: string,
-): ActionCreatedNewAccount {
+): ActionAdoptedNewAccount {
   return {
-    type: Actions.CREATED_NEW_ACCOUNT,
+    type: Actions.ADOPTED_NEW_ACCOUNT,
     publicAddress: address,
     publicKey: publicKey,
   };

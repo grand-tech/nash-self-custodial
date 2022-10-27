@@ -11,8 +11,8 @@ import {Actions, ActionCreateNewAccount} from '../redux_store/actions';
 import {NashCache} from '../../../utils/cache';
 import {navigate} from '../../../navigation/navigation.service';
 import {
+  generateActionAdoptedNewAccount,
   generateActionCompletedOnboarding,
-  generateActionCreatedNewAccount,
 } from '../redux_store/action.generators';
 import {ActionRestoreExistingAccount} from '../redux_store/actions';
 import {
@@ -32,7 +32,9 @@ function* createAccount(action: ActionCreateNewAccount) {
     // while (!isNewAccount)
     const mnemonic: string = yield call(generateNewMnemonic);
 
-    yield put(generateActionSetLoading('Generating keys', ''));
+    yield put(
+      generateActionSetLoading('Generating keys', '', 'generating keys'),
+    );
 
     const newAccount: AccountInformation = yield call(
       getAccountFromMnemonic,
@@ -44,12 +46,10 @@ function* createAccount(action: ActionCreateNewAccount) {
     yield call(storeEncryptedMnemonic, mnemonic, action.pin);
     yield call(storeEncryptedPrivateKey, newAccount.privateKey, action.pin);
     yield put(
-      generateActionCreatedNewAccount(newAccount.address, newAccount.publicKey),
+      generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
     yield put(generateActionSetNormal('create account'));
     navigate('SetUpSeedPhraseInstructions');
-    // figure out what to do with this after adding attestation and comment encryption.
-    // yield put(generateActionCompletedOnboarding());
   } catch (error) {
     yield put(generateActionSetError(error, 'Failed to create account'));
   }
@@ -75,7 +75,7 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     yield call(storeEncryptedMnemonic, mnemonic, action.pin);
     yield call(storeEncryptedPrivateKey, newAccount.privateKey, action.pin);
     yield put(
-      generateActionCreatedNewAccount(newAccount.address, newAccount.publicKey),
+      generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
     yield put(generateActionSetNormal('restore account'));
     //TODO: figure out what to do with this after adding attestation and comment encryption.
