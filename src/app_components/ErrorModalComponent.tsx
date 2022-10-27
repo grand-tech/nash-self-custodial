@@ -5,18 +5,29 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Incubator, PanningProvider, Text} from 'react-native-ui-lib';
+import {Button, Incubator, PanningProvider, Text} from 'react-native-ui-lib';
 import {useEffect} from 'react';
-import {generateActionSetNormal} from '../../ui_state_manager/action.generators';
-import {RootState} from '../../../app-redux-store/store';
-import {connect, ConnectedProps} from 'react-redux';
+import {AppColors} from '../ui_lib_configs/colors';
 
-const LoadingModalComponent: React.FC<Props> = (props: Props) => {
+/**
+ * Error dialog props.
+ */
+interface ErrorDialogProps {
+  onRetry: any;
+  visible: boolean;
+  errorMessage: string;
+}
+
+const ErrorModalComponent = (props: ErrorDialogProps) => {
   const [errorModalVisibility, setErrorModalVisibility] = useState(false);
 
   useEffect(() => {
     setErrorModalVisibility(props.visible);
   }, [props.visible]);
+
+  const onRetry = () => {
+    props.onRetry();
+  };
 
   return (
     <Incubator.Dialog
@@ -39,14 +50,22 @@ const LoadingModalComponent: React.FC<Props> = (props: Props) => {
       {/* Dialog view container */}
       <View style={style.dialogContainerStyle}>
         <Lottie
-          source={require('../../../../assets/lottie_animations/loading.json')}
+          source={require('../../assets/lottie_animations/error.json')}
           autoPlay={true}
           loop={true}
           style={style.animation}
         />
         <Text style={style.dialogText} h2>
-          {props.title}
+          Ooooh Snap!
         </Text>
+        <Text style={style.dialogText} body3>
+          {props.errorMessage}
+        </Text>
+        <Button
+          label="Retry"
+          backgroundColor={AppColors.yellow}
+          onPress={() => onRetry()}
+        />
       </View>
     </Incubator.Dialog>
   );
@@ -69,24 +88,4 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state: RootState) => ({
-  title: state.ui_state.title,
-  message: state.ui_state.message,
-});
-
-const mapDispatchToProps = {
-  dispatchActionSetNormal: generateActionSetNormal,
-};
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type ReduxProps = ConnectedProps<typeof connector>;
-
-/**
- * Error dialog props.
- */
-interface Props extends ReduxProps {
-  visible: boolean;
-}
-
-export default connector(LoadingModalComponent);
+export default ErrorModalComponent;

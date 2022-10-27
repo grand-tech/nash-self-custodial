@@ -22,7 +22,8 @@ export function generateActionSetError(
  * Generate an instance of set normal action.
  * @returns an instance of set idle action.
  */
-export function generateActionSetNormal(): ActionSetNormal {
+export function generateActionSetNormal(tag?: string): ActionSetNormal {
+  console.log('generateActionSetNormal() ====> ', tag);
   return {
     type: Actions.SET_NORMAL,
   };
@@ -32,12 +33,15 @@ export function generateActionSetNormal(): ActionSetNormal {
  * Generates the set loader action.
  * @param title the title of the loader.
  * @param body the body message of the loader.
+ * @param tag optional string logged when debugging.
  * @returns an instance of set loader action.
  */
 export function generateActionSetLoading(
   title: string,
   body: string,
+  tag?: string,
 ): ActionSetLoading {
+  console.log('generateActionSetLoading() ====> ', tag);
   return {
     type: Actions.SET_LOADING,
     title: title,

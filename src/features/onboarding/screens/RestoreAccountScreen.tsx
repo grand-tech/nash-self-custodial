@@ -24,7 +24,6 @@ import {
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {headerWithDeleteButton} from '../navigation/navigation.stack';
-import ErrorModalComponent from '../components/ErrorModalComponent';
 import {
   constructSeedPhraseFromChipInputs,
   validateSeedPhraseInput,
@@ -36,7 +35,9 @@ import {
   generateActionSetLoading,
   generateActionSetError,
 } from '../../ui_state_manager/action.generators';
-import LoadingModalComponent from '../components/LoadingModalComponent';
+import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
+import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
+import {generateActionSetNormal} from '../../ui_state_manager/action.generators';
 
 /**
  * Navigation props. TODO move to centralized file.
@@ -92,15 +93,19 @@ const RestoreAccountScreen = (props: Props) => {
    * Confirm seed phrase button handler logic.
    */
   const confirmSeedPhraseBtnHandler = async () => {
-    const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
     // console.log('props', props);
-    if (seedPhraseStr.trim() !== '') {
+    if (inputSeedPhrase.length === 24) {
       props.dispatchSetLoading('Restoring account..', '');
-      await delay(600);
-      props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
+      console.log('Modal should appear');
     } else {
       props.dispatchSetError('Invalid mnemonic', '');
     }
+  };
+
+  const onShowModal = () => {
+    const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
+    console.log('on show modal', seedPhraseStr);
+    props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
   };
 
   return (
@@ -177,7 +182,10 @@ const RestoreAccountScreen = (props: Props) => {
               errorMessage={'Invalid seed phrase!!'}
             />
 
-            <LoadingModalComponent visible={props.ui_status === 'loading'} />
+            <LoadingModalComponent
+              onShowModal={onShowModal}
+              visible={props.ui_status === 'loading'}
+            />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
