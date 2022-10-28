@@ -90,19 +90,19 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
 
   return (
     <Screen style={styles.screen}>
-      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+      <View style={styles.screenTitle}>
         <View style={styles.enterPin}>
           <Text style={styles.pinText}>Confirm PIN</Text>
         </View>
 
-        <View style={{alignSelf: 'center'}}>
+        <View style={styles.errorDisplay}>
           <Text style={styles.pinError}>{pinError}</Text>
         </View>
 
         <View style={styles.pinIcons}>
           {pinCharArray.map((text, index) => (
             <View key={index} style={styles.pinContainer}>
-              {text == '' ? (
+              {text === '' ? (
                 <Text style={styles.starText} />
               ) : (
                 <Text style={styles.starText}>{hidePin ? '*' : text}</Text>
@@ -194,6 +194,8 @@ const styles = StyleSheet.create({
     ...FONTS.body1,
     alignSelf: 'center',
   },
+  screenTitle: {alignItems: 'center', justifyContent: 'center'},
+  errorDisplay: {alignSelf: 'center'},
 });
 
 /**

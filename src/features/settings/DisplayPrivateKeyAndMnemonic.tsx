@@ -13,8 +13,16 @@ import {Pressable} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Button, Text} from 'react-native-ui-lib';
 import {getStoredMnemonic, getStoredPrivateKey} from '../onboarding/utils';
+import {connect, ConnectedProps} from 'react-redux';
+import {NashCache} from '../../utils/cache';
+import {
+  generateActionSetEnterPIN,
+  generateActionSetNormal,
+} from '../ui_state_manager/action.generators';
+import EnterPinModal from '../../app_components/EnterPinModal';
+import {RootState} from '../../app-redux-store/store';
 
-const DisplayPrivateKeyAndMnemonic = () => {
+const DisplayPrivateKeyAndMnemonic: React.FC<Props> = (props: Props) => {
   const navigation = useNavigation();
 
   const [mnemonic, setMnemonic] = useState('');
@@ -23,7 +31,7 @@ const DisplayPrivateKeyAndMnemonic = () => {
   const copySeedPhraseToClipBoard = () => {
     Clipboard.setString(mnemonic);
     ToastAndroid.showWithGravity(
-      'Copied seedphrase.',
+      'Copied seed phrase.',
       ToastAndroid.SHORT,
       ToastAndroid.TOP,
     );
@@ -35,6 +43,7 @@ const DisplayPrivateKeyAndMnemonic = () => {
       title: 'Seed Phrase & Private Key',
       headerTransparent: true,
     });
+
     fetchStoredKeys();
     return () => {
       navigation.getParent()?.setOptions({headerShown: true});
@@ -42,14 +51,32 @@ const DisplayPrivateKeyAndMnemonic = () => {
   });
 
   const fetchStoredKeys = async () => {
-    const rst = await getStoredMnemonic('202222');
+    const cachedPIN = NashCache.getPinCache();
+    if (props.status !== 'enter_pin' && cachedPIN) {
+      const rst = await getStoredMnemonic(cachedPIN);
+      if (rst) {
+        setMnemonic(rst);
+      }
+      const prKey = await getStoredPrivateKey(cachedPIN);
+      if (prKey) {
+        setPrivateKey(prKey);
+      }
+    } else {
+      props.promptForPIN();
+    }
+  };
+
+  const onPinMatched = async (pin: string) => {
+    NashCache.setPinCache(pin);
+    const rst = await getStoredMnemonic(pin);
     if (rst) {
       setMnemonic(rst);
     }
-    const prKey = await getStoredPrivateKey('202222');
+    const prKey = await getStoredPrivateKey(pin);
     if (prKey) {
       setPrivateKey(prKey);
     }
+    props.returnToNormal();
   };
 
   return (
@@ -102,6 +129,11 @@ const DisplayPrivateKeyAndMnemonic = () => {
         outline={true}
         outlineColor={AppColors.light_green}
       />
+      <EnterPinModal
+        target="privateKey"
+        onPinMatched={onPinMatched}
+        visible={props.status === 'enter_pin'}
+      />
     </Screen>
   );
 };
@@ -146,4 +178,23 @@ const style = StyleSheet.create({
     color: AppColors.green,
   },
 });
-export default DisplayPrivateKeyAndMnemonic;
+
+const mapStateToProps = (state: RootState) => ({
+  status: state.ui_state.status,
+});
+
+const mapDispatchToProps = {
+  promptForPIN: generateActionSetEnterPIN,
+  returnToNormal: generateActionSetNormal,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
+
+/**
+ * Error dialog props.
+ */
+interface Props extends ReduxProps {}
+
+export default connector(DisplayPrivateKeyAndMnemonic);

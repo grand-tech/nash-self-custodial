@@ -16,4 +16,9 @@ export enum Actions {
    * Normal operations of the screen (no error displays or loaders)
    */
   SET_NORMAL = 'UI_STATE/SET_NORMAL',
+
+  /**
+   * Anticipating the user to enter there PIN.
+   */
+  SET_ENTER_PIN = 'SET_ENTER_PIN',
 }
