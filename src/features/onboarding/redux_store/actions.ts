@@ -6,7 +6,6 @@ export enum Actions {
 
   CHOOSE_CREATE_NEW_ACCOUNT = 'ONBOARDING/CHOOSE_CREATE_NEW_ACCOUNT',
   CREATE_NEW_ACCOUNT = 'ONBOARDING/CREATE_NEW_ACCOUNT',
-  CREATED_NEW_ACCOUNT = 'ONBOARDING/CREATED_NEW_ACCOUNT',
 
   SET_USER_NAME = 'ONBOARDING/SET_USER_NAME',
   COMPLETED_ONBOARDING = 'ONBOARDING/COMPLETED_ONBOARDING',
@@ -42,12 +41,6 @@ export interface ActionChooseCreateNewAccount {
 export interface ActionCreateNewAccount {
   type: Actions.CREATE_NEW_ACCOUNT;
   pin: string;
-}
-
-export interface ActionCreatedNewAccount {
-  type: Actions.CREATED_NEW_ACCOUNT;
-  publicAddress: string;
-  publicKey: string;
 }
 
 export interface ActionSetUserName {

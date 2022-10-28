@@ -5,8 +5,10 @@ import {RootState} from '../../../app-redux-store/store';
  * @param state the applications redux state.
  * @returns the value stored in the public address state.
  */
-export const selectPublicAddress = (state: RootState) =>
-  state.onboarding.publicAddress;
+export const selectPublicAddress = (state: RootState) => {
+  // console.log(state);
+  return state.onboarding.publicAddress;
+};
 
 /**
  * Retrieves value state from redux store.

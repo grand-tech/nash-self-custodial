@@ -32,7 +32,9 @@ function* createAccount(action: ActionCreateNewAccount) {
     // while (!isNewAccount)
     const mnemonic: string = yield call(generateNewMnemonic);
 
-    yield put(generateActionSetLoading('Generating keys', ''));
+    yield put(
+      generateActionSetLoading('Generating keys', '', 'generating keys'),
+    );
 
     const newAccount: AccountInformation = yield call(
       getAccountFromMnemonic,
@@ -48,8 +50,6 @@ function* createAccount(action: ActionCreateNewAccount) {
     );
     yield put(generateActionSetNormal('create account'));
     navigate('SetUpSeedPhraseInstructions');
-    // figure out what to do with this after adding attestation and comment encryption.
-    // yield put(generateActionCompletedOnboarding());
   } catch (error) {
     yield put(generateActionSetError(error, 'Failed to create account'));
   }

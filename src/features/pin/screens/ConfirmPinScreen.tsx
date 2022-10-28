@@ -23,8 +23,10 @@ import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/n
 import {addPinChar, deletePinChar} from '../utils';
 import {NashCache} from '../../../utils/cache';
 import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
+import {useIsFocused} from '@react-navigation/native';
 
 const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
+  const isFocused = useIsFocused();
   const pin: string = props.route.params.pin;
 
   const [pinError, setPinError] = React.useState('');
@@ -43,12 +45,14 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
       NashCache.setPinCache(pin);
       props.navigation.navigate('RestoreAccount', {pin: pin});
     } else {
-      props.dispatchActionSetLoading('Creating account', '');
+      props.dispatchActionSetLoading('Creating account', '', 'on pin matched');
     }
   };
 
   const onShowModal = () => {
-    props.dispatchActionCreateNewAccount(pin);
+    if (isFocused) {
+      props.dispatchActionCreateNewAccount(pin);
+    }
   };
 
   const onDelete = () => {
@@ -86,19 +90,19 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
 
   return (
     <Screen style={styles.screen}>
-      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+      <View style={styles.screenTitle}>
         <View style={styles.enterPin}>
           <Text style={styles.pinText}>Confirm PIN</Text>
         </View>
 
-        <View style={{alignSelf: 'center'}}>
+        <View style={styles.errorDisplay}>
           <Text style={styles.pinError}>{pinError}</Text>
         </View>
 
         <View style={styles.pinIcons}>
           {pinCharArray.map((text, index) => (
             <View key={index} style={styles.pinContainer}>
-              {text == '' ? (
+              {text === '' ? (
                 <Text style={styles.starText} />
               ) : (
                 <Text style={styles.starText}>{hidePin ? '*' : text}</Text>
@@ -190,6 +194,8 @@ const styles = StyleSheet.create({
     ...FONTS.body1,
     alignSelf: 'center',
   },
+  screenTitle: {alignItems: 'center', justifyContent: 'center'},
+  errorDisplay: {alignSelf: 'center'},
 });
 
 /**

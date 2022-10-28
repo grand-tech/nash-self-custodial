@@ -37,6 +37,19 @@ export interface ActionSetNormal {
 }
 
 /**
+ * Sets the current screen on idle state. i.e normal screen operations without loaders or errors.
+ * @typedef { object } ActionEnterPIN action.
+ * @property { Actions }
+ */
+export interface ActionEnterPIN {
+  type: Actions.SET_ENTER_PIN;
+}
+
+/**
  * Create a generic action type.
  */
-export type ActionTypes = ActionSetLoading | ActionSetError | ActionSetNormal;
+export type ActionTypes =
+  | ActionSetLoading
+  | ActionSetError
+  | ActionSetNormal
+  | ActionEnterPIN;

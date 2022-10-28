@@ -37,7 +37,7 @@ import {
 } from '../../ui_state_manager/action.generators';
 import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
 import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
-import {generateActionSetNormal} from '../../ui_state_manager/action.generators';
+import {useIsFocused} from '@react-navigation/native';
 
 /**
  * Navigation props. TODO move to centralized file.
@@ -55,6 +55,7 @@ function delay(ms: number) {
  * Contains the onboarding UI.
  */
 const RestoreAccountScreen = (props: Props) => {
+  const isFocused = useIsFocused();
   const initInputSeedPhrase: ChipsInputChipProps[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
@@ -103,9 +104,10 @@ const RestoreAccountScreen = (props: Props) => {
   };
 
   const onShowModal = () => {
-    const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-    console.log('on show modal', seedPhraseStr);
-    props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
+    if (isFocused) {
+      const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
+      props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
+    }
   };
 
   return (

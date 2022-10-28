@@ -1,5 +1,10 @@
 import {Actions} from './action.patterns';
-import {ActionSetError, ActionSetLoading, ActionSetNormal} from './actions';
+import {
+  ActionSetError,
+  ActionSetLoading,
+  ActionSetNormal,
+  ActionEnterPIN,
+} from './actions';
 
 /**
  * Generates an instance of set loader action.
@@ -26,6 +31,17 @@ export function generateActionSetNormal(tag?: string): ActionSetNormal {
   console.log('generateActionSetNormal() ====> ', tag);
   return {
     type: Actions.SET_NORMAL,
+  };
+}
+
+/**
+ * Generate an instance of set enter pin action (prompt the user for their PIN).
+ * @returns an instance of set enter pin action.
+ */
+export function generateActionSetEnterPIN(tag?: string): ActionEnterPIN {
+  console.log('generateActionSetEnterPIN() ====> ', tag);
+  return {
+    type: Actions.SET_ENTER_PIN,
   };
 }
 
