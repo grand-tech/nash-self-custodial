@@ -54,23 +54,29 @@ const EnterPinScreen = ({route, navigation}: Props) => {
    * @param pin the pin number used as the encryption key.
    */
   const handlePinValidation = async (pin: string) => {
-    let retrievedItem: string | null;
-    if (target === 'mnemonic') {
-      retrievedItem = await getStoredMnemonic(pin);
-    } else {
-      retrievedItem = await getStoredPrivateKey(pin);
-    }
+    try {
+      let retrievedItem: string | null;
+      if (target === 'mnemonic') {
+        retrievedItem = await getStoredMnemonic(pin);
+      } else {
+        retrievedItem = await getStoredPrivateKey(pin);
+      }
 
-    if (retrievedItem === null) {
+      if (retrievedItem === null || retrievedItem === '') {
+        setPinError('Invalid PIN!!!');
+        setCurrentIndex(0);
+        setPinTextArray(['', '', '', '', '', '']);
+      } else {
+        if (target === 'mnemonic') {
+          navigation.navigate(nextRoute, {mnemonic: retrievedItem});
+        } else {
+          navigation.navigate(nextRoute, {privateKey: retrievedItem});
+        }
+      }
+    } catch (error) {
       setPinError('Invalid PIN!!!');
       setCurrentIndex(0);
       setPinTextArray(['', '', '', '', '', '']);
-    } else {
-      if (target === 'mnemonic') {
-        navigation.navigate(nextRoute, {mnemonic: retrievedItem});
-      } else {
-        navigation.navigate(nextRoute, {privateKey: retrievedItem});
-      }
     }
   };
 
@@ -83,19 +89,19 @@ const EnterPinScreen = ({route, navigation}: Props) => {
 
   return (
     <Screen style={styles.screen}>
-      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+      <View style={styles.pinDisplayArea}>
         <View style={styles.enterPin}>
           <Text style={styles.pinText}>Enter PIN</Text>
         </View>
 
-        <View style={{alignSelf: 'center'}}>
+        <View style={styles.pinErrorContainer}>
           <Text style={styles.pinError}>{pinError}</Text>
         </View>
 
         <View style={styles.pinIcons}>
           {pinCharArray.map((text, index) => (
             <View key={index} style={styles.pinContainer}>
-              {text == '' ? (
+              {text === '' ? (
                 <Text style={styles.starText} />
               ) : (
                 <Text style={styles.starText}>{hidePin ? '*' : text}</Text>
@@ -182,6 +188,8 @@ const styles = StyleSheet.create({
     ...FONTS.body1,
     alignSelf: 'center',
   },
+  pinDisplayArea: {alignItems: 'center', justifyContent: 'center'},
+  pinErrorContainer: {alignSelf: 'center'},
 });
 
 export default EnterPinScreen;
