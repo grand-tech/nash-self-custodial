@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Screen from '../../../app_components/Screen';
 import {
@@ -14,9 +14,6 @@ import {Chip} from 'react-native-ui-lib';
 import {addPinChar, deletePinChar} from '../utils';
 
 const CreatePinScreen: React.FC = () => {
-  // const eyeSlash = Icon.getImageSourceSync('eye-slash', 24, AppColors.yellow);
-  // const eye = Icon.getImageSourceSync('eye', 24, AppColors.yellow);
-
   const navigation = useNavigation();
 
   //Contains the pin number text as an array.
@@ -58,7 +55,7 @@ const CreatePinScreen: React.FC = () => {
 
   return (
     <Screen style={styles.screen}>
-      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+      <View style={styles.pinDisplayArea}>
         <View style={styles.enterPin}>
           <Text style={styles.pinText}>Enter PIN</Text>
         </View>
@@ -66,7 +63,7 @@ const CreatePinScreen: React.FC = () => {
         <View style={styles.pinIcons}>
           {pinCharArray.map((text, index) => (
             <View key={index} style={styles.pinContainer}>
-              {text == '' ? (
+              {text === '' ? (
                 <Text style={styles.starText} />
               ) : (
                 <Text style={styles.starText}>{hidePin ? '*' : text}</Text>
@@ -152,6 +149,10 @@ const styles = StyleSheet.create({
   showPin: {
     ...FONTS.body3,
     alignSelf: 'center',
+  },
+  pinDisplayArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
