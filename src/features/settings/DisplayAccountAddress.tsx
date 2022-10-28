@@ -31,28 +31,39 @@ const DisplayAccountAddress = () => {
 
   return (
     <Screen style={style.screenContainer}>
-      <QRCode value={publicAddress} size={150} />
-      <Pressable
-        onPress={() => {
-          Clipboard.setString(publicAddress);
-          ToastAndroid.showWithGravity(
-            'Copied public address.',
-            ToastAndroid.SHORT,
-            ToastAndroid.TOP,
-          );
-        }}>
-        <View style={style.publicAddressView}>
-          <Icon
-            name="copy"
-            color={AppColors.green}
-            size={20}
-            style={style.copyIcon}
-          />
-          <Text body4 style={style.publicAddress}>
-            {publicAddress}
-          </Text>
+      <View style={style.contentContainer}>
+        <QRCode value={publicAddress} size={150} />
+
+        <View style={style.hrContainer}>
+          <View style={style.hr} />
+          <View>
+            <Text style={style.hrText}>or</Text>
+          </View>
+          <View style={style.hr} />
         </View>
-      </Pressable>
+
+        <Pressable
+          onPress={() => {
+            Clipboard.setString(publicAddress);
+            ToastAndroid.showWithGravity(
+              'Copied public address.',
+              ToastAndroid.SHORT,
+              ToastAndroid.TOP,
+            );
+          }}>
+          <View style={style.publicAddressView}>
+            <Icon
+              name="copy"
+              color={AppColors.green}
+              size={20}
+              style={style.copyIcon}
+            />
+            <Text body4 style={style.publicAddress}>
+              {publicAddress}
+            </Text>
+          </View>
+        </Pressable>
+      </View>
 
       <Button
         label={'Done'}
@@ -91,6 +102,23 @@ const style = StyleSheet.create({
   copyIcon: {
     paddingRight: wp('3%'),
     paddingLeft: wp('1%'),
+  },
+  contentContainer: {
+    justifyContent: 'space-around',
+    height: hp('50%'),
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: wp('5%'),
+  },
+  hr: {flex: 1, height: 1, backgroundColor: AppColors.light_green},
+  hrText: {
+    width: 50,
+    textAlign: 'center',
+    color: AppColors.light_green,
+  },
+  hrContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
