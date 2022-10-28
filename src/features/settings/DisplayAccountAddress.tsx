@@ -32,7 +32,7 @@ const DisplayAccountAddress = () => {
   return (
     <Screen style={style.screenContainer}>
       <View style={style.contentContainer}>
-        <QRCode value={publicAddress} size={150} />
+        <QRCode value={publicAddress} size={150} color={AppColors.green} />
 
         <View style={style.hrContainer}>
           <View style={style.hr} />
@@ -98,6 +98,7 @@ const style = StyleSheet.create({
   },
   publicAddress: {
     textAlign: 'center',
+    color: AppColors.green,
   },
   copyIcon: {
     paddingRight: wp('3%'),
