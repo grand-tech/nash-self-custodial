@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Modal} from 'react-native';
+import {View, StyleSheet, Modal, Pressable} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,8 +16,12 @@ import {
 } from '../features/onboarding/utils';
 import {AppColors} from '../ui_lib_configs/colors';
 import {FONTS} from '../ui_lib_configs/fonts';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {useNavigation} from '@react-navigation/native';
+import {generateActionSetNormal} from '../features/ui_state_manager/action.generators';
 
 const EnterPinModal: React.FC<Props> = (props: Props) => {
+  const navigation = useNavigation();
   const target: string = props.target ?? 'privateKey';
 
   const [pinError, setPinError] = React.useState('');
@@ -52,19 +56,24 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
    */
   const handlePinValidation = async (pin: string) => {
     let retrievedItem: string | null;
-    if (target === 'mnemonic') {
-      retrievedItem = await getStoredMnemonic(pin);
-    } else {
-      retrievedItem = await getStoredPrivateKey(pin);
-    }
+    try {
+      if (target === 'mnemonic') {
+        retrievedItem = await getStoredMnemonic(pin);
+      } else {
+        retrievedItem = await getStoredPrivateKey(pin);
+      }
 
-    if (retrievedItem === null) {
+      if (retrievedItem === null || retrievedItem.trim() === '') {
+        setPinError('Invalid PIN!!!');
+        setCurrentIndex(0);
+        setPinTextArray(['', '', '', '', '', '']);
+      } else {
+        props.onPinMatched(pin);
+      }
+    } catch (error) {
       setPinError('Invalid PIN!!!');
       setCurrentIndex(0);
       setPinTextArray(['', '', '', '', '', '']);
-    } else {
-      console.log('pin matched');
-      props.onPinMatched(pin);
     }
   };
 
@@ -76,6 +85,22 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
       //   onShow={onShow}
     >
       <Screen style={styles.screen}>
+        <View style={styles.closeIcon}>
+          <Pressable
+            onPress={() => {
+              props.dispatchActionSetNormal();
+              navigation.goBack();
+            }}>
+            <Icon
+              light
+              name="window-close"
+              size={34}
+              color={AppColors.black}
+              //   style={styles.number}
+            />
+          </Pressable>
+        </View>
+
         <View style={styles.screenTitle}>
           <View style={styles.enterPin}>
             <Text style={styles.pinText}>Enter PIN</Text>
@@ -176,19 +201,13 @@ const styles = StyleSheet.create({
     ...FONTS.body1,
     alignSelf: 'center',
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 2,
-    padding: 35,
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.75,
-    height: hp('100%'),
-    width: wp('100%'),
-  },
   screenTitle: {alignItems: 'center', justifyContent: 'center'},
   errorDisplay: {alignSelf: 'center'},
+  closeIcon: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    paddingEnd: wp('5%'),
+  },
 });
 
 const mapStateToProps = (state: RootState) => ({
@@ -196,7 +215,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = {
-  // dispatchActionSetNormal: generateActionSetNormal,
+  dispatchActionSetNormal: generateActionSetNormal,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

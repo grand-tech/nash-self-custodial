@@ -52,7 +52,7 @@ const DisplayPrivateKeyAndMnemonic: React.FC<Props> = (props: Props) => {
 
   const fetchStoredKeys = async () => {
     const cachedPIN = NashCache.getPinCache();
-    if (props.status !== 'enter_pin' && cachedPIN) {
+    if (cachedPIN) {
       const rst = await getStoredMnemonic(cachedPIN);
       if (rst) {
         setMnemonic(rst);
@@ -61,7 +61,7 @@ const DisplayPrivateKeyAndMnemonic: React.FC<Props> = (props: Props) => {
       if (prKey) {
         setPrivateKey(prKey);
       }
-    } else {
+    } else if (props.status !== 'enter_pin' && !cachedPIN) {
       props.promptForPIN();
     }
   };
