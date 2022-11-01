@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {onBoardingReducer} from '../features/onboarding/redux_store/reducers';
 import {uiStateReducer} from '../features/ui_state_manager/reducers';
+import {balanceReducer} from '../features/account_balance/redux_store/reducers';
 
 /**
  * Construct the root reducer from
@@ -8,4 +9,5 @@ import {uiStateReducer} from '../features/ui_state_manager/reducers';
 export const rootReducer = combineReducers({
   onboarding: onBoardingReducer,
   ui_state: uiStateReducer,
+  wallet_balance: balanceReducer,
 });

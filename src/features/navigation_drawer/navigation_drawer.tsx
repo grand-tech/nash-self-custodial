@@ -1,30 +1,32 @@
 import React from 'react';
-import {Button, View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import {useNavigation} from '@react-navigation/native';
 import {LogOutScreen} from '../onboarding/screens/LogOutScreen';
 import {SettingsStack} from '../settings/navigation/navigation.stack';
-
-function HomeScreen() {
-  const navigation = useNavigation();
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Button
-        onPress={() => navigation.navigate('Settings')}
-        title="Go to notifications"
-      />
-    </View>
-  );
-}
+import CustomDrawerContent from './CustomDrawerContent';
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {generateActionQueryBalance} from '../account_balance/redux_store/action.generators';
+import {WalletHomeStack} from '../wallet_home/navigation/navigation.stack';
 
 const Drawer = createDrawerNavigator();
 
 export const NavigationDrawer = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(generateActionQueryBalance());
+  });
+
   return (
     <Drawer.Navigator
+      drawerContent={props => <CustomDrawerContent {...props} />}
       initialRouteName="Home"
       screenOptions={{headerTransparent: true}}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Home" component={WalletHomeStack} />
+      <Drawer.Screen
+        name="Withdraw & Deposit"
+        component={SettingsStack}
+        // options={{headerTransparent: true}}
+      />
       <Drawer.Screen
         name="Settings"
         component={SettingsStack}

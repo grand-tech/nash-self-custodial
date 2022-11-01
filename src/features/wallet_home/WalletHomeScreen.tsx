@@ -9,7 +9,7 @@ import {
 } from 'react-native-responsive-screen';
 import {AppColors} from '../../ui_lib_configs/colors';
 
-const SettingsHomeScreen = () => {
+const WalletHomeScreen = () => {
   const navigation = useNavigation();
   return (
     <Screen style={style.screenContainer}>
@@ -73,7 +73,7 @@ const style = StyleSheet.create({
   },
 });
 
-export default SettingsHomeScreen;
+export default WalletHomeScreen;
 
 const HR = () => {
   return (

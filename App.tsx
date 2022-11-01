@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -18,6 +19,14 @@ import {RootState} from './src/app-redux-store/store';
 import {connect, ConnectedProps} from 'react-redux';
 import {OnboardingStatusNames} from './src/features/onboarding/redux_store/reducers';
 import {navigationRef} from './src/navigation/navigation.service';
+import {LogBox} from 'react-native';
+
+LogBox.ignoreLogs([
+  "Warning: The provided value 'moz",
+  "Warning: The provided value 'ms-stream",
+  "The provided value 'moz-chunked-arraybuffer'",
+  "The provided value 'ms-stream' is not a valid",
+]);
 
 const App: React.FC<Props> = (props: Props) => {
   initTheme();

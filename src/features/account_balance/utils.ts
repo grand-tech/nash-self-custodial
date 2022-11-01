@@ -3,6 +3,13 @@ export const ContractKit = require('@celo/contractkit');
 export const web3 = new Web3('https://alfajores-forno.celo-testnet.org');
 export const kit = ContractKit.newKitFromWeb3(web3);
 
+export interface WalletBalance {
+  cUSD: number;
+  CELO: number;
+  cEUR: number;
+  cREAL: number;
+}
+
 /**
  * Checks if account is new or has been used before.
  * @param address the accounts public address.
@@ -19,6 +26,12 @@ export async function isAccountNew(address: string) {
 }
 
 export async function getBalance(address: string) {
+  let bal: WalletBalance = {
+    cUSD: 0,
+    CELO: 0,
+    cEUR: 0,
+    cREAL: 0,
+  };
   try {
     const balanceObj: Record<string, number> = {};
     // Get Balances
@@ -27,10 +40,17 @@ export async function getBalance(address: string) {
     for (const value in balances) {
       balanceObj[value] = balances[value] / 10 ** 18;
     }
-    // Return balance object
-    return balanceObj;
+
+    bal = {
+      cUSD: balanceObj.cUSD,
+      CELO: balanceObj.CELO,
+      cEUR: balanceObj.cEUR,
+      cREAL: balanceObj.cREAL,
+    };
+    return bal;
   } catch (err) {
     console.log(err);
+    return bal;
   }
 }
 
@@ -40,7 +60,6 @@ export async function dummySendFunds() {
     '31b45a2ef002b738202b1399ae67959ac7180d32f21dea7e6d7fa49e4c9ec443';
   let celotoken = await kit.contracts.getGoldToken();
   let cUSDtoken = await kit.contracts.getStableToken();
-  let cEURtoken = await kit.contracts.getStableToken('cEUR');
 
   kit.connection.addAccount(privateKey);
 
