@@ -8,6 +8,7 @@ export interface ActionSendFunds {
   coin: StableToken;
   amount: number;
   recipientAddress: string;
+  pin: string;
 }
 
 /**

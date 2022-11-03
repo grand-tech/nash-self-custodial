@@ -18,7 +18,7 @@ export function* sendFunds(action: ActionSendFunds) {
   const amount = contractKit.kit?.web3?.utils.toWei(action.amount.toString());
   const coin = action.coin;
 
-  const privateKey: string = yield call(getStoredPrivateKey, '202222');
+  const privateKey: string = yield call(getStoredPrivateKey, action.pin);
   const address: string = yield select(selectPublicAddress);
 
   contractKit.kit?.addAccount(privateKey);
