@@ -36,8 +36,18 @@ const CustomDrawerContent = (props: Props) => {
           {props.cUSDBalance !== '-' ? (
             <View>
               <Text style={styles.text}>Current Balance</Text>
-              <Text style={styles.cUSD}>cUSD {props.cUSDBalance}</Text>
-              <Text style={styles.ksh}>Ksh {props.cUSDBalance}</Text>
+              <Text style={styles.cUSD}>
+                cUSD{' '}
+                {typeof props.cEuroBalance === 'number'
+                  ? props.cEuroBalance.toFixed(2)
+                  : props.cEuroBalance}
+              </Text>
+              <Text style={styles.ksh}>
+                Ksh{' '}
+                {typeof props.cEuroBalance === 'number'
+                  ? props.cEuroBalance.toFixed(2)
+                  : props.cEuroBalance}
+              </Text>
             </View>
           ) : (
             <View style={styles.loadingDiv}>

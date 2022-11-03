@@ -22,7 +22,7 @@ const persistConfig = {
   vsrsion: 1,
   keyPrefix: '',
   storage: FSStorage(),
-  blacklist: ['ui_state'],
+  blacklist: ['ui_state', 'wallet_balance'],
 };
 
 /**
@@ -49,7 +49,9 @@ export const store = configureStore({
 /**
  * Method to run after rehydration.
  */
-const postRehydration = () => {};
+const postRehydration = () => {
+  // console.log('rehydrated', store.getState());
+};
 
 /**
  * Compose the persistor object.
