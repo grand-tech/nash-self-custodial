@@ -28,8 +28,7 @@ export function generateActionSetError(
  * Generate an instance of set normal action.
  * @returns an instance of set idle action.
  */
-export function generateActionSetNormal(tag?: string): ActionSetNormal {
-  console.log('generateActionSetNormal() ====> ', tag);
+export function generateActionSetNormal(): ActionSetNormal {
   return {
     type: Actions.SET_NORMAL,
   };

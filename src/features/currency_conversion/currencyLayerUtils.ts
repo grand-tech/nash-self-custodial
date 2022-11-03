@@ -9,6 +9,8 @@ export interface CurrencyLayerRates {
 const TAG = '[ Currency Layer API ] : ';
 
 export async function getCurrencyRates() {
+  // TODO: fetch the base currency from redux store.
+  console.log('======>' + TAG);
   const result = await fetch(
     'https://api.apilayer.com/currency_data/live?source=KES&currencies=EUR%2C%20USD%2C%20BRL',
     {
