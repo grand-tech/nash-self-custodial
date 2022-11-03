@@ -26,7 +26,6 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
       const balance = props.cUSDBalance / rates?.KESUSD;
       setCUSDFiatBalance(Number(balance.toFixed(2)).toLocaleString());
       totalFiatBalance += balance;
-      console.log('fiat updates', totalFiatBalance);
     }
 
     if (typeof props.cRealBalance === 'number' && rates?.KESBRL) {

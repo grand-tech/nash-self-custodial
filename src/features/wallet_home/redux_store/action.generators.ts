@@ -12,11 +12,13 @@ export function generateActionSendFunds(
   coin: StableToken,
   amount: number,
   recipientAddress: string,
+  pin: string,
 ): ActionSendFunds {
   return {
     type: Actions.SEND_FUNDS,
     coin,
     amount,
     recipientAddress,
+    pin,
   };
 }
