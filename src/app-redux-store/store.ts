@@ -22,7 +22,7 @@ const persistConfig = {
   vsrsion: 1,
   keyPrefix: '',
   storage: FSStorage(),
-  blacklist: ['ui_state'],
+  blacklist: ['ui_state', 'wallet_balance'],
 };
 
 /**
@@ -52,9 +52,9 @@ export const store = configureStore({
 const postRehydration = () => {};
 
 /**
- * Compose the persistor object.
+ * Compose the persister object.
  * @param store instance of redux store.
- * @param config the persistor config object.
+ * @param config the persister config object.
  * @param callback the method to run after rehydration.
  */
 export const persistor = persistStore(store, null, postRehydration);

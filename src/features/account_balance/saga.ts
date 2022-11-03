@@ -7,7 +7,13 @@ import {generateActionSetBalance} from './redux_store/action.generators';
 export function* queryWalletBalance() {
   const address: string = yield select(selectPublicAddress);
   const balance: WalletBalance = yield call(getBalance, address);
-  yield put(generateActionSetBalance(balance));
+
+  if (
+    typeof balance.cEUR !== 'undefined' &&
+    typeof balance.cUSD !== 'undefined'
+  ) {
+    yield put(generateActionSetBalance(balance));
+  }
 }
 
 /**

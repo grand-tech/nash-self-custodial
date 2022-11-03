@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import Screen from '../../app_components/Screen';
+import Screen from '../../../app_components/Screen';
 import {StyleSheet, TextInput, ToastAndroid, View} from 'react-native';
-import {AppColors} from '../../ui_lib_configs/colors';
-import {FONTS} from '../../ui_lib_configs/fonts';
+import {AppColors} from '../../../ui_lib_configs/colors';
+import {FONTS} from '../../../ui_lib_configs/fonts';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -12,15 +12,15 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Pressable} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Button, Text} from 'react-native-ui-lib';
-import {getStoredMnemonic, getStoredPrivateKey} from '../onboarding/utils';
+import {getStoredMnemonic, getStoredPrivateKey} from '../../onboarding/utils';
 import {connect, ConnectedProps} from 'react-redux';
-import {NashCache} from '../../utils/cache';
+import {NashCache} from '../../../utils/cache';
 import {
   generateActionSetEnterPIN,
   generateActionSetNormal,
-} from '../ui_state_manager/action.generators';
-import EnterPinModal from '../../app_components/EnterPinModal';
-import {RootState} from '../../app-redux-store/store';
+} from '../../ui_state_manager/action.generators';
+import EnterPinModal from '../../../app_components/EnterPinModal';
+import {RootState} from '../../../app-redux-store/store';
 
 const RequestMoneyScreen: React.FC<Props> = (props: Props) => {
   const navigation = useNavigation();

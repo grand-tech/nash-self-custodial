@@ -20,5 +20,10 @@ export enum Actions {
   /**
    * Anticipating the user to enter there PIN.
    */
-  SET_ENTER_PIN = 'SET_ENTER_PIN',
+  SET_ENTER_PIN = 'UI_STATE/SET_ENTER_PIN',
+
+  /**
+   * Process was successful.
+   */
+  SET_SUCCESS = 'UI_STATE/SET_SUCCESS',
 }

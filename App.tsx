@@ -20,6 +20,7 @@ import {connect, ConnectedProps} from 'react-redux';
 import {OnboardingStatusNames} from './src/features/onboarding/redux_store/reducers';
 import {navigationRef} from './src/navigation/navigation.service';
 import {LogBox} from 'react-native';
+import NashContractKit from './src/features/account_balance/contract.kit.utils';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz",
@@ -34,6 +35,8 @@ const App: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     SplashScreen.hide();
   }, []);
+
+  NashContractKit.createInstance();
 
   return (
     <NavigationContainer ref={navigationRef}>

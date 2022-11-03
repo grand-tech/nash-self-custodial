@@ -1,4 +1,5 @@
 import {Actions} from './action.patterns';
+import {ActionSuccess} from './actions';
 import {
   ActionSetError,
   ActionSetLoading,
@@ -13,7 +14,7 @@ import {
  * @returns an instance of set error action.
  */
 export function generateActionSetError(
-  error: any,
+  error: string,
   message: string,
 ): ActionSetError {
   return {
@@ -42,6 +43,16 @@ export function generateActionSetEnterPIN(tag?: string): ActionEnterPIN {
   console.log('generateActionSetEnterPIN() ====> ', tag);
   return {
     type: Actions.SET_ENTER_PIN,
+  };
+}
+
+/**
+ * Generate an instance of set success (displays a success message to the user.).
+ * @returns an instance of set success action.
+ */
+export function generateActionSetSuccess(): ActionSuccess {
+  return {
+    type: Actions.SET_SUCCESS,
   };
 }
 
