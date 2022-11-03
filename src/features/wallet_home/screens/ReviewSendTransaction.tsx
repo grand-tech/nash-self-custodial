@@ -14,6 +14,9 @@ import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {generateActionSendFunds} from '../redux_store/action.generators';
+import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
+import {generateActionSetLoading} from '../../ui_state_manager/action.generators';
+import SuccessModalComponent from '../../../app_components/SuccessModalComponent';
 
 /**
  * Contains the screen to enter user name.
@@ -33,9 +36,17 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
     };
   });
 
-  const sendTransaction = () => {
+  const onShowModal = () => {
     const params = props.route.params;
     props.dispatchSendFunds(params.coin, params.amount, params.address);
+  };
+
+  const onSend = () => {
+    props.dispatchSetLoading('Sending transaction ...', '');
+  };
+
+  const onPressOkay = () => {
+    props.navigation.navigate('WalletHomeScreen');
   };
 
   return (
@@ -57,7 +68,17 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
         labelStyle={{
           ...FONTS.h5,
         }}
-        onPress={sendTransaction}
+        onPress={onSend}
+      />
+
+      <LoadingModalComponent
+        onShowModal={onShowModal}
+        visible={props.ui_state === 'loading'}
+      />
+
+      <SuccessModalComponent
+        visible={props.ui_state === 'success'}
+        onPressOkay={onPressOkay}
       />
     </Screen>
   );
@@ -74,6 +95,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {
   dispatchSendFunds: generateActionSendFunds,
+  dispatchSetLoading: generateActionSetLoading,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

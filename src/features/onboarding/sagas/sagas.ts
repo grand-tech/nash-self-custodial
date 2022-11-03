@@ -50,8 +50,10 @@ function* createAccount(action: ActionCreateNewAccount) {
     );
     yield put(generateActionSetNormal('create account'));
     navigate('SetUpSeedPhraseInstructions');
-  } catch (error) {
-    yield put(generateActionSetError(error, 'Failed to create account'));
+  } catch (error: any) {
+    yield put(
+      generateActionSetError(error.toString(), 'Failed to create account'),
+    );
   }
 }
 
@@ -80,9 +82,11 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     yield put(generateActionSetNormal('restore account'));
     //TODO: figure out what to do with this after adding attestation and comment encryption.
     yield put(generateActionCompletedOnboarding());
-  } catch (error) {
+  } catch (error: any) {
     console.log('error', error);
-    yield put(generateActionSetError(error, 'Failed to restore account'));
+    yield put(
+      generateActionSetError(error.toString(), 'Failed to restore account'),
+    );
   }
 }
 

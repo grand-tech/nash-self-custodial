@@ -6,6 +6,8 @@ import {getStoredPrivateKey} from '../../onboarding/utils';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {Actions} from '../redux_store/actions';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
+import {generateActionSetSuccess} from '../../ui_state_manager/action.generators';
+import {generateActionSetError} from '../../ui_state_manager/action.generators';
 
 export function* watchSendFunds() {
   yield takeLatest(Actions.SEND_FUNDS, sendFunds);
@@ -28,8 +30,6 @@ export function* sendFunds(action: ActionSendFunds) {
         action.recipientAddress,
         amount,
       );
-      console.log(receipt);
-      yield put(generateActionQueryBalance());
     } else if (coin === StableToken.cREAL) {
       const receipt = yield call(
         contractKit.sendCREAL,
@@ -37,8 +37,6 @@ export function* sendFunds(action: ActionSendFunds) {
         action.recipientAddress,
         amount,
       );
-      console.log(receipt);
-      yield put(generateActionQueryBalance());
     } else if (coin === StableToken.cEUR) {
       const receipt = yield call(
         contractKit.sendCEUR,
@@ -46,11 +44,12 @@ export function* sendFunds(action: ActionSendFunds) {
         action.recipientAddress,
         amount,
       );
-      console.log(receipt);
-      yield put(generateActionQueryBalance());
     }
+    yield put(generateActionSetSuccess());
+    yield put(generateActionQueryBalance());
   } catch (error: any) {
     console.log(error);
+    yield put(generateActionSetError(error.toString(), error.message));
   }
 }
 

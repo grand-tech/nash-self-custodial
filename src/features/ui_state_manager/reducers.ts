@@ -11,8 +11,8 @@ import {ActionTypes} from './actions';
  * @property { number } last_updated the last time the status changed.
  */
 interface UIScreenState {
-  status: 'loading' | 'error' | 'normal' | 'enter_pin';
-  error: any | null;
+  status: 'loading' | 'error' | 'normal' | 'enter_pin' | 'success';
+  error: string | null;
   message: string | null;
   title: string | null;
   last_updated: number;
@@ -59,6 +59,15 @@ export const uiStateReducer = (
         error: null,
         title: action.title,
         message: action.body,
+        last_updated: new Date().getTime(),
+      };
+    case Actions.SET_SUCCESS:
+      return {
+        ...state,
+        status: 'success',
+        error: null,
+        title: null,
+        message: null,
         last_updated: new Date().getTime(),
       };
     case Actions.SET_ENTER_PIN:

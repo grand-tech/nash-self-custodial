@@ -49,14 +49,12 @@ export const store = configureStore({
 /**
  * Method to run after rehydration.
  */
-const postRehydration = () => {
-  // console.log('rehydrated', store.getState());
-};
+const postRehydration = () => {};
 
 /**
- * Compose the persistor object.
+ * Compose the persister object.
  * @param store instance of redux store.
- * @param config the persistor config object.
+ * @param config the persister config object.
  * @param callback the method to run after rehydration.
  */
 export const persistor = persistStore(store, null, postRehydration);

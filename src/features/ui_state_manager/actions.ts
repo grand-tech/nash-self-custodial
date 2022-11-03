@@ -46,10 +46,20 @@ export interface ActionEnterPIN {
 }
 
 /**
+ * Sets the current screen success state. i.e the process was successful.
+ * @typedef { object } ActionSuccess action.
+ * @property { Actions }
+ */
+export interface ActionSuccess {
+  type: Actions.SET_SUCCESS;
+}
+
+/**
  * Create a generic action type.
  */
 export type ActionTypes =
   | ActionSetLoading
   | ActionSetError
   | ActionSetNormal
-  | ActionEnterPIN;
+  | ActionEnterPIN
+  | ActionSuccess;
