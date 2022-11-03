@@ -3,11 +3,16 @@ import {call, select, spawn, takeLatest, put} from 'redux-saga/effects';
 import {Actions} from './redux_store/actions';
 import {getBalance, WalletBalance} from './utils';
 import {generateActionSetBalance} from './redux_store/action.generators';
+import {
+  getCurrencyRates,
+  CurrencyLayerRates,
+} from '../../utils/currencyLayerUtils';
 
 export function* queryWalletBalance() {
   const address: string = yield select(selectPublicAddress);
   const balance: WalletBalance = yield call(getBalance, address);
-
+  const conversions: CurrencyLayerRates = yield call(getCurrencyRates);
+  console.log('=============================>', conversions);
   if (
     typeof balance.cEUR !== 'undefined' &&
     typeof balance.cUSD !== 'undefined'
