@@ -1,5 +1,4 @@
-import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-ui-lib';
 import {StyleSheet, View} from 'react-native';
 import {
@@ -14,7 +13,42 @@ import {RootState} from '../../../app-redux-store/store';
 import {connect, ConnectedProps} from 'react-redux';
 
 const WalletHomeScreen: React.FC<Props> = (props: Props) => {
-  const navigation = useNavigation();
+  const [totalBalanceFiat, setTotalBalanceFiat] = useState('-');
+  const [cUSDFiatBalance, setCUSDFiatBalance] = useState('-');
+  const [cEURFiatBalance, setCEURFiatBalance] = useState('-');
+  const [cREALFiatBalance, setCREALFiatBalance] = useState('-');
+
+  useEffect(() => {
+    const rates = props.currencyConversionRates.rates;
+    let totalFiatBalance = 0;
+
+    if (typeof props.cUSDBalance === 'number' && rates?.KESUSD) {
+      const balance = props.cUSDBalance / rates?.KESUSD;
+      setCUSDFiatBalance(Number(balance.toFixed(2)).toLocaleString());
+      totalFiatBalance += balance;
+      console.log('fiat updates', totalFiatBalance);
+    }
+
+    if (typeof props.cRealBalance === 'number' && rates?.KESBRL) {
+      const balance = props.cRealBalance / rates?.KESBRL;
+      setCREALFiatBalance(Number(balance.toFixed(2)).toLocaleString());
+      totalFiatBalance += balance;
+    }
+
+    if (typeof props.cEuroBalance === 'number' && rates?.KESEUR) {
+      const balance = props.cEuroBalance / rates?.KESEUR;
+      setCEURFiatBalance(Number(balance.toFixed(2)).toLocaleString());
+      totalFiatBalance += balance;
+    }
+
+    setTotalBalanceFiat(Number(totalFiatBalance.toFixed(2)).toLocaleString());
+  }, [
+    props.cEuroBalance,
+    props.cRealBalance,
+    props.cUSDBalance,
+    props.currencyConversionRates,
+  ]);
+
   return (
     <Screen style={style.screenContainer}>
       <View>
@@ -23,9 +57,9 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
             paddingHorizontal: wp('7%'),
           }}>
           <Text style={style.cUSD}>Total Balance</Text>
-          <Text style={style.ksh}>Ksh 1000</Text>
+          <Text style={style.ksh}>Ksh {totalBalanceFiat}</Text>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <View style={style.rowContainer}>
           <View style={style.balance}>
             <Text style={style.cUSD}>
               cUSD{' '}
@@ -33,7 +67,7 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
                 ? props.cUSDBalance.toFixed(2)
                 : props.cUSDBalance}
             </Text>
-            <Text style={style.ksh}>Ksh 1000</Text>
+            <Text style={style.ksh}>Ksh {cUSDFiatBalance}</Text>
           </View>
           <View style={style.balance}>
             <Text style={style.cUSD}>
@@ -42,10 +76,10 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
                 ? props.cEuroBalance.toFixed(2)
                 : props.cEuroBalance}
             </Text>
-            <Text style={style.ksh}>Ksh 1000</Text>
+            <Text style={style.ksh}>Ksh {cEURFiatBalance}</Text>
           </View>
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <View style={style.rowContainer}>
           <View style={style.balance}>
             <Text style={style.cUSD}>
               cREAL{' '}
@@ -53,9 +87,9 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
                 ? props.cRealBalance.toFixed(2)
                 : props.cRealBalance}
             </Text>
-            <Text style={style.ksh}>Ksh 1000</Text>
+            <Text style={style.ksh}>Ksh {cREALFiatBalance}</Text>
           </View>
-          <View style={style.balance}>
+          {/* <View style={style.balance}>
             <Text style={style.cUSD}>
               CELO{' '}
               {typeof props.cGoldBalance === 'number'
@@ -63,7 +97,7 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
                 : props.cGoldBalance}
             </Text>
             <Text style={style.ksh}>Ksh 1000</Text>
-          </View>
+          </View> */}
         </View>
       </View>
 
@@ -126,6 +160,7 @@ const style = StyleSheet.create({
     ...FONTS.body2,
     fontWeight: 'bold',
   },
+  rowContainer: {flexDirection: 'row', justifyContent: 'space-around'},
 });
 
 /**
@@ -140,6 +175,7 @@ const mapStateToProps = (state: RootState) => ({
   cEuroBalance: state.wallet_balance.cEUR,
   cRealBalance: state.wallet_balance.cREAL,
   cGoldBalance: state.wallet_balance.CELO,
+  currencyConversionRates: state.currency_conversion_rates,
 });
 
 const mapDispatchToProps = {};

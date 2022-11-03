@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
@@ -20,6 +20,48 @@ import {FONTS} from '../../ui_lib_configs/fonts';
 import Identicon from 'react-native-identicon';
 
 const CustomDrawerContent = (props: Props) => {
+  const [totalBalanceFiat, setTotalBalanceFiat] = useState('-');
+  const [totalBalanceUSD, setTotalBalanceUSD] = useState('-');
+  // const [cUSDFiatBalance, setCUSDFiatBalance] = useState('-');
+  // const [cEURFiatBalance, setCEURFiatBalance] = useState('-');
+  // const [cREALFiatBalance, setCREALFiatBalance] = useState('-');
+
+  useEffect(() => {
+    const rates = props.currencyConversionRates;
+    let totalFiatBalance = 0;
+
+    if (typeof props.cUSDBalance === 'number' && rates?.KESUSD) {
+      const balance = props.cUSDBalance / rates?.KESUSD;
+      // setCUSDFiatBalance(Number(balance.toFixed(2)).toLocaleString());
+      totalFiatBalance += balance;
+    }
+
+    if (typeof props.cRealBalance === 'number' && rates?.KESBRL) {
+      const balance = props.cRealBalance / rates?.KESBRL;
+      // setCREALFiatBalance(Number(balance.toFixed(2)).toLocaleString());
+      totalFiatBalance += balance;
+    }
+
+    if (typeof props.cEuroBalance === 'number' && rates?.KESEUR) {
+      const balance = props.cEuroBalance / rates?.KESEUR;
+      // setCEURFiatBalance(Number(balance.toFixed(2)).toLocaleString());
+      totalFiatBalance += balance;
+    }
+
+    setTotalBalanceFiat(Number(totalFiatBalance.toFixed(2)).toLocaleString());
+
+    if (rates?.KESUSD) {
+      setTotalBalanceUSD(
+        Number((totalFiatBalance * rates?.KESUSD).toFixed(2)).toLocaleString(),
+      );
+    }
+  }, [
+    props.cEuroBalance,
+    props.cRealBalance,
+    props.cUSDBalance,
+    props.currencyConversionRates,
+  ]);
+
   return (
     <Screen>
       <View>
@@ -36,18 +78,8 @@ const CustomDrawerContent = (props: Props) => {
           {props.cUSDBalance !== '-' ? (
             <View>
               <Text style={styles.text}>Current Balance</Text>
-              <Text style={styles.cUSD}>
-                cUSD{' '}
-                {typeof props.cEuroBalance === 'number'
-                  ? props.cEuroBalance.toFixed(2)
-                  : props.cEuroBalance}
-              </Text>
-              <Text style={styles.ksh}>
-                Ksh{' '}
-                {typeof props.cEuroBalance === 'number'
-                  ? props.cEuroBalance.toFixed(2)
-                  : props.cEuroBalance}
-              </Text>
+              <Text style={styles.cUSD}>USD {totalBalanceUSD}</Text>
+              <Text style={styles.ksh}>Ksh {totalBalanceFiat}</Text>
             </View>
           ) : (
             <View style={styles.loadingDiv}>
@@ -84,6 +116,7 @@ const mapStateToProps = (state: RootState) => ({
   cEuroBalance: state.wallet_balance.cEUR,
   cRealBalance: state.wallet_balance.cREAL,
   cGoldBalance: state.wallet_balance.CELO,
+  currencyConversionRates: state.currency_conversion_rates.rates,
 });
 
 const mapDispatchToProps = {
