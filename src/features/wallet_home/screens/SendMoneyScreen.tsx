@@ -33,6 +33,7 @@ const coins = [
   },
 ];
 
+// TODO: Re-use enter amount component.
 const SendMoneyScreen: React.FC<Props> = (props: Props) => {
   const [amount, setAmount] = useState('0');
   const [balance, setBalance] = useState('0');
