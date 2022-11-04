@@ -10,11 +10,15 @@ import {connect, ConnectedProps} from 'react-redux';
 import {generateActionQueryPendingTransactions} from './redux_store/action.generators';
 import {RootState} from '../../app-redux-store/store';
 import RequestCardComponent from './components/RequestCardComponent';
+import BottomMenu from './components/BottomMenu';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
 
 const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   useFocusEffect(() => {
     props.dispatchFetchPendingTxs();
   });
+
   return (
     <Screen style={style.screenContainer}>
       <FlatList
@@ -26,6 +30,7 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
         progressViewOffset={250}
         // ListEmptyComponent={<EmptyList />}
       />
+      <BottomMenu parentProps={props} />
     </Screen>
   );
 };
@@ -49,6 +54,13 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
-interface Props extends ReduxProps {}
+type StackProps = NativeStackScreenProps<
+  WithdrawalAndDepositNavigationStackParamsList,
+  'TransactionsFeedScreen'
+>;
+
+type Props = StackProps & ReduxProps;
+
+export interface TransactionsFeedHomeScreenProps extends Props {}
 
 export default connector(TransactionsFeedHomeScreen);
