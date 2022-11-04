@@ -2,7 +2,7 @@ import {ContractKit, newKitFromWeb3, StableToken} from '@celo/contractkit';
 import Web3 from 'web3';
 
 /**
- * Wakala contract kit.
+ * Nash contract kit.
  */
 export default class NashContractKit {
   /**
@@ -20,8 +20,8 @@ export default class NashContractKit {
   static nashKit?: NashContractKit;
 
   /**
-   * Gets a running instance of wakala contract kit utils.
-   * @returns instance of wakala contract kit.
+   * Gets a running instance of nash contract kit utils.
+   * @returns instance of nash contract kit.
    */
   static getInstance() {
     if (!NashContractKit.nashKit) {
@@ -32,8 +32,7 @@ export default class NashContractKit {
   }
 
   /**
-   * Creates a singleton instance of wakala contract kit.
-   * @param magic instance of magic provider.
+   * Creates a singleton instance of nash contract kit.
    */
   static createInstance() {
     if (this.nashKit) {
@@ -45,7 +44,7 @@ export default class NashContractKit {
   }
 
   /**
-   * Destroy wakala contract kit instance.
+   * Destroy nash contract kit instance.
    */
   static destroyInstance() {
     NashContractKit.nashKit = undefined;
@@ -53,7 +52,6 @@ export default class NashContractKit {
 
   /**
    * The users private key.
-   * @param privateKey magic provider instance.
    */
   private constructor() {
     this.web3 = new Web3('https://alfajores-forno.celo-testnet.org');

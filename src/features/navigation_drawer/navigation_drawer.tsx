@@ -7,6 +7,7 @@ import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {generateActionQueryBalance} from '../account_balance/redux_store/action.generators';
 import {WalletHomeStack} from '../wallet_home/navigation/navigation.stack';
+import {WithdrawalAndDepositStack} from '../withdraw_and_deposit/navigation/navigation.stack';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,7 +25,7 @@ export const NavigationDrawer = () => {
       <Drawer.Screen name="Home" component={WalletHomeStack} />
       <Drawer.Screen
         name="Withdraw & Deposit"
-        component={SettingsStack}
+        component={WithdrawalAndDepositStack}
         // options={{headerTransparent: true}}
       />
       <Drawer.Screen
