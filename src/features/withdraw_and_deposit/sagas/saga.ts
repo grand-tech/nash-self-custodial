@@ -1,13 +1,22 @@
-import {call, put, spawn, takeLatest} from 'redux-saga/effects';
+import {BigNumber} from 'bignumber.js';
+import {Contract} from 'web3-eth-contract';
+import {call, put, select, spawn, takeLatest} from 'redux-saga/effects';
 import {Actions} from '../redux_store/action.patterns';
-import {ActionQueryPendingTransactions} from '../redux_store/actions';
 import {generateActionSetPendingTransactions} from '../redux_store/action.generators';
 import ReadContractDataKit from './ReadContractDataKit';
-import {NashEscrowTransaction} from './nash_escrow_types';
+import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
 import {
-  ActionMakeWithdrawalRequest,
-  ActionMakeDepositRequest,
+  ActionQueryPendingTransactions,
+  ActionMakeRampRequest,
 } from '../redux_store/actions';
+import NashContractKit from '../../account_balance/contract.kit.utils';
+import {
+  generateActionSetSuccess,
+  generateActionSetError,
+} from '../../ui_state_manager/action.generators';
+import {getStoredPrivateKey} from '../../onboarding/utils';
+import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
+import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -39,38 +48,81 @@ export function* watchQueryPendingTransactionsSaga() {
 
 /**
  * Makes a deposit request to the escrow smart contract.
- * @param action contains input required to make the request to the smart contract.
+ * @param _action contains input required to make the request to the smart contract.
  */
-export function* makeDepositRequestSaga(action: ActionMakeDepositRequest) {
-  console.log('===================>', action);
+export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
+  try {
+    const contractKit: NashContractKit = yield call(
+      NashContractKit.getInstance,
+    );
+    const contract = contractKit.getNashEscrow();
+
+    const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
+    contractKit.kit?.addAccount(privateKey);
+
+    const address: string = yield select(selectPublicAddress);
+
+    const amount =
+      contractKit.kit?.web3.utils.toWei(_action.amount.toString()) ?? '';
+
+    const tx = generateInitTransactionObject(
+      amount.toString(),
+      _action.transactionType,
+      contract,
+    );
+    // TODO: Figure out what to do with the boolean result
+    yield call(NashContractKit.cUSDApproveAmount, _action.amount, address);
+
+    // TODO: figure out what to do with the receipt.
+    const receipt: any = yield call(
+      NashContractKit.sendTransactionObject,
+      tx,
+      address,
+    );
+
+    yield call(NashContractKit.cUSDApproveAmount, 0, address);
+
+    yield put(generateActionSetSuccess('Initialized transaction.'));
+
+    // TODO: move this to event listeners.
+    yield put(generateActionQueryBalance());
+  } catch (error: any) {
+    // TODO: Perform all possible error handling activities.
+    console.log('Error', error);
+    yield put(generateActionSetError(error.message, error.message));
+  }
+}
+
+/**
+ * Generates the transaction object to be sent.
+ * @param amount the amount involved in the transaction.
+ * @param transactionType the transaction type.
+ * @param contract the instance of the escrow smart contract.
+ * @returns the composed transaction type.
+ */
+function generateInitTransactionObject(
+  amount: string,
+  transactionType: TransactionType,
+  contract: Contract,
+) {
+  if (transactionType === TransactionType.DEPOSIT) {
+    return contract?.methods.initializeDepositTransaction(amount, 'KES', '');
+  } else {
+    return contract?.methods.initializeWithdrawalTransaction(amount, 'KES', '');
+  }
 }
 
 /**
  * Listens for the make deposit request action and calls the relevant function.
  */
-export function* watchMakeDepositRequestSaga() {
-  yield takeLatest(Actions.MAKE_DEPOSIT_REQUEST, makeDepositRequestSaga);
-}
-
-/**
- * Makes a withdrawal request to the smart contract.
- * @param action the list of necessary input fields required to make a withdrawal request.
- */
-export function* makeWithdrawalRequestSaga(
-  action: ActionMakeWithdrawalRequest,
-) {
-  console.log('===================>', action);
-}
-
-/**
- * Listens for the relevant action required to create a withdrawal transaction.
- */
-export function* watchMakeWithdrawalRequestSaga() {
-  yield takeLatest(Actions.MAKE_WITHDRAWAL_REQUEST, makeWithdrawalRequestSaga);
+export function* watchMakeRampExchangeRequestSaga() {
+  yield takeLatest(
+    Actions.MAKE_RAMP_EXCHANGE_REQUEST,
+    makeRampExchangeRequestSaga,
+  );
 }
 
 export function* onRampOffRampSaga() {
   yield spawn(watchQueryPendingTransactionsSaga);
-  yield spawn(watchMakeDepositRequestSaga);
-  yield spawn(watchMakeWithdrawalRequestSaga);
+  yield spawn(watchMakeRampExchangeRequestSaga);
 }

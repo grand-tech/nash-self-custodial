@@ -1,9 +1,9 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import EnterAmountScreen from '../EnterAmountScreen';
-import MakeRequestScreen from '../DisplayAccountAddress';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation.params.type';
 import TransactionsFeedScreen from '../TransactionsFeedScreen';
+import ConfirmTransactionDetailsScreen from '../ConfirmTransactionDetailsScreen';
 
 const Stack =
   createNativeStackNavigator<WithdrawalAndDepositNavigationStackParamsList>();
@@ -31,6 +31,9 @@ const navigationStack = (
       options={RootStackScreenHideHeader}
     />
     <Stack.Screen name="EnterAmountScreen" component={EnterAmountScreen} />
-    <Stack.Screen name="MakeRequestScreen" component={MakeRequestScreen} />
+    <Stack.Screen
+      name="ConfirmTransactionDetailsScreen"
+      component={ConfirmTransactionDetailsScreen}
+    />
   </>
 );

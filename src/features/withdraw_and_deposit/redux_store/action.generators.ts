@@ -1,8 +1,11 @@
 import {Actions} from './action.patterns';
-import {ActionMakeWithdrawalRequest} from './actions';
-import {NashEscrowTransaction} from '../sagas/nash_escrow_types';
 import {
-  ActionMakeDepositRequest,
+  NashEscrowTransaction,
+  TransactionType,
+} from '../sagas/nash_escrow_types';
+import {StableToken} from '@celo/contractkit';
+import {
+  ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
 } from './actions';
@@ -22,14 +25,17 @@ export function generateActionSetPendingTransactions(
   };
 }
 
-export function generateActionMakeDepositRequest(): ActionMakeDepositRequest {
+export function generateActionMakeRampExchangeRequest(
+  amount: number,
+  coin: StableToken,
+  transactionType: TransactionType,
+  pin: string,
+): ActionMakeRampRequest {
   return {
-    type: Actions.MAKE_DEPOSIT_REQUEST,
-  };
-}
-
-export function generateActionMakeWithdrawalRequest(): ActionMakeWithdrawalRequest {
-  return {
-    type: Actions.MAKE_WITHDRAWAL_REQUEST,
+    type: Actions.MAKE_RAMP_EXCHANGE_REQUEST,
+    amount,
+    coin,
+    transactionType,
+    pin,
   };
 }

@@ -20,13 +20,17 @@ import {TransactionType} from './sagas/nash_escrow_types';
 
 const EnterAmountScreen: React.FC<Props> = (props: Props) => {
   const onSubmit = (amount: string, coin: StableToken) => {
-    console.log('amount', amount, 'coin', coin);
+    props.navigation.navigate('ConfirmTransactionDetailsScreen', {
+      amount: Number(amount),
+      coin: coin,
+      transactionType: props.route.params.transactionType,
+    });
   };
 
   useFocusEffect(() => {
-    let title = 'Withdraw';
+    let title = 'Enter Amount To Withdraw';
     if (props.route.params.transactionType === TransactionType.DEPOSIT) {
-      title = 'Deposit';
+      title = 'Enter Amount To Deposit';
     }
     props.navigation.getParent()?.setOptions({headerShown: false});
     props.navigation.setOptions({

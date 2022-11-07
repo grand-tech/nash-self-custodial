@@ -8,15 +8,9 @@ import {
 import {Button, Incubator, PanningProvider, Text} from 'react-native-ui-lib';
 import {useEffect} from 'react';
 import {AppColors} from '../ui_lib_configs/colors';
-
-/**
- * Error dialog props.
- */
-interface ErrorDialogProps {
-  onRetry: any;
-  visible: boolean;
-  errorMessage: string;
-}
+import {connect, ConnectedProps} from 'react-redux';
+import {generateActionSetNormal} from '../features/ui_state_manager/action.generators';
+import {RootState} from '../app-redux-store/store';
 
 const ErrorModalComponent = (props: ErrorDialogProps) => {
   const [errorModalVisibility, setErrorModalVisibility] = useState(false);
@@ -59,7 +53,7 @@ const ErrorModalComponent = (props: ErrorDialogProps) => {
           Ooooh Snap!
         </Text>
         <Text style={style.dialogText} body3>
-          {props.errorMessage}
+          {props.message}
         </Text>
         <Button
           label="Retry"
@@ -88,4 +82,26 @@ const style = StyleSheet.create({
   },
 });
 
-export default ErrorModalComponent;
+const mapStateToProps = (state: RootState) => ({
+  title: state.ui_state.title,
+  message: state.ui_state.message,
+  status: state.ui_state.status,
+});
+
+const mapDispatchToProps = {
+  dispatchActionSetNormal: generateActionSetNormal,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
+
+/**
+ * Error dialog props.
+ */
+interface ErrorDialogProps extends ReduxProps {
+  onRetry: any;
+  visible: boolean;
+}
+
+export default connector(ErrorModalComponent);

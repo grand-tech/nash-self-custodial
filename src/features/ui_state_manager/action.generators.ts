@@ -49,9 +49,10 @@ export function generateActionSetEnterPIN(tag?: string): ActionEnterPIN {
  * Generate an instance of set success (displays a success message to the user.).
  * @returns an instance of set success action.
  */
-export function generateActionSetSuccess(): ActionSuccess {
+export function generateActionSetSuccess(title: string): ActionSuccess {
   return {
     type: Actions.SET_SUCCESS,
+    title,
   };
 }
 
