@@ -4,6 +4,7 @@ import EnterAmountScreen from '../EnterAmountScreen';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation.params.type';
 import TransactionsFeedScreen from '../TransactionsFeedScreen';
 import ConfirmTransactionDetailsScreen from '../ConfirmTransactionDetailsScreen';
+import FulfillRequestScreen from '../FulfillRequestScreen';
 
 const Stack =
   createNativeStackNavigator<WithdrawalAndDepositNavigationStackParamsList>();
@@ -34,6 +35,10 @@ const navigationStack = (
     <Stack.Screen
       name="ConfirmTransactionDetailsScreen"
       component={ConfirmTransactionDetailsScreen}
+    />
+    <Stack.Screen
+      name="FulfillRequestScreen"
+      component={FulfillRequestScreen}
     />
   </>
 );

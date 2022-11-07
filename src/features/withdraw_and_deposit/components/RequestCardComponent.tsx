@@ -14,6 +14,7 @@ import {FONTS} from '../../../ui_lib_configs/fonts';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
+  onFulFillRequest: any;
 }
 
 const RequestCardComponent: React.FC<Props> = (props: Props) => {
@@ -28,6 +29,10 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
   }, [rates, transaction]);
+
+  const fulFillRequest = () => {
+    props.onFulFillRequest(transaction);
+  };
 
   return (
     <View style={style.cardContainer}>
@@ -52,7 +57,7 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
         <Text body1>Ksh {fiatNetValue}</Text>
       </View>
 
-      <TouchableOpacity style={style.button} onPress={() => {}}>
+      <TouchableOpacity style={style.button} onPress={fulFillRequest}>
         <Text style={style.buttonText} body3>
           Fulfill Request
         </Text>

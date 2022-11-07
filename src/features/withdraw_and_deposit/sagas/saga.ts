@@ -1,4 +1,3 @@
-import {BigNumber} from 'bignumber.js';
 import {Contract} from 'web3-eth-contract';
 import {call, put, select, spawn, takeLatest} from 'redux-saga/effects';
 import {Actions} from '../redux_store/action.patterns';

@@ -10,7 +10,6 @@ import {
 } from 'react-native-responsive-screen';
 import {AppColors} from '../../ui_lib_configs/colors';
 import {FONTS} from '../../ui_lib_configs/fonts';
-import {TransactionType} from './sagas/nash_escrow_types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootState} from '../../app-redux-store/store';
 import {
@@ -19,7 +18,6 @@ import {
   generateActionSetNormal,
 } from '../ui_state_manager/action.generators';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
-import {StableToken} from '@celo/contractkit';
 import {NashCache} from '../../utils/cache';
 import EnterPinModal from '../../app_components/EnterPinModal';
 import LoadingModalComponent from '../../app_components/LoadingModalComponent';
@@ -27,16 +25,14 @@ import SuccessModalComponent from '../../app_components/SuccessModalComponent';
 import {generateActionMakeRampExchangeRequest} from './redux_store/action.generators';
 import ErrorModalComponent from '../../app_components/ErrorModalComponent';
 
-const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
-  const rates = props.rates;
-  const coin = props.route.params.coin;
-  const amount = props.route.params.amount;
+const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
+  const transaction = props.route.params.transaction;
   const [fiat, setFiat] = useState('-');
   const [pin, setPin] = useState('');
 
   useFocusEffect(() => {
     let title = 'Withdraw Request';
-    if (props.route.params.transactionType === TransactionType.DEPOSIT) {
+    if (transaction.txType === 'DEPOSIT') {
       title = 'Deposit Request';
     }
     props.navigation.getParent()?.setOptions({headerShown: false});
@@ -53,17 +49,17 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   useFocusEffect(() => {
     let balance = 0;
 
-    if (coin === StableToken.cUSD && rates?.KESUSD) {
-      balance = amount / rates?.KESUSD;
-    }
+    // if (coin === StableToken.cUSD && rates?.KESUSD) {
+    //   balance = amount / rates?.KESUSD;
+    // }
 
-    if (coin === StableToken.cREAL && rates?.KESBRL) {
-      balance = amount / rates?.KESBRL;
-    }
+    // if (coin === StableToken.cREAL && rates?.KESBRL) {
+    //   balance = amount / rates?.KESBRL;
+    // }
 
-    if (coin === StableToken.cEUR && rates?.KESEUR) {
-      balance = amount / rates?.KESEUR;
-    }
+    // if (coin === StableToken.cEUR && rates?.KESEUR) {
+    //   balance = amount / rates?.KESEUR;
+    // }
     setFiat(Number(balance.toFixed(2)).toLocaleString());
   });
 
@@ -83,12 +79,12 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onShowLoadingModal = () => {
-    props.dispatchInitializeTransaction(
-      amount,
-      coin,
-      props.route.params.transactionType,
-      pin,
-    );
+    // props.dispatchInitializeTransaction(
+    //   amount,
+    //   coin,
+    //   props.route.params.transactionType,
+    //   pin,
+    // );
   };
 
   const onPressOkay = () => {
@@ -100,9 +96,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
       <View style={style.contentContainer}>
         <View style={style.div}>
           <Text h2>Amount</Text>
-          <Text h2>
-            {amount} {props.route.params.coin}
-          </Text>
+          <Text h2>{/* {amount} {props.route.params.coin} */}</Text>
         </View>
         <View style={style.div}>
           <Text h2 />
@@ -178,8 +172,8 @@ type ReduxProps = ConnectedProps<typeof connector>;
 
 type StackProps = NativeStackScreenProps<
   WithdrawalAndDepositNavigationStackParamsList,
-  'ConfirmTransactionDetailsScreen'
+  'FulfillRequestScreen'
 >;
 type Props = ReduxProps & StackProps;
 
-export default connector(ConfirmTransactionDetailsScreen);
+export default connector(FulfillRequestScreen);

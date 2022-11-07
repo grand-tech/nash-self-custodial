@@ -1,5 +1,8 @@
 import {StableToken} from '@celo/contractkit';
-import {TransactionType} from './../sagas/nash_escrow_types';
+import {
+  NashEscrowTransaction,
+  TransactionType,
+} from './../sagas/nash_escrow_types';
 
 export type WithdrawalAndDepositNavigationStackParamsList = {
   TransactionsFeedScreen: undefined;
@@ -9,4 +12,5 @@ export type WithdrawalAndDepositNavigationStackParamsList = {
     coin: StableToken;
     transactionType: TransactionType;
   };
+  FulfillRequestScreen: {transaction: NashEscrowTransaction};
 };

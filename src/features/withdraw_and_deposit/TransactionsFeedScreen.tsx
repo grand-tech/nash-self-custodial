@@ -13,17 +13,29 @@ import RequestCardComponent from './components/RequestCardComponent';
 import BottomMenu from './components/BottomMenu';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
+import {NashEscrowTransaction} from './sagas/nash_escrow_types';
 
 const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   useFocusEffect(() => {
     props.dispatchFetchPendingTxs();
   });
 
+  const onFulFillRequest = (item: NashEscrowTransaction) => {
+    props.navigation.navigate('FulfillRequestScreen', {
+      transaction: item,
+    });
+  };
+
   return (
     <Screen style={style.screenContainer}>
       <FlatList
         data={props.pendingTransactions}
-        renderItem={({item}) => <RequestCardComponent transaction={item} />}
+        renderItem={({item}) => (
+          <RequestCardComponent
+            transaction={item}
+            onFulFillRequest={onFulFillRequest}
+          />
+        )}
         keyExtractor={item => item.id}
         // onRefresh={onRefresh}
         // refreshing={isFetching}
