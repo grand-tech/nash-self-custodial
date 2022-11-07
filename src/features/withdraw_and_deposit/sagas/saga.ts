@@ -74,11 +74,8 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
     yield call(NashContractKit.cUSDApproveAmount, _action.amount, address);
 
     // TODO: figure out what to do with the receipt.
-    const receipt: any = yield call(
-      NashContractKit.sendTransactionObject,
-      tx,
-      address,
-    );
+    // const receipt: any =
+    yield call(NashContractKit.sendTransactionObject, tx, address);
 
     yield call(NashContractKit.cUSDApproveAmount, 0, address);
 

@@ -8,7 +8,6 @@ import {
 import {NashEscrowAbi} from '../../utils/smart_contract_abis/NashEscrowAbi';
 import {AbiItem} from 'web3-utils';
 import BigNumber from 'bignumber.js';
-import {plugins} from '../../../babel.config';
 
 /**
  * Nash contract kit.
@@ -204,12 +203,10 @@ export default class NashContractKit {
    * @returns approval receipt.
    */
   static async cUSDApproveAmount(_amount: number, account: string) {
-    console.log('amount ====>', _amount);
     const amount =
       NashContractKit.nashKit?.kit?.web3.utils.toWei(
         (_amount + 1).toString(),
       ) ?? '';
-    console.log('amount ====>', amount);
     let cUSD = await NashContractKit.nashKit?.kit?.contracts.getStableToken(
       StableToken.cUSD,
     );
@@ -225,8 +222,6 @@ export default class NashContractKit {
       from: account,
       feeCurrency: cUSD?.address,
     });
-    const allowance = await cUSD?.allowance(account, NASH_CONTRACT_ADDRESS);
-    console.log('allowance', allowance);
     return receipt;
   }
 
