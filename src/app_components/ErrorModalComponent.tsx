@@ -55,11 +55,19 @@ const ErrorModalComponent = (props: ErrorDialogProps) => {
         <Text style={style.dialogText} body3>
           {props.message}
         </Text>
-        <Button
-          label="Retry"
-          backgroundColor={AppColors.yellow}
-          onPress={() => onRetry()}
-        />
+
+        <View style={style.buttonDiv}>
+          <Button
+            label="Retry"
+            backgroundColor={AppColors.yellow}
+            onPress={() => onRetry()}
+          />
+          <Button
+            label="Okay"
+            backgroundColor={AppColors.light_green}
+            onPress={() => props.dispatchActionSetNormal()}
+          />
+        </View>
       </View>
     </Incubator.Dialog>
   );
@@ -78,7 +86,14 @@ const style = StyleSheet.create({
   },
   dialogContainerStyle: {
     justifyContent: 'space-around',
-    height: hp('30%'),
+    height: hp('35%'),
+    paddingVertical: hp('0.5%'),
+    paddingHorizontal: wp('1.5%'),
+  },
+  buttonDiv: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: hp('2.5%'),
   },
 });
 

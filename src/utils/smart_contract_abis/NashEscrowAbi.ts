@@ -61,16 +61,6 @@ export const NashEscrowAbi = [
             type: 'uint256',
           },
           {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
-          },
-          {
             internalType: 'uint256',
             name: 'agentFee',
             type: 'uint256',
@@ -149,16 +139,6 @@ export const NashEscrowAbi = [
             internalType: 'uint256',
             name: 'netAmount',
             type: 'uint256',
-          },
-          {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
           },
           {
             internalType: 'uint256',
@@ -241,16 +221,6 @@ export const NashEscrowAbi = [
             type: 'uint256',
           },
           {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
-          },
-          {
             internalType: 'uint256',
             name: 'agentFee',
             type: 'uint256',
@@ -331,16 +301,6 @@ export const NashEscrowAbi = [
             type: 'uint256',
           },
           {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
-          },
-          {
             internalType: 'uint256',
             name: 'agentFee',
             type: 'uint256',
@@ -419,16 +379,6 @@ export const NashEscrowAbi = [
             internalType: 'uint256',
             name: 'netAmount',
             type: 'uint256',
-          },
-          {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
           },
           {
             internalType: 'uint256',
@@ -597,6 +547,19 @@ export const NashEscrowAbi = [
   },
   {
     inputs: [],
+    name: 'getNashFee',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'getNextTransactionIndex',
     outputs: [
       {
@@ -649,16 +612,6 @@ export const NashEscrowAbi = [
             internalType: 'uint256',
             name: 'netAmount',
             type: 'uint256',
-          },
-          {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
           },
           {
             internalType: 'uint256',
@@ -747,16 +700,6 @@ export const NashEscrowAbi = [
             type: 'uint256',
           },
           {
-            internalType: 'string',
-            name: 'cryptoFiatConversionRate',
-            type: 'string',
-          },
-          {
-            internalType: 'string',
-            name: 'fiatCurrencyCode',
-            type: 'string',
-          },
-          {
             internalType: 'uint256',
             name: 'agentFee',
             type: 'uint256',
@@ -801,19 +744,6 @@ export const NashEscrowAbi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'getNashFee',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'uint256',
@@ -822,12 +752,7 @@ export const NashEscrowAbi = [
       },
       {
         internalType: 'string',
-        name: '_fiatCurrencyCode',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: '_cryptoFiatConversionRate',
+        name: '_phoneNumber',
         type: 'string',
       },
     ],
@@ -845,12 +770,7 @@ export const NashEscrowAbi = [
       },
       {
         internalType: 'string',
-        name: '_fiatCurrencyCode',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: '_cryptoFiatConversionRate',
+        name: '_phoneNumber',
         type: 'string',
       },
     ],

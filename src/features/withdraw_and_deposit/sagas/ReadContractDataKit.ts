@@ -102,7 +102,6 @@ export default class ReadContractDataKit {
     // tracks the starting point for the search.
     if (l) {
       let currentQueryTx = l - 1;
-
       for (let index = 0; index < 16; index++) {
         let tx = await thisInst?.queryGetNextUnpairedTransaction(
           currentQueryTx,
@@ -158,7 +157,6 @@ export default class ReadContractDataKit {
     const tx = await this.nashEscrowContract?.methods
       .getNextUnpairedTransaction(id)
       .call();
-
     let nashTx = await this.convertToNashTransactionObj(tx);
     return nashTx;
   }
@@ -176,17 +174,31 @@ export default class ReadContractDataKit {
       agentAddress: tx[3],
       status: parseInt(tx[4], 10),
       netAmount: Number(this.kit?.web3.utils.fromWei(tx[5], 'ether')),
-      cryptoFiatConversionRate: tx[6],
-      fiatCurrencyCode: tx[7],
-      agentFee: Number(this.kit?.web3.utils.fromWei(tx[8], 'ether')),
-      nashFee: Number(this.kit?.web3.utils.fromWei(tx[9], 'ether')),
-      grossAmount: Number(this.kit?.web3.utils.fromWei(tx[10], 'ether')),
-      agentApproval: tx[11],
-      clientApproval: tx[12],
-      agentPhoneNumber: tx[13],
-      clientPhoneNumber: tx[14],
+      agentFee: Number(this.kit?.web3.utils.fromWei(tx[6], 'ether')),
+      nashFee: Number(this.kit?.web3.utils.fromWei(tx[7], 'ether')),
+      grossAmount: Number(this.kit?.web3.utils.fromWei(tx[8], 'ether')),
+      agentApproval: tx[9],
+      clientApproval: tx[10],
+      agentPhoneNumber: tx[11],
+      clientPhoneNumber: tx[12],
     };
 
     return nashTx;
   }
 }
+
+// id: parseInt(tx[0], 10),
+//       txType: TransactionType[parseInt(tx[1], 10)],
+//       clientAddress: tx[2],
+//       agentAddress: tx[3],
+//       status: parseInt(tx[4], 10),
+//       netAmount: Number(this.kit?.web3.utils.fromWei(tx[5], 'ether')),
+//       cryptoFiatConversionRate: tx[6],
+//       fiatCurrencyCode: tx[7],
+//       agentFee: Number(this.kit?.web3.utils.fromWei(tx[8], 'ether')),
+//       nashFee: Number(this.kit?.web3.utils.fromWei(tx[9], 'ether')),
+//       grossAmount: Number(this.kit?.web3.utils.fromWei(tx[10], 'ether')),
+//       agentApproval: tx[11],
+//       clientApproval: tx[12],
+//       agentPhoneNumber: tx[13],
+//       clientPhoneNumber: tx[14],

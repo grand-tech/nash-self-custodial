@@ -5,6 +5,7 @@ import {
 } from '../sagas/nash_escrow_types';
 import {StableToken} from '@celo/contractkit';
 import {
+  ActionAgentFulfillRequest,
   ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
@@ -36,6 +37,17 @@ export function generateActionMakeRampExchangeRequest(
     amount,
     coin,
     transactionType,
+    pin,
+  };
+}
+
+export function generateActionAgentFulfillRequest(
+  transaction: NashEscrowTransaction,
+  pin: string,
+): ActionAgentFulfillRequest {
+  return {
+    type: Actions.AGENT_FULFILL_REQUEST,
+    transaction,
     pin,
   };
 }

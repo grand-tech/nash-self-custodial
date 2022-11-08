@@ -22,9 +22,16 @@ export interface ActionMakeRampRequest {
   pin: string;
 }
 
+export interface ActionAgentFulfillRequest {
+  type: Actions.AGENT_FULFILL_REQUEST;
+  transaction: NashEscrowTransaction;
+  pin: string;
+}
+
 /**
  * Create a generic action type.
  */
 export type ActionTypes =
   | ActionQueryPendingTransactions
-  | ActionSetPendingTransactions;
+  | ActionSetPendingTransactions
+  | ActionAgentFulfillRequest;

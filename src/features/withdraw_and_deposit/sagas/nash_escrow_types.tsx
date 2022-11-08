@@ -45,8 +45,8 @@ export type NashEscrowTransaction = {
   agentAddress: string;
   status: number;
   netAmount: number;
-  cryptoFiatConversionRate: string;
-  fiatCurrencyCode: string;
+  // cryptoFiatConversionRate: string;
+  // fiatCurrencyCode: string;
   agentFee: number;
   nashFee: number;
   grossAmount: number;
