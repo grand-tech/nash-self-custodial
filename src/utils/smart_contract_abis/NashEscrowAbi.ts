@@ -429,16 +429,77 @@ export const NashEscrowAbi = [
     anonymous: false,
     inputs: [
       {
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum NashEscrow.TransactionType',
+            name: 'txType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'address',
+            name: 'clientAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'agentAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'enum NashEscrow.Status',
+            name: 'status',
+            type: 'uint8',
+          },
+          {
+            internalType: 'uint256',
+            name: 'netAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'agentFee',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'nashFee',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'grossAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bool',
+            name: 'agentApproval',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'clientApproval',
+            type: 'bool',
+          },
+          {
+            internalType: 'string',
+            name: 'agentPhoneNumber',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'clientPhoneNumber',
+            type: 'string',
+          },
+        ],
         indexed: false,
-        internalType: 'uint256',
-        name: 'wtxIndex',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'initiatorAddress',
-        type: 'address',
+        internalType: 'struct NashEscrow.NashTransaction',
+        name: 'wtx',
+        type: 'tuple',
       },
     ],
     name: 'TransactionInitEvent',

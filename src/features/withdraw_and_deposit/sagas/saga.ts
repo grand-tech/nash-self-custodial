@@ -103,9 +103,9 @@ function generateInitTransactionObject(
   contract: Contract,
 ) {
   if (transactionType === TransactionType.DEPOSIT) {
-    return contract?.methods.initializeDepositTransaction(amount, 'KES', '');
+    return contract?.methods.initializeDepositTransaction(amount, '');
   } else {
-    return contract?.methods.initializeWithdrawalTransaction(amount, 'KES', '');
+    return contract?.methods.initializeWithdrawalTransaction(amount, '');
   }
 }
 
@@ -169,12 +169,21 @@ function generateAgentFulfillRequestTransactionObject(
   contract: Contract,
 ) {
   const transactionType = transaction.txType;
-  if (transactionType === 'DEPOSIT') {
+  console.log(
+    '======>',
+    transactionType,
+    TransactionType.WITHDRAWAL,
+    TransactionType.DEPOSIT,
+    transaction,
+  );
+  if (transactionType === TransactionType.DEPOSIT) {
+    console.log('deposit transaction');
     return contract?.methods.agentAcceptDepositTransaction(
       transaction.id,
       '+254791725651',
     );
   } else {
+    console.log('withdrawal transaction');
     return contract?.methods.agentAcceptWithdrawalTransaction(
       transaction.id,
       '+254791725651',

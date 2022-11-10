@@ -8,7 +8,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {NashEscrowTransaction} from '../sagas/nash_escrow_types';
+import {
+  NashEscrowTransaction,
+  TransactionType,
+} from '../sagas/nash_escrow_types';
 import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 
@@ -49,7 +52,9 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
       />
       <View>
         <Text style={{...FONTS.h1, fontSize: hp('2.7%')}}>
-          {transaction.txType === 'DEPOSIT' ? 'Deposit' : 'Withdrawal'}
+          {transaction.txType === TransactionType.DEPOSIT
+            ? 'Deposit'
+            : 'Withdrawal'}
         </Text>
         <Text h2>
           cUSD {Number(transaction.netAmount.toFixed(2)).toLocaleString()}

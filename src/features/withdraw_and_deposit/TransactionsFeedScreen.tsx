@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import Screen from '../../app_components/Screen';
 import {FlatList, StyleSheet} from 'react-native';
@@ -19,6 +20,7 @@ import {
 import {gql, useQuery} from '@apollo/client';
 import {Text} from 'react-native-ui-lib';
 import ReadContractDataKit from './sagas/ReadContractDataKit';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface NashTransactionData {
   escrowTransactions: NashTransaction[];
@@ -27,7 +29,12 @@ interface NashTransactionData {
 const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   const qry = gql`
     query GetLocations {
-      escrowTransactions(first: 15, orderBy: index, orderDirection: desc) {
+      escrowTransactions(
+        first: 15
+        orderBy: index
+        orderDirection: desc
+        where: {status: 0}
+      ) {
         id
         index
         txType
@@ -46,23 +53,33 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
     }
   `;
 
+  const {loading, data, fetchMore, refetch, startPolling, stopPolling} =
+    useQuery<NashTransactionData, {}>(qry);
+
   const tx: NashEscrowTransaction[] = [];
   const [nashTransactions, setNashTransactions] = useState(tx);
+  const [pollingInterval, setPollingInterval] = useState(false);
 
-  const {loading, error, data, fetchMore} = useQuery<NashTransactionData, {}>(
-    qry,
-  );
+  useFocusEffect(() => {
+    // TODO: fine tune this time interval to one thats more suitable.
+    // TODO: find out how fast the graph self updates based on the timelines.
+    startPolling(100);
+    // setPollingInterval(true);
+    return () => {
+      // setPollingInterval(false);
+      stopPolling();
+    };
+  });
 
   useEffect(() => {
     const transactions = data?.escrowTransactions;
     if (typeof transactions !== 'undefined') {
+      const kit = ReadContractDataKit.getInstance();
       const tsx =
-        ReadContractDataKit.getInstance()?.convertToNashTransactions(
-          transactions,
-        ) ?? nashTransactions;
+        kit?.convertToNashTransactions(transactions) ?? nashTransactions;
       setNashTransactions(tsx);
     }
-  }, [loading, error]);
+  }, [loading, data]);
 
   const onFulFillRequest = (item: NashEscrowTransaction) => {
     props.navigation.navigate('FulfillRequestScreen', {
@@ -70,7 +87,11 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
     });
   };
 
-  const queryData = () => {
+  const refetchTransaction = () => {
+    refetch({});
+  };
+
+  const fetchMoreTransactions = () => {
     fetchMore({});
   };
 
@@ -87,8 +108,11 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
               onFulFillRequest={onFulFillRequest}
             />
           )}
-          keyExtractor={item => item.id}
-          onRefresh={queryData}
+          keyExtractor={(item: NashEscrowTransaction) => {
+            return item.id.toString();
+          }}
+          onRefresh={refetchTransaction}
+          onEndReached={fetchMoreTransactions}
           refreshing={loading}
           progressViewOffset={250}
           ListEmptyComponent={<Text>Loading...</Text>}

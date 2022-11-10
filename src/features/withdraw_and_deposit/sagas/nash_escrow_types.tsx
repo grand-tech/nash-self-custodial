@@ -40,7 +40,7 @@ export enum Status {
  */
 export type NashEscrowTransaction = {
   id: number;
-  txType: string;
+  txType: TransactionType;
   clientAddress: string;
   agentAddress: string;
   status: number;
@@ -75,7 +75,7 @@ export type NashEscrowTransaction = {
 export interface NashTransaction {
   id: string;
   index: number;
-  txType: string;
+  txType: TransactionType;
   clientAddress: string;
   agentAddress: string;
   status: number;
