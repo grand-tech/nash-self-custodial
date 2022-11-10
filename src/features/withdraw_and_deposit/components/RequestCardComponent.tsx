@@ -42,7 +42,7 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
           transaction.id +
           transaction.clientAddress +
           transaction.netAmount +
-          Date.now()
+          Date.now().toString()
         }
         style={{marginTop: hp('0.9%')}}
         size={29}

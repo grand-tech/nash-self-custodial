@@ -11,6 +11,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.1",
     "@celo/contractkit": "^2.1.0",
     "@celo/cryptographic-utils": "^2.1.0",
     "@celo/phone-utils": "^2.1.0",
@@ -25,6 +26,7 @@
     "@types/node": "^18.11.7",
     "Base64": "^1.1.0",
     "crypto-js": "^4.1.1",
+    "graphql": "^16.6.0",
     "lottie-react-native": "^5.1.4",
     "node-libs-react-native": "^1.2.1",
     "react": "18.1.0",
