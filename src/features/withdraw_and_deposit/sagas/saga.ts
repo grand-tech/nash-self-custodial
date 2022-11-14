@@ -17,6 +17,8 @@ import {
 import {getStoredPrivateKey} from '../../onboarding/utils';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
+import {NashCache} from '../../../utils/cache';
+import {selectRampPendingTransactions} from '../redux_store/selectors';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -27,11 +29,27 @@ export function* queryPendingTransactionsSaga(
 ) {
   const kit = ReadContractDataKit.getInstance();
 
+  if (_action.userAction === 'refetch') {
+    NashCache.setRampPaginator(NashCache.DEFAULT_RAMP_PAGINATOR_VALUE);
+  }
+
   if (typeof kit !== 'undefined') {
     const transactions: NashEscrowTransaction[] = yield call(
       kit.fetchTransactions,
     );
-    yield put(generateActionSetPendingTransactions(transactions));
+
+    if (_action.userAction === 'refetch') {
+      yield put(generateActionSetPendingTransactions(transactions));
+    } else {
+      const txs: NashEscrowTransaction[] = yield select(
+        selectRampPendingTransactions,
+      );
+
+      if (txs) {
+        transactions.concat(txs);
+        yield put(generateActionSetPendingTransactions(txs));
+      }
+    }
   }
 }
 

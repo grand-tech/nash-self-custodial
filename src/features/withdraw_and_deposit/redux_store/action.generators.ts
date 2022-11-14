@@ -9,11 +9,15 @@ import {
   ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
+  QueryTransactionsUserActions,
 } from './actions';
 
-export function generateActionQueryPendingTransactions(): ActionQueryPendingTransactions {
+export function generateActionQueryPendingTransactions(
+  userAction: QueryTransactionsUserActions,
+): ActionQueryPendingTransactions {
   return {
     type: Actions.QUERY_PENDING_TRANSACTION_REQUESTS,
+    userAction,
   };
 }
 

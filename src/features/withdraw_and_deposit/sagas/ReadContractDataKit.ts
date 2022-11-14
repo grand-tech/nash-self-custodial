@@ -2,6 +2,7 @@ import {ContractKit, newKitFromWeb3} from '@celo/contractkit';
 import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
+import {NashCache} from '../../../utils/cache';
 import {
   KARMA_CONTRACT_ADDRESS,
   NASH_CONTRACT_ADDRESS,
@@ -101,31 +102,16 @@ export default class ReadContractDataKit {
     const thisInst = ReadContractDataKit.readDataContractKit;
 
     let nashTxsArray: Array<NashEscrowTransaction> = [];
-    let l = await thisInst?.getNextTxIndex();
 
     // tracks the starting point for the search.
-    if (l) {
-      let currentQueryTx = l - 1;
-      for (let index = 0; index < 16; index++) {
-        let tx = await thisInst?.queryGetNextUnpairedTransaction(
-          currentQueryTx,
-        );
-
-        if (tx && tx?.netAmount !== 0) {
-          nashTxsArray.push(tx);
-        } else {
-          // exit loop (no next tsx)
-          return nashTxsArray;
-        }
-
-        // exit loop (no next tsx)
-        if (tx.id === 0) {
-          return nashTxsArray;
-        }
-
-        // set the next starting point for the smart contract loop.
-        currentQueryTx = tx.id - 1;
-      }
+    if (
+      NashCache.getRampPaginator() === NashCache.DEFAULT_RAMP_PAGINATOR_VALUE
+    ) {
+      let l =
+        (await thisInst?.getNextTxIndex()) ??
+        NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
+      NashCache.setRampPaginator(l - 1);
+      nashTxsArray = (await thisInst?.queryGetNextUnpairedTransactions()) ?? [];
     }
 
     return nashTxsArray;
@@ -155,14 +141,28 @@ export default class ReadContractDataKit {
   /**
    * Get transaction by index.
    */
-  async queryGetNextUnpairedTransaction(
-    id: number,
-  ): Promise<NashEscrowTransaction> {
+  async queryGetNextUnpairedTransactions(): Promise<NashEscrowTransaction[]> {
     const tx = await this.nashEscrowContract?.methods
-      .getNextUnpairedTransaction(id)
+      .getTransactions(15, NashCache.getRampPaginator(), 0)
       .call();
-    let nashTx = await this.convertToNashTransactionObj(tx);
-    return nashTx;
+    const txs: NashEscrowTransaction[] = [];
+    for (let index = 0; index < tx.length; index++) {
+      let nashTx = this.convertToNashTransactionObj(tx[index]);
+
+      // update paginator.
+      if (
+        NashCache.getRampPaginator() ===
+          NashCache.DEFAULT_RAMP_PAGINATOR_VALUE ||
+        NashCache.getRampPaginator() > nashTx.id
+      ) {
+        NashCache.setRampPaginator(nashTx.id - 1);
+      }
+
+      // update the list of transactions.
+      txs.push(nashTx);
+    }
+
+    return txs;
   }
 
   /**
@@ -171,9 +171,15 @@ export default class ReadContractDataKit {
    * @returns the nash transaction object.
    */
   convertToNashTransactionObj(tx: string[]): NashEscrowTransaction {
+    let txType = TransactionType.DEPOSIT;
+
+    if (parseInt(tx[1], 10) === 1) {
+      txType = TransactionType.WITHDRAWAL;
+    }
+
     const nashTx: NashEscrowTransaction = {
       id: parseInt(tx[0], 10),
-      txType: TransactionType[parseInt(tx[1], 10)],
+      txType: txType,
       clientAddress: tx[2],
       agentAddress: tx[3],
       status: parseInt(tx[4], 10),

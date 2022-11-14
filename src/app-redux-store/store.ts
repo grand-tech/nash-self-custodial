@@ -22,7 +22,8 @@ const persistConfig = {
   vsrsion: 1,
   keyPrefix: '',
   storage: FSStorage(),
-  blacklist: ['ui_state', 'wallet_balance'],
+  // figure out what best to do with wallet.
+  blacklist: ['ui_state', 'wallet_balance', 'ramp'],
 };
 
 /**

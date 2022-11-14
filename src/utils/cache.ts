@@ -20,10 +20,17 @@ export class NashCache {
    */
   private static DEFAULT_CACHE_LIFESPAN = 600000; // 10 minutes
 
+  public static DEFAULT_RAMP_PAGINATOR_VALUE = 10000000000000000;
+
   /**
    * Holds pin numbers.
    */
   private static pinCache: PinCache;
+
+  /**
+   * Keeps track of where to start on the next batch of transactions.
+   */
+  private static rampPaginator: number = NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
 
   /**
    * Constructor.
@@ -35,6 +42,21 @@ export class NashCache {
     } else {
       NashCache.CACHE_LIFESPAN = lifespan;
     }
+  }
+
+  /**
+   * Caches the pagination tracker.
+   * @param paginator where to start in the next query.
+   */
+  static setRampPaginator(paginator: number) {
+    this.rampPaginator = paginator;
+  }
+
+  /**
+   * Caches the pagination tracker.
+   */
+  static getRampPaginator() {
+    return this.rampPaginator;
   }
 
   /**

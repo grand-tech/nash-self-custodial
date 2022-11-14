@@ -2,9 +2,9 @@
  * Transaction types.
  */
 export enum TransactionType {
-  DEPOSIT,
+  DEPOSIT = 'DEPOSIT',
 
-  WITHDRAWAL,
+  WITHDRAWAL = 'WITHDRAWAL',
 }
 
 /**
@@ -45,8 +45,6 @@ export type NashEscrowTransaction = {
   agentAddress: string;
   status: number;
   netAmount: number;
-  // cryptoFiatConversionRate: string;
-  // fiatCurrencyCode: string;
   agentFee: number;
   nashFee: number;
   grossAmount: number;

@@ -5,8 +5,11 @@ import {
   TransactionType,
 } from '../sagas/nash_escrow_types';
 
+export type QueryTransactionsUserActions = 'refetch' | 'fetch-more';
+
 export interface ActionQueryPendingTransactions {
   type: Actions.QUERY_PENDING_TRANSACTION_REQUESTS;
+  userAction: QueryTransactionsUserActions;
 }
 
 export interface ActionSetPendingTransactions {
