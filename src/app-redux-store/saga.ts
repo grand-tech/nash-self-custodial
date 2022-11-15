@@ -3,6 +3,7 @@ import {walletBalanceSagas} from '../features/account_balance/saga';
 import {currencyConversionSagas} from '../features/currency_conversion/sagas';
 import {onboardingSaga} from '../features/onboarding/sagas/sagas';
 import {walletSagas} from '../features/wallet_home/sagas/saga';
+import {onRampOffRampSaga} from '../features/withdraw_and_deposit/sagas/saga';
 import {waitForRehydrate} from './redux.persist.helpers';
 
 export function* rootSaga() {
@@ -11,4 +12,5 @@ export function* rootSaga() {
   yield spawn(walletBalanceSagas);
   yield spawn(walletSagas);
   yield spawn(currencyConversionSagas);
+  yield spawn(onRampOffRampSaga);
 }

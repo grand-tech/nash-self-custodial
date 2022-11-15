@@ -52,6 +52,7 @@ export interface ActionEnterPIN {
  */
 export interface ActionSuccess {
   type: Actions.SET_SUCCESS;
+  title: string;
 }
 
 /**

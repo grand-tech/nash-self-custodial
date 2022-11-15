@@ -5,18 +5,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Screen from '../../../app_components/Screen';
-import PinKeyPad from '../../pin/components/PinKeyPad';
-import {AppColors} from '../../../ui_lib_configs/colors';
-import {FONTS} from '../../../ui_lib_configs/fonts';
-import DropDown from '../components/DropDown';
-import {connect, ConnectedProps} from 'react-redux';
-import {RootState} from '../../../app-redux-store/store';
-import {Button} from 'react-native-ui-lib';
-import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 import {StableToken} from '@celo/contractkit';
+import {connect, ConnectedProps} from 'react-redux';
+import {RootState} from '../app-redux-store/store';
+import {AppColors} from '../ui_lib_configs/colors';
+import PinKeyPad from '../features/pin/components/PinKeyPad';
+import DropDown from '../features/wallet_home/components/DropDown';
+import {FONTS} from '../ui_lib_configs/fonts';
+import {Button} from 'react-native-ui-lib';
 
 const coins = [
   {
@@ -33,8 +30,7 @@ const coins = [
   },
 ];
 
-// TODO: Re-use enter amount component.
-const SendMoneyScreen: React.FC<Props> = (props: Props) => {
+const EnterAmountComponent: React.FC<Props> = (props: Props) => {
   const [amount, setAmount] = useState('0');
   const [balance, setBalance] = useState('0');
   const [coin, setCoin] = useState(StableToken.cUSD);
@@ -45,39 +41,27 @@ const SendMoneyScreen: React.FC<Props> = (props: Props) => {
         if (typeof props.cEuroBalance === 'number' && props.cEuroBalance > 0) {
           let maxAmount = 0;
           maxAmount = props.cEuroBalance - 0.01;
-          setAmount(maxAmount.toFixed(2).toString());
+          setAmount(Number(maxAmount.toFixed(2)).toLocaleString());
         }
         break;
       case 'cUSD':
         if (typeof props.cUSDBalance === 'number' && props.cUSDBalance > 0) {
           let maxAmount = 0;
           maxAmount = props.cUSDBalance - 0.01;
-          setAmount(maxAmount.toFixed(2).toString());
+          setAmount(Number(maxAmount.toFixed(2)).toLocaleString());
         }
         break;
       case 'cREAL':
         if (typeof props.cRealBalance === 'number' && props.cRealBalance > 0) {
           let maxAmount = 0;
           maxAmount = props.cRealBalance - 0.01;
-          setAmount(maxAmount.toFixed(2).toString());
+          setAmount(Number(maxAmount.toFixed(2)).toLocaleString());
         }
         break;
       default:
         break;
     }
   };
-
-  useFocusEffect(() => {
-    props.navigation.getParent()?.setOptions({headerShown: false});
-    props.navigation.setOptions({
-      title: 'Enter Amount',
-      headerTransparent: true,
-    });
-
-    return () => {
-      props.navigation.getParent()?.setOptions({headerShown: true});
-    };
-  });
 
   const handleChange = (newValue: any) => {
     if (amount === '' && newValue === '0') {
@@ -91,17 +75,27 @@ const SendMoneyScreen: React.FC<Props> = (props: Props) => {
   }
 
   useFocusEffect(() => {
+    let b = '-';
+
     if (coin === 'cREAL') {
-      setBalance(props.cRealBalance.toString());
+      if (typeof props.cRealBalance === 'number') {
+        b = Number(props.cRealBalance.toFixed(2)).toLocaleString();
+      }
     } else if (coin === 'cEUR') {
-      setBalance(props.cEuroBalance.toString());
+      if (typeof props.cEuroBalance === 'number') {
+        b = Number(props.cEuroBalance.toFixed(2)).toLocaleString();
+      }
+      console.log('dwedwedwedwe', coin, b);
     } else {
-      setBalance(props.cUSDBalance.toString());
+      if (typeof props.cUSDBalance === 'number') {
+        b = Number(props.cUSDBalance.toFixed(2)).toLocaleString();
+      }
     }
+    setBalance(b);
   });
 
   return (
-    <Screen style={style.screenContainer}>
+    <View style={style.screenContainer}>
       <Text style={{color: AppColors.brown, ...FONTS.body4}}>
         {balance} {coin} available
       </Text>
@@ -134,22 +128,17 @@ const SendMoneyScreen: React.FC<Props> = (props: Props) => {
       </View>
       <Button
         style={style.reviewButton}
-        label={'Review Transaction'}
+        label={props.submitButtonLabel}
         backgroundColor={AppColors.light_green}
         labelStyle={{
           ...FONTS.h5,
         }}
         disabled={amount.length === 0}
         onPress={() => {
-          // TODO: Perform validation against amount.
-          props.navigation.navigate('ReviewSendTransaction', {
-            address: props.route.params.address,
-            amount: Number(amount),
-            coin: coin,
-          });
+          props.onSubmit(amount, coin);
         }}
       />
-    </Screen>
+    </View>
   );
 };
 
@@ -200,7 +189,6 @@ const mapStateToProps = (state: RootState) => ({
   cUSDBalance: state.wallet_balance.cUSD,
   cEuroBalance: state.wallet_balance.cEUR,
   cRealBalance: state.wallet_balance.cREAL,
-  cGoldBalance: state.wallet_balance.CELO,
 });
 
 const mapDispatchToProps = {};
@@ -209,10 +197,9 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
-type StackProps = NativeStackScreenProps<
-  WalletHomeNavigationStackParamsList,
-  'SendMoney'
->;
+interface Props extends ReduxProps {
+  onSubmit: (amount: string, coin: StableToken) => void;
+  submitButtonLabel: string;
+}
 
-type Props = ReduxProps & StackProps;
-export default connector(SendMoneyScreen);
+export default connector(EnterAmountComponent);

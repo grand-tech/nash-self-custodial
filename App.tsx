@@ -21,6 +21,9 @@ import {OnboardingStatusNames} from './src/features/onboarding/redux_store/reduc
 import {navigationRef} from './src/navigation/navigation.service';
 import {LogBox} from 'react-native';
 import NashContractKit from './src/features/account_balance/contract.kit.utils';
+import ReadContractDataKit from './src/features/withdraw_and_deposit/sagas/ReadContractDataKit';
+import {ApolloProvider} from '@apollo/client';
+import {apolloClient} from './src/features/graphql/graphql_client';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz",
@@ -37,14 +40,18 @@ const App: React.FC<Props> = (props: Props) => {
   }, []);
 
   NashContractKit.createInstance();
+  ReadContractDataKit.createInstance();
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {props.onboarding_status === OnboardingStatusNames.onboarding_complete ? (
-        <NavigationDrawer />
-      ) : (
-        <RootNavigationStack />
-      )}
+      <ApolloProvider client={apolloClient}>
+        {props.onboarding_status ===
+        OnboardingStatusNames.onboarding_complete ? (
+          <NavigationDrawer />
+        ) : (
+          <RootNavigationStack />
+        )}
+      </ApolloProvider>
     </NavigationContainer>
   );
 };

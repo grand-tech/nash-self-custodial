@@ -8,15 +8,9 @@ import {
 import {Button, Incubator, PanningProvider, Text} from 'react-native-ui-lib';
 import {useEffect} from 'react';
 import {AppColors} from '../ui_lib_configs/colors';
-
-/**
- * Error dialog props.
- */
-interface ErrorDialogProps {
-  onRetry: any;
-  visible: boolean;
-  errorMessage: string;
-}
+import {connect, ConnectedProps} from 'react-redux';
+import {generateActionSetNormal} from '../features/ui_state_manager/action.generators';
+import {RootState} from '../app-redux-store/store';
 
 const ErrorModalComponent = (props: ErrorDialogProps) => {
   const [errorModalVisibility, setErrorModalVisibility] = useState(false);
@@ -59,13 +53,21 @@ const ErrorModalComponent = (props: ErrorDialogProps) => {
           Ooooh Snap!
         </Text>
         <Text style={style.dialogText} body3>
-          {props.errorMessage}
+          {props.message}
         </Text>
-        <Button
-          label="Retry"
-          backgroundColor={AppColors.yellow}
-          onPress={() => onRetry()}
-        />
+
+        <View style={style.buttonDiv}>
+          <Button
+            label="Retry"
+            backgroundColor={AppColors.yellow}
+            onPress={() => onRetry()}
+          />
+          <Button
+            label="Okay"
+            backgroundColor={AppColors.light_green}
+            onPress={() => props.dispatchActionSetNormal()}
+          />
+        </View>
       </View>
     </Incubator.Dialog>
   );
@@ -84,8 +86,37 @@ const style = StyleSheet.create({
   },
   dialogContainerStyle: {
     justifyContent: 'space-around',
-    height: hp('30%'),
+    height: hp('35%'),
+    paddingVertical: hp('0.5%'),
+    paddingHorizontal: wp('1.5%'),
+  },
+  buttonDiv: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: hp('2.5%'),
   },
 });
 
-export default ErrorModalComponent;
+const mapStateToProps = (state: RootState) => ({
+  title: state.ui_state.title,
+  message: state.ui_state.message,
+  status: state.ui_state.status,
+});
+
+const mapDispatchToProps = {
+  dispatchActionSetNormal: generateActionSetNormal,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
+
+/**
+ * Error dialog props.
+ */
+interface ErrorDialogProps extends ReduxProps {
+  onRetry: any;
+  visible: boolean;
+}
+
+export default connector(ErrorModalComponent);

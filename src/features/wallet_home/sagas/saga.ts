@@ -25,7 +25,7 @@ export function* sendFunds(action: ActionSendFunds) {
   try {
     if (coin === StableToken.cUSD) {
       const receipt = yield call(
-        contractKit.sendCUSD,
+        contractKit?.sendCUSD,
         address,
         action.recipientAddress,
         amount,
@@ -45,7 +45,7 @@ export function* sendFunds(action: ActionSendFunds) {
         amount,
       );
     }
-    yield put(generateActionSetSuccess());
+    yield put(generateActionSetSuccess('Transaction successful.'));
     yield put(generateActionQueryBalance());
   } catch (error: any) {
     console.log(error);
