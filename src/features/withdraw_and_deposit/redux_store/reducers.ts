@@ -12,7 +12,8 @@ import {NashEscrowTransaction} from '../sagas/nash_escrow_types';
  * @property { number } last_updated the last time the status changed.
  */
 interface RampState {
-  pending_transactions: Array<NashEscrowTransaction> | null;
+  pending_transactions: Array<NashEscrowTransaction>;
+  my_transactions: Array<NashEscrowTransaction>;
   last_updated: number;
 }
 
@@ -21,6 +22,7 @@ interface RampState {
  */
 const initialState: RampState = {
   pending_transactions: [],
+  my_transactions: [],
   last_updated: new Date().getTime(),
 };
 
@@ -32,7 +34,13 @@ export const rampStateReducer = (
     case Actions.SET_PENDING_TRANSACTION_LISTS:
       return {
         ...state,
-        pending_transactions: action.pending_transactions,
+        pending_transactions: action.transactions,
+        last_updated: new Date().getTime(),
+      };
+    case Actions.SET_MY_TRANSACTION_LISTS:
+      return {
+        ...state,
+        my_transactions: action.transactions,
         last_updated: new Date().getTime(),
       };
     default:

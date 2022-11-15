@@ -12,9 +12,20 @@ export interface ActionQueryPendingTransactions {
   userAction: QueryTransactionsUserActions;
 }
 
+export interface ActionQueryMyTransactions {
+  type: Actions.QUERY_MY_TRANSACTION_REQUESTS;
+  userAction: QueryTransactionsUserActions;
+  statuses: number[];
+}
+
 export interface ActionSetPendingTransactions {
   type: Actions.SET_PENDING_TRANSACTION_LISTS;
-  pending_transactions: Array<NashEscrowTransaction>;
+  transactions: Array<NashEscrowTransaction>;
+}
+
+export interface ActionSetMyTransactions {
+  type: Actions.SET_MY_TRANSACTION_LISTS;
+  transactions: Array<NashEscrowTransaction>;
 }
 
 export interface ActionMakeRampRequest {
@@ -37,4 +48,5 @@ export interface ActionAgentFulfillRequest {
 export type ActionTypes =
   | ActionQueryPendingTransactions
   | ActionSetPendingTransactions
-  | ActionAgentFulfillRequest;
+  | ActionAgentFulfillRequest
+  | ActionSetMyTransactions;

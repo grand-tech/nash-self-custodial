@@ -2,9 +2,10 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import EnterAmountScreen from '../EnterAmountScreen';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation.params.type';
-import TransactionsFeedScreen from '../TransactionsFeedScreen';
 import ConfirmTransactionDetailsScreen from '../ConfirmTransactionDetailsScreen';
 import FulfillRequestScreen from '../FulfillRequestScreen';
+import MyTransactionsFeedScreen from '../MyTransactionsFeedScreen';
+import TransactionsFeedScreen from '../TransactionsFeedScreen';
 
 const Stack =
   createNativeStackNavigator<WithdrawalAndDepositNavigationStackParamsList>();
@@ -39,6 +40,10 @@ const navigationStack = (
     <Stack.Screen
       name="FulfillRequestScreen"
       component={FulfillRequestScreen}
+    />
+    <Stack.Screen
+      name="MyTransactionsFeedScreen"
+      component={MyTransactionsFeedScreen}
     />
   </>
 );

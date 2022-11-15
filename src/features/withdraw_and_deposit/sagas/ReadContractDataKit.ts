@@ -118,6 +118,30 @@ export default class ReadContractDataKit {
   }
 
   /**
+   * Fetches the transactions from the smart contract.
+   */
+  async fetchMyTransactions(statuses: number[], myAddress: string) {
+    const thisInst = ReadContractDataKit.readDataContractKit;
+
+    let nashTxsArray: Array<NashEscrowTransaction> = [];
+
+    // tracks the starting point for the search.
+    if (
+      NashCache.getMyTransactionsRampPaginator() ===
+      NashCache.DEFAULT_RAMP_PAGINATOR_VALUE
+    ) {
+      let l =
+        (await thisInst?.getNextTxIndex()) ??
+        NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
+      NashCache.setMyTransactionsRampPaginator(l - 1);
+      nashTxsArray =
+        (await thisInst?.queryGetMyTransactions(statuses, myAddress)) ?? [];
+    }
+
+    return nashTxsArray;
+  }
+
+  /**
    * Get transaction by index.
    */
   async getNextTxIndex(): Promise<number> {
@@ -134,7 +158,7 @@ export default class ReadContractDataKit {
     const tx = await this.nashEscrowContract?.methods
       .getTransactionByIndex(index)
       .call();
-    let nashTx = await this.convertToNashTransactionObj(tx);
+    let nashTx = this.convertToNashTransactionObj(tx);
     return nashTx;
   }
 
@@ -156,6 +180,41 @@ export default class ReadContractDataKit {
         NashCache.getRampPaginator() > nashTx.id
       ) {
         NashCache.setRampPaginator(nashTx.id - 1);
+      }
+
+      // update the list of transactions.
+      txs.push(nashTx);
+    }
+
+    return txs;
+  }
+
+  /**
+   * Get transaction by index.
+   */
+  async queryGetMyTransactions(
+    statuses: number[],
+    myAddress: string,
+  ): Promise<NashEscrowTransaction[]> {
+    const tx = await this.nashEscrowContract?.methods
+      .getMyTransactions(
+        15,
+        NashCache.getMyTransactionsRampPaginator(),
+        statuses,
+        myAddress,
+      )
+      .call();
+    const txs: NashEscrowTransaction[] = [];
+    for (let index = 0; index < tx.length; index++) {
+      let nashTx = this.convertToNashTransactionObj(tx[index]);
+
+      // update paginator.
+      if (
+        NashCache.getMyTransactionsRampPaginator() ===
+          NashCache.DEFAULT_RAMP_PAGINATOR_VALUE ||
+        NashCache.getMyTransactionsRampPaginator() > nashTx.id
+      ) {
+        NashCache.setMyTransactionsRampPaginator(nashTx.id - 1);
       }
 
       // update the list of transactions.

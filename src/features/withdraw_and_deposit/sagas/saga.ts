@@ -1,7 +1,10 @@
 import {Contract} from 'web3-eth-contract';
 import {call, put, select, spawn, takeLatest} from 'redux-saga/effects';
 import {Actions} from '../redux_store/action.patterns';
-import {generateActionSetPendingTransactions} from '../redux_store/action.generators';
+import {
+  generateActionSetPendingTransactions,
+  generateActionSetMyTransactions,
+} from '../redux_store/action.generators';
 import ReadContractDataKit from './ReadContractDataKit';
 import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
 import {
@@ -18,7 +21,11 @@ import {getStoredPrivateKey} from '../../onboarding/utils';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
-import {selectRampPendingTransactions} from '../redux_store/selectors';
+import {
+  selectRampMyTransactions,
+  selectRampPendingTransactions,
+} from '../redux_store/selectors';
+import {ActionQueryMyTransactions} from '../redux_store/actions';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -45,10 +52,7 @@ export function* queryPendingTransactionsSaga(
         selectRampPendingTransactions,
       );
 
-      if (txs) {
-        transactions.concat(txs);
-        yield put(generateActionSetPendingTransactions(txs));
-      }
+      yield put(generateActionSetPendingTransactions(transactions.concat(txs)));
     }
   }
 }
@@ -61,6 +65,50 @@ export function* watchQueryPendingTransactionsSaga() {
   yield takeLatest(
     Actions.QUERY_PENDING_TRANSACTION_REQUESTS,
     queryPendingTransactionsSaga,
+  );
+}
+
+/**
+ * Query the list of pending transactions in the smart contract.
+ * @param _action the action with the required payload.
+ */
+export function* queryMyTransactionsSaga(_action: ActionQueryMyTransactions) {
+  const kit = ReadContractDataKit.getInstance();
+
+  if (_action.userAction === 'refetch') {
+    NashCache.setMyTransactionsRampPaginator(
+      NashCache.DEFAULT_RAMP_PAGINATOR_VALUE,
+    );
+  }
+
+  const address: string = yield select(selectPublicAddress);
+  if (typeof kit !== 'undefined') {
+    const transactions: NashEscrowTransaction[] = yield call(
+      kit.fetchMyTransactions,
+      _action.statuses,
+      address,
+    );
+
+    if (_action.userAction === 'refetch') {
+      yield put(generateActionSetMyTransactions(transactions));
+    } else {
+      const txs: NashEscrowTransaction[] = yield select(
+        selectRampMyTransactions,
+      );
+
+      yield put(generateActionSetMyTransactions(transactions.concat(txs)));
+    }
+  }
+}
+
+/**
+ * Listens fot the action requesting for the list
+ *  of pending transactions and performs the necessary logic.
+ */
+export function* watchQueryMyTransactionsSaga() {
+  yield takeLatest(
+    Actions.QUERY_MY_TRANSACTION_REQUESTS,
+    queryMyTransactionsSaga,
   );
 }
 
@@ -177,8 +225,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
 
 /**
  * Generates the transaction object to be sent.
- * @param amount the amount involved in the transaction.
- * @param transactionType the transaction type.
+ * @param transaction the transaction type.
  * @param contract the instance of the escrow smart contract.
  * @returns the composed transaction type.
  */
@@ -209,4 +256,5 @@ export function* onRampOffRampSaga() {
   yield spawn(watchQueryPendingTransactionsSaga);
   yield spawn(watchMakeRampExchangeRequestSaga);
   yield spawn(watchAgentFullfilRequestSaga);
+  yield spawn(watchQueryMyTransactionsSaga);
 }

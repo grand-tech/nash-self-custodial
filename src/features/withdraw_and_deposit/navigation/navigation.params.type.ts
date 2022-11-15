@@ -6,6 +6,7 @@ import {
 
 export type WithdrawalAndDepositNavigationStackParamsList = {
   TransactionsFeedScreen: undefined;
+  MyTransactionsFeedScreen: undefined;
   EnterAmountScreen: {transactionType: TransactionType};
   ConfirmTransactionDetailsScreen: {
     amount: number;

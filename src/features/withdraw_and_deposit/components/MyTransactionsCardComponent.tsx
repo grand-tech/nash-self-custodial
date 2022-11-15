@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Identicon from 'react-native-identicon';
-import {connect, ConnectedProps} from 'react-redux';
+import {connect, ConnectedProps, useSelector} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -14,24 +14,56 @@ import {
 } from '../sagas/nash_escrow_types';
 import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
+import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
   onFulFillRequest: any;
 }
 
-const RequestCardComponent: React.FC<Props> = (props: Props) => {
+const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   const transaction = props.transaction;
   const rates = props.currency_conversion_rates;
+  const publicAddress = useSelector(selectPublicAddress);
 
   const [fiatNetValue, setFiatNetValue] = useState('-');
+  const [transactionStatus, setTransactionStatus] = useState('-');
 
   useEffect(() => {
     if (rates?.KESUSD) {
       const fiatValue = transaction.netAmount / rates?.KESUSD;
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
-  }, [rates, transaction]);
+
+    let status = '';
+    switch (transaction.status) {
+      case 0:
+        status = 'Awaiting Agent';
+        break;
+      case 1:
+        if (
+          !transaction.agentApproval &&
+          transaction.agentAddress === publicAddress
+        ) {
+          status = 'Awaiting Client Confirmation';
+        } else if (
+          !transaction.clientApproval &&
+          transaction.clientAddress === publicAddress
+        ) {
+          status = 'Awaiting Agent Confirmation';
+        } else {
+          status = 'Awaiting Your Confirmation';
+        }
+        break;
+      case 3:
+        status = 'Confirmed';
+        break;
+      default:
+        status = 'Completed';
+        break;
+    }
+    setTransactionStatus(status);
+  }, [publicAddress, rates, transaction]);
 
   const fulFillRequest = () => {
     props.onFulFillRequest(transaction);
@@ -51,7 +83,7 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
         size={29}
       />
       <View>
-        <Text style={{...FONTS.h1, fontSize: hp('2.7%')}}>
+        <Text style={{...FONTS.body2, fontSize: hp('2.7%')}}>
           {transaction.txType === TransactionType.DEPOSIT
             ? 'Deposit'
             : 'Withdrawal'}{' '}
@@ -63,11 +95,14 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
         <Text body1>Ksh {fiatNetValue}</Text>
       </View>
 
-      <TouchableOpacity style={style.button} onPress={fulFillRequest}>
-        <Text style={style.buttonText} body3>
-          Fulfill Request
-        </Text>
-      </TouchableOpacity>
+      <View>
+        <Text body1>{transactionStatus}</Text>
+        <TouchableOpacity style={style.button} onPress={fulFillRequest}>
+          <Text style={style.buttonText} body3>
+            Fulfill Request
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -85,7 +120,6 @@ const style = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    // height: hp('4%'),
     width: wp('24%'),
     borderRadius: wp('1%'),
     borderColor: AppColors.light_green,
@@ -94,6 +128,7 @@ const style = StyleSheet.create({
     paddingVertical: hp('0.2%'),
     backgroundColor: '#fff',
     alignSelf: 'center',
+    marginTop: hp('2%'),
   },
   buttonText: {
     flex: 1,
@@ -112,4 +147,4 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
-export default connector(RequestCardComponent);
+export default connector(MyTransactionsCardComponent);

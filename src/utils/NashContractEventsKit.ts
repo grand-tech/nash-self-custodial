@@ -79,8 +79,6 @@ export class ContractEventsListenerKit {
    * Set up provider and subscription.
    */
   setupProviderAndSubscriptions() {
-    console.log('setupProviderAndSubscriptions========>');
-
     let setupNewProvider = false;
 
     // Keeps track of the number of times we've retried to set up a new provider

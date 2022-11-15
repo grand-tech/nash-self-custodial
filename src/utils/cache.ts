@@ -20,7 +20,7 @@ export class NashCache {
    */
   private static DEFAULT_CACHE_LIFESPAN = 600000; // 10 minutes
 
-  public static DEFAULT_RAMP_PAGINATOR_VALUE = 10000000000000000;
+  public static DEFAULT_RAMP_PAGINATOR_VALUE = 10000;
 
   /**
    * Holds pin numbers.
@@ -30,7 +30,14 @@ export class NashCache {
   /**
    * Keeps track of where to start on the next batch of transactions.
    */
-  private static rampPaginator: number = NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
+  private static rampPendingTransactionsPaginator: number =
+    NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
+
+  /**
+   * Keeps track of where to start on the next batch of transactions.
+   */
+  private static rampMyTransactionsPaginator: number =
+    NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
 
   /**
    * Constructor.
@@ -49,14 +56,29 @@ export class NashCache {
    * @param paginator where to start in the next query.
    */
   static setRampPaginator(paginator: number) {
-    this.rampPaginator = paginator;
+    this.rampPendingTransactionsPaginator = paginator;
   }
 
   /**
    * Caches the pagination tracker.
    */
   static getRampPaginator() {
-    return this.rampPaginator;
+    return this.rampPendingTransactionsPaginator;
+  }
+
+  /**
+   * Caches the pagination tracker.
+   * @param paginator where to start in the next query.
+   */
+  static setMyTransactionsRampPaginator(paginator: number) {
+    this.rampMyTransactionsPaginator = paginator;
+  }
+
+  /**
+   * Caches the pagination tracker.
+   */
+  static getMyTransactionsRampPaginator() {
+    return this.rampMyTransactionsPaginator;
   }
 
   /**

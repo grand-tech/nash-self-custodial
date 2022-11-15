@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '../sagas/nash_escrow_types';
 import {StableToken} from '@celo/contractkit';
+import {ActionQueryMyTransactions, ActionSetMyTransactions} from './actions';
 import {
   ActionAgentFulfillRequest,
   ActionMakeRampRequest,
@@ -26,7 +27,27 @@ export function generateActionSetPendingTransactions(
 ): ActionSetPendingTransactions {
   return {
     type: Actions.SET_PENDING_TRANSACTION_LISTS,
-    pending_transactions: transactions,
+    transactions,
+  };
+}
+
+export function generateActionQueryMyTransactions(
+  userAction: QueryTransactionsUserActions,
+  statuses: number[],
+): ActionQueryMyTransactions {
+  return {
+    type: Actions.QUERY_MY_TRANSACTION_REQUESTS,
+    userAction,
+    statuses,
+  };
+}
+
+export function generateActionSetMyTransactions(
+  transactions: Array<NashEscrowTransaction>,
+): ActionSetMyTransactions {
+  return {
+    type: Actions.SET_MY_TRANSACTION_LISTS,
+    transactions,
   };
 }
 
