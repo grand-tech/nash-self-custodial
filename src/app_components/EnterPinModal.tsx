@@ -19,6 +19,7 @@ import {FONTS} from '../ui_lib_configs/fonts';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/native';
 import {generateActionSetNormal} from '../features/ui_state_manager/action.generators';
+import {NashCache} from '../utils/cache';
 
 const EnterPinModal: React.FC<Props> = (props: Props) => {
   const navigation = useNavigation();
@@ -68,13 +69,23 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
         setCurrentIndex(0);
         setPinTextArray(['', '', '', '', '', '']);
       } else {
+        NashCache.setPinCache(pin);
         props.onPinMatched(pin);
       }
     } catch (error) {
       setPinError('Invalid PIN!!!');
-      setCurrentIndex(0);
-      setPinTextArray(['', '', '', '', '', '']);
+      reset();
     }
+  };
+
+  const reset = () => {
+    setPinTextArray(['', '', '', '', '', '']);
+    setCurrentIndex(0);
+  };
+
+  const onShow = () => {
+    reset();
+    setHidePin(true);
   };
 
   return (
@@ -82,8 +93,7 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
       animationType="slide"
       transparent={true}
       visible={props.visible}
-      //   onShow={onShow}
-    >
+      onShow={onShow}>
       <Screen style={styles.screen}>
         <View style={styles.closeIcon}>
           <Pressable
@@ -91,13 +101,7 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
               props.dispatchActionSetNormal();
               navigation.goBack();
             }}>
-            <Icon
-              light
-              name="window-close"
-              size={34}
-              color={AppColors.black}
-              //   style={styles.number}
-            />
+            <Icon light name="window-close" size={34} color={AppColors.black} />
           </Pressable>
         </View>
 

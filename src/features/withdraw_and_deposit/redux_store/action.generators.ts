@@ -4,7 +4,12 @@ import {
   TransactionType,
 } from '../sagas/nash_escrow_types';
 import {StableToken} from '@celo/contractkit';
-import {ActionQueryMyTransactions, ActionSetMyTransactions} from './actions';
+import {
+  ActionQueryMyTransactions,
+  ActionSetMyTransactions,
+  ActionApproveTransaction,
+  ActionCancelTransaction,
+} from './actions';
 import {
   ActionAgentFulfillRequest,
   ActionMakeRampRequest,
@@ -72,6 +77,28 @@ export function generateActionAgentFulfillRequest(
 ): ActionAgentFulfillRequest {
   return {
     type: Actions.AGENT_FULFILL_REQUEST,
+    transaction,
+    pin,
+  };
+}
+
+export function generateActionApproveTransaction(
+  transaction: NashEscrowTransaction,
+  pin: string,
+): ActionApproveTransaction {
+  return {
+    type: Actions.APPROVE_TRANSACTION,
+    transaction,
+    pin,
+  };
+}
+
+export function generateActionCancelTransaction(
+  transaction: NashEscrowTransaction,
+  pin: string,
+): ActionCancelTransaction {
+  return {
+    type: Actions.CANCEL_TRANSACTION,
     transaction,
     pin,
   };

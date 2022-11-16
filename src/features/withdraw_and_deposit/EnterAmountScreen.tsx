@@ -1,7 +1,7 @@
 import React from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import Screen from '../../app_components/Screen';
-import {StyleSheet} from 'react-native';
+import {InteractionManager, StyleSheet} from 'react-native';
 import {
   // widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -28,16 +28,17 @@ const EnterAmountScreen: React.FC<Props> = (props: Props) => {
   };
 
   useFocusEffect(() => {
-    let title = 'Enter Amount To Withdraw';
-    if (props.route.params.transactionType === TransactionType.DEPOSIT) {
-      title = 'Enter Amount To Deposit';
-    }
-    props.navigation.getParent()?.setOptions({headerShown: false});
-    props.navigation.setOptions({
-      title: title,
-      headerTransparent: true,
+    InteractionManager.runAfterInteractions(() => {
+      let title = 'Enter Amount To Withdraw';
+      if (props.route.params.transactionType === TransactionType.DEPOSIT) {
+        title = 'Enter Amount To Deposit';
+      }
+      props.navigation.getParent()?.setOptions({headerShown: false});
+      props.navigation.setOptions({
+        title: title,
+        headerTransparent: true,
+      });
     });
-
     return () => {
       props.navigation.getParent()?.setOptions({headerShown: true});
     };

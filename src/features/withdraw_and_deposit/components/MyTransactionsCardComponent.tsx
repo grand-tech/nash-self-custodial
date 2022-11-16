@@ -15,10 +15,31 @@ import {
 import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
+import {
+  generateActionApproveTransaction,
+  generateActionCancelTransaction,
+} from '../redux_store/action.generators';
+import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
+import SuccessModalComponent from '../../../app_components/SuccessModalComponent';
+import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
+import {NashCache} from '../../../utils/cache';
+import {
+  generateActionSetEnterPIN,
+  generateActionSetNormal,
+  generateActionSetLoading,
+} from '../../ui_state_manager/action.generators';
+import EnterPinModal from '../../../app_components/EnterPinModal';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
-  onFulFillRequest: any;
+}
+
+enum NextUserAction {
+  CANCEL = 'Cancel',
+
+  APPROVE = 'Approve',
+
+  NONE = '',
 }
 
 const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
@@ -28,6 +49,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
 
   const [fiatNetValue, setFiatNetValue] = useState('-');
   const [transactionStatus, setTransactionStatus] = useState('-');
+  const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
 
   useEffect(() => {
     if (rates?.KESUSD) {
@@ -35,24 +57,35 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
 
+    if (transaction.id === 5) {
+      console.log(transaction);
+    }
     let status = '';
     switch (transaction.status) {
       case 0:
         status = 'Awaiting Agent';
+        setNextUserAction(NextUserAction.CANCEL);
         break;
       case 1:
         if (
-          !transaction.agentApproval &&
+          transaction.agentApproval &&
           transaction.agentAddress === publicAddress
         ) {
-          status = 'Awaiting Client Confirmation';
+          status = 'Awaiting Client Approval';
+          setNextUserAction(NextUserAction.NONE);
         } else if (
-          !transaction.clientApproval &&
+          transaction.clientApproval &&
           transaction.clientAddress === publicAddress
         ) {
-          status = 'Awaiting Agent Confirmation';
+          status = 'Awaiting Agent Approval';
+          setNextUserAction(NextUserAction.NONE);
         } else {
           status = 'Awaiting Your Confirmation';
+          if (transaction.agentAddress === publicAddress) {
+            setNextUserAction(NextUserAction.APPROVE);
+          } else if (transaction.clientAddress === publicAddress) {
+            setNextUserAction(NextUserAction.APPROVE);
+          }
         }
         break;
       case 3:
@@ -62,11 +95,30 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
         status = 'Completed';
         break;
     }
+
     setTransactionStatus(status);
   }, [publicAddress, rates, transaction]);
 
-  const fulFillRequest = () => {
-    props.onFulFillRequest(transaction);
+  const performNextUserAction = () => {
+    if (NashCache.getPinCache() || NashCache.getPinCache()?.trim() !== '') {
+      props.dispatchActionSetLoading('Accepting request ...', '');
+    } else {
+      props.promptForPIN();
+    }
+  };
+
+  const onPinMatched = (_p: string) => {
+    props.dispatchActionSetLoading('Accepting request ...', '');
+  };
+
+  const onShowLoadingModal = () => {
+    if (nextUserAction === NextUserAction.APPROVE) {
+      // dispatch approval action
+      props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
+    } else if (nextUserAction === NextUserAction.CANCEL) {
+      // dispatch agent approve action
+      props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
+    }
   };
 
   return (
@@ -87,22 +139,55 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           {transaction.txType === TransactionType.DEPOSIT
             ? 'Deposit'
             : 'Withdrawal'}{' '}
-          Request
+          Request {transaction.id}
         </Text>
         <Text h2>
           cUSD {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
         </Text>
-        <Text body1>Ksh {fiatNetValue}</Text>
+        <Text body3>Ksh {fiatNetValue}</Text>
+        <Text body3 style={style.statusText}>
+          {transactionStatus}
+        </Text>
       </View>
 
       <View>
-        <Text body1>{transactionStatus}</Text>
-        <TouchableOpacity style={style.button} onPress={fulFillRequest}>
-          <Text style={style.buttonText} body3>
-            Fulfill Request
-          </Text>
-        </TouchableOpacity>
+        {nextUserAction !== NextUserAction.NONE ? (
+          <TouchableOpacity
+            style={style.button}
+            onPress={performNextUserAction}>
+            <Text style={style.buttonText} body3>
+              {nextUserAction.valueOf()}
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={style.invisibleButton} disabled={true}>
+            <Text style={style.buttonText} body3>
+              {nextUserAction.valueOf()}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
+
+      <EnterPinModal
+        target="privateKey"
+        onPinMatched={onPinMatched}
+        visible={props.ui_status === 'enter_pin'}
+      />
+
+      <LoadingModalComponent
+        onShowModal={onShowLoadingModal}
+        visible={props.ui_status === 'loading'}
+      />
+
+      <SuccessModalComponent
+        visible={props.ui_status === 'success'}
+        onPressOkay={() => {}}
+      />
+
+      <ErrorModalComponent
+        visible={props.ui_status === 'error'}
+        onRetry={performNextUserAction}
+      />
     </View>
   );
 };
@@ -111,6 +196,8 @@ const style = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#ffff',
     marginVertical: hp('1%'),
     paddingVertical: hp('1%'),
@@ -130,6 +217,19 @@ const style = StyleSheet.create({
     alignSelf: 'center',
     marginTop: hp('2%'),
   },
+  invisibleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: wp('24%'),
+    paddingHorizontal: wp('0.1%'),
+    paddingVertical: hp('0.2%'),
+    alignSelf: 'center',
+    marginTop: hp('2%'),
+  },
+  statusText: {
+    fontWeight: 'bold',
+    color: AppColors.green,
+  },
   buttonText: {
     flex: 1,
     textAlign: 'center',
@@ -139,9 +239,16 @@ const style = StyleSheet.create({
 
 const mapStateToProps = (state: RootState) => ({
   currency_conversion_rates: state.currency_conversion_rates.rates,
+  ui_status: state.ui_state.status,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  dispatchApproval: generateActionApproveTransaction,
+  dispatchCancelation: generateActionCancelTransaction,
+  promptForPIN: generateActionSetEnterPIN,
+  returnToNormal: generateActionSetNormal,
+  dispatchActionSetLoading: generateActionSetLoading,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 

@@ -16,7 +16,7 @@ import MyTransactionsCardComponent from './components/MyTransactionsCardComponen
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const refetchTransaction = () => {
-    props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3]);
+    props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
   };
 
   useEffect(() => {
@@ -48,12 +48,6 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3]);
   };
 
-  const onFulFillRequest = (item: NashEscrowTransaction) => {
-    props.navigation.navigate('FulfillRequestScreen', {
-      transaction: item,
-    });
-  };
-
   return (
     <Screen style={style.screenContainer}>
       {props.transactions?.length === 0 ? (
@@ -62,10 +56,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         <FlatList
           data={props.transactions}
           renderItem={({item}) => (
-            <MyTransactionsCardComponent
-              transaction={item}
-              onFulFillRequest={onFulFillRequest}
-            />
+            <MyTransactionsCardComponent transaction={item} />
           )}
           keyExtractor={(item: NashEscrowTransaction) => {
             return item.id.toString();
