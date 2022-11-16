@@ -42,6 +42,18 @@ export interface ActionAgentFulfillRequest {
   pin: string;
 }
 
+export interface ActionApproveTransaction {
+  type: Actions.APPROVE_TRANSACTION;
+  transaction: NashEscrowTransaction;
+  pin: string;
+}
+
+export interface ActionCancelTransaction {
+  type: Actions.CANCEL_TRANSACTION;
+  transaction: NashEscrowTransaction;
+  pin: string;
+}
+
 /**
  * Create a generic action type.
  */
@@ -49,4 +61,6 @@ export type ActionTypes =
   | ActionQueryPendingTransactions
   | ActionSetPendingTransactions
   | ActionAgentFulfillRequest
-  | ActionSetMyTransactions;
+  | ActionSetMyTransactions
+  | ActionApproveTransaction
+  | ActionCancelTransaction;

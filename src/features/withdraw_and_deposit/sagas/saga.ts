@@ -4,6 +4,7 @@ import {Actions} from '../redux_store/action.patterns';
 import {
   generateActionSetPendingTransactions,
   generateActionSetMyTransactions,
+  generateActionQueryMyTransactions,
 } from '../redux_store/action.generators';
 import ReadContractDataKit from './ReadContractDataKit';
 import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
@@ -25,7 +26,10 @@ import {
   selectRampMyTransactions,
   selectRampPendingTransactions,
 } from '../redux_store/selectors';
-import {ActionQueryMyTransactions} from '../redux_store/actions';
+import {
+  ActionQueryMyTransactions,
+  ActionCancelTransaction,
+} from '../redux_store/actions';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -252,9 +256,100 @@ export function* watchAgentFullfilRequestSaga() {
   yield takeLatest(Actions.AGENT_FULFILL_REQUEST, agentFullfilRequestSaga);
 }
 
+export function* cancelRequestSaga(_action: ActionCancelTransaction) {
+  console.log('======', _action);
+
+  try {
+    // const transaction = _action.transaction;
+    // const contractKit: NashContractKit = yield call(
+    //   NashContractKit.getInstance,
+    // );
+    // const contract = contractKit.getNashEscrow();
+
+    // const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
+    // contractKit.kit?.addAccount(privateKey);
+
+    // const address: string = yield select(selectPublicAddress);
+
+    // const tsxObj = contract?.methods.agentAcceptDepositTransaction(
+    //   transaction.id,
+    //   '+254791725651',
+    // );
+
+    // yield call(NashContractKit.sendTransactionObject, tsxObj, address);
+
+    yield put(generateActionSetSuccess('Accepted transaction.'));
+
+    yield put(generateActionQueryBalance());
+  } catch (error: any) {
+    // TODO: Perform all possible error handling activities.
+    console.log('Error', error);
+    yield put(generateActionSetError(error.message, error.message));
+  }
+}
+
+/**
+ * Generates the transaction object to be sent.
+ * @param transaction the transaction type.
+ * @param contract the instance of the escrow smart contract.
+ * @returns the composed transaction type.
+ */
+function generateCancelRequestTransaction(
+  transaction: NashEscrowTransaction,
+  publicAddress: string,
+  contract: Contract,
+) {
+  if (transaction.clientAddress === publicAddress) {
+    return contract?.methods.clientConfirmPayment(transaction.id);
+  } else {
+    return contract?.methods.agentConfirmPayment(transaction.id);
+  }
+}
+
+export function* watchCancelRequestSaga() {
+  yield takeLatest(Actions.CANCEL_TRANSACTION, cancelRequestSaga);
+}
+
+export function* approveTransactionSaga(_action: ActionCancelTransaction) {
+  try {
+    const contractKit: NashContractKit = yield call(
+      NashContractKit.getInstance,
+    );
+    const contract = contractKit.getNashEscrow();
+
+    const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
+    contractKit.kit?.addAccount(privateKey);
+
+    const address: string = yield select(selectPublicAddress);
+
+    const tsxObj = generateCancelRequestTransaction(
+      _action.transaction,
+      address,
+      contract,
+    );
+
+    yield call(NashContractKit.sendTransactionObject, tsxObj, address);
+
+    yield put(generateActionSetSuccess('Approved transaction.'));
+
+    yield put(generateActionQueryBalance());
+    yield put(generateActionQueryMyTransactions('refetch', [0, 1, 2]));
+  } catch (error: any) {
+    // TODO: Perform all possible error handling activities.
+    console.log('Error', error);
+    yield put(generateActionSetError(error.message, error.message));
+  }
+}
+
+export function* watchApproveTransactionSaga() {
+  yield takeLatest(Actions.APPROVE_TRANSACTION, approveTransactionSaga);
+}
+
 export function* onRampOffRampSaga() {
   yield spawn(watchQueryPendingTransactionsSaga);
   yield spawn(watchMakeRampExchangeRequestSaga);
   yield spawn(watchAgentFullfilRequestSaga);
   yield spawn(watchQueryMyTransactionsSaga);
+  yield spawn(watchAgentFullfilRequestSaga);
+  yield spawn(watchApproveTransactionSaga);
 }

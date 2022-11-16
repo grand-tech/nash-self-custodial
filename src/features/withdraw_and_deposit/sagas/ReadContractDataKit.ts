@@ -133,6 +133,9 @@ export default class ReadContractDataKit {
       let l =
         (await thisInst?.getNextTxIndex()) ??
         NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
+      if (l === 0) {
+        return [];
+      }
       NashCache.setMyTransactionsRampPaginator(l - 1);
       nashTxsArray =
         (await thisInst?.queryGetMyTransactions(statuses, myAddress)) ?? [];
