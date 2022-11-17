@@ -249,25 +249,25 @@ export class ContractEventsListenerKit {
     this.nashEscrowContract?.events[event](options)
       .on('data', (eventData: EventData) => {
         //data – Will fire each time an event of the type you are listening for has been emitted
-        console.log(`[ ${this.TAG} ] [ ${tag} ] data`);
+        // console.log(`[ ${this.TAG} ] [ ${tag} ] data`);
         // Act on the event data.
         callback(eventData);
       })
-      .on('changed', (changed: any) => {
+      .on('changed', (_changed: any) => {
         //  changed – Will fire for each event of the type you are
         //  listening for that has been removed from the blockchain.
-        console.log(
-          `[ ${this.TAG} ] [ ${tag} ] ${event} changed { ${changed} }`,
-        );
+        // console.log(
+        //   `[ ${this.TAG} ] [ ${tag} ] ${event} changed { ${changed} }`,
+        // );
       })
       .on('error', (err: any) => {
         //error – Will fire if an error in the event subscription occurs.
         console.log(event + ' error ', err);
       })
-      .on('connected', (str: any) => {
+      .on('connected', (_str: any) => {
         //  connected – Will fire when the subscription has successfully established a connection.
         //  It will return a subscription id. This event only fires once.
-        console.log(event + ' connected ', str);
+        // console.log(event + ' connected ', str);
       });
   }
 }

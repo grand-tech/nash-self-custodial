@@ -409,7 +409,6 @@ export function generateUpdatedList(
     case 'add':
       const obj = updates.find(o => o.id === transaction.id);
 
-      console.log('update list', obj);
       // add a new element to the array.
       if (typeof obj === 'undefined') {
         updates.push(transaction);

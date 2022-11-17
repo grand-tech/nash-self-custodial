@@ -1,21 +1,57 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Screen from '../../app_components/Screen';
 import {FlatList, InteractionManager, StyleSheet} from 'react-native';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {connect, ConnectedProps} from 'react-redux';
-import {generateActionQueryMyTransactions} from './redux_store/action.generators';
+import {
+  generateActionApproveTransaction,
+  generateActionCancelTransaction,
+  generateActionQueryMyTransactions,
+} from './redux_store/action.generators';
 import {RootState} from '../../app-redux-store/store';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
-import {NashEscrowTransaction} from './sagas/nash_escrow_types';
+import {
+  NashEscrowTransaction,
+  TransactionType,
+} from './sagas/nash_escrow_types';
 import {Text} from 'react-native-ui-lib';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import MyTransactionsCardComponent from './components/MyTransactionsCardComponent';
-// import BottomMenu from './components/BottomMenu';
+import MyTransactionsCardComponent, {
+  NextUserAction,
+} from './components/MyTransactionsCardComponent';
+import {
+  generateActionSetEnterPIN,
+  generateActionSetLoading,
+} from '../ui_state_manager/action.generators';
+import EnterPinModal from '../../app_components/EnterPinModal';
+import ErrorModalComponent from '../../app_components/ErrorModalComponent';
+import LoadingModalComponent from '../../app_components/LoadingModalComponent';
+import SuccessModalComponent from '../../app_components/SuccessModalComponent';
+import {NashCache} from '../../utils/cache';
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
+
+  let tx: NashEscrowTransaction = {
+    id: -1,
+    txType: TransactionType.DEPOSIT,
+    clientAddress: '',
+    agentAddress: '',
+    status: 0,
+    netAmount: 0,
+    agentFee: 0,
+    nashFee: 0,
+    grossAmount: 0,
+    agentApproval: '',
+    clientApproval: '',
+    clientPhoneNumber: '',
+    agentPhoneNumber: '',
+  };
+
+  const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
+  const [transaction, setTransaction] = useState(tx);
 
   const refetchTransaction = () => {
     props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
@@ -50,6 +86,40 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3]);
   };
 
+  const onPinMatched = (_p: string) => {
+    props.dispatchActionSetLoading('Accepting request ...', '');
+  };
+
+  const onShowLoadingModal = () => {
+    if (isFocused) {
+      if (nextUserAction === NextUserAction.APPROVE) {
+        // dispatch approval action
+        props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
+      } else if (nextUserAction === NextUserAction.CANCEL) {
+        // dispatch agent approve action
+        props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
+      }
+    }
+  };
+
+  const performNextUserAction = (
+    _nextUserAction: NextUserAction,
+    _transaction: NashEscrowTransaction,
+  ) => {
+    setNextUserAction(_nextUserAction);
+    setTransaction(_transaction);
+    if (_transaction.id >= 0 && nextUserAction !== NextUserAction.NONE) {
+      if (
+        NashCache.getPinCache() !== null &&
+        NashCache.getPinCache()?.trim() !== ''
+      ) {
+        props.dispatchActionSetLoading('Approving ...', '');
+      } else {
+        props.promptForPIN();
+      }
+    }
+  };
+
   return (
     <Screen style={style.screenContainer}>
       {props.transactions?.length === 0 ? (
@@ -60,7 +130,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
           renderItem={({item}) => (
             <MyTransactionsCardComponent
               transaction={item}
-              isScreenFocused={isFocused}
+              performNextUserAction={performNextUserAction}
             />
           )}
           keyExtractor={(item: NashEscrowTransaction) => {
@@ -74,6 +144,26 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         />
       )}
 
+      <EnterPinModal
+        target="privateKey"
+        onPinMatched={onPinMatched}
+        visible={props.ui_state === 'enter_pin' && isFocused}
+      />
+
+      <LoadingModalComponent
+        onShowModal={onShowLoadingModal}
+        visible={props.ui_state === 'loading' && isFocused}
+      />
+
+      <SuccessModalComponent
+        visible={props.ui_state === 'success' && isFocused}
+        onPressOkay={() => {}}
+      />
+
+      <ErrorModalComponent
+        visible={props.ui_state === 'error' && isFocused}
+        onRetry={performNextUserAction}
+      />
       {/* <BottomMenu parentProps={props} /> */}
     </Screen>
   );
@@ -92,6 +182,10 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {
   dispatchFetchMyTransactions: generateActionQueryMyTransactions,
+  dispatchActionSetLoading: generateActionSetLoading,
+  dispatchApproval: generateActionApproveTransaction,
+  dispatchCancelation: generateActionCancelTransaction,
+  promptForPIN: generateActionSetEnterPIN,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
