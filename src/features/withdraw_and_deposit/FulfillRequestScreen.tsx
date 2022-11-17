@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Screen from '../../app_components/Screen';
 import {StyleSheet, View} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps} from 'react-redux';
 import {Button, Text} from 'react-native-ui-lib';
 import {
@@ -26,11 +26,11 @@ import {generateActionAgentFulfillRequest} from './redux_store/action.generators
 import ErrorModalComponent from '../../app_components/ErrorModalComponent';
 
 const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
+  const isFocused = useIsFocused();
   const transaction = props.route.params.transaction;
   const rates = props.rates;
   const [amountFiat, setAmountFiat] = useState('-');
   const [feesFiat, setFeesFiat] = useState('-');
-  const [pin, setPin] = useState('');
 
   useFocusEffect(() => {
     let title = 'Withdraw Request';
@@ -65,9 +65,15 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   });
 
   const sendRequest = () => {
-    setPin(NashCache.getPinCache() ?? '');
-    if (pin && pin.trim() !== '') {
-      props.dispatchActionSetLoading('Accepting request ...', '');
+    if (
+      NashCache.getPinCache() !== null &&
+      NashCache.getPinCache()?.trim() !== ''
+    ) {
+      props.dispatchActionSetLoading(
+        'Accepting request ...',
+        '',
+        'Send Request',
+      );
     } else {
       props.promptForPIN();
     }
@@ -75,16 +81,18 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
 
   const onPinMatched = async (p: string) => {
     NashCache.setPinCache(p);
-    setPin(p);
     props.dispatchActionSetLoading('Accepting request ...', '');
   };
 
   const onShowLoadingModal = () => {
-    props.dispatchFulFillTsx(transaction, pin);
+    const pin = NashCache.getPinCache();
+    if (pin !== null) {
+      props.dispatchFulFillTsx(transaction, pin);
+    }
   };
 
   const onPressOkay = () => {
-    props.navigation.navigate('TransactionsFeedScreen');
+    props.navigation.goBack();
   };
 
   return (
@@ -127,21 +135,21 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
       <EnterPinModal
         target="privateKey"
         onPinMatched={onPinMatched}
-        visible={props.ui_status === 'enter_pin'}
+        visible={props.ui_status === 'enter_pin' && isFocused}
       />
 
       <LoadingModalComponent
         onShowModal={onShowLoadingModal}
-        visible={props.ui_status === 'loading'}
+        visible={props.ui_status === 'loading' && isFocused}
       />
 
       <SuccessModalComponent
-        visible={props.ui_status === 'success'}
+        visible={props.ui_status === 'success' && isFocused}
         onPressOkay={onPressOkay}
       />
 
       <ErrorModalComponent
-        visible={props.ui_status === 'error'}
+        visible={props.ui_status === 'error' && isFocused}
         onRetry={sendRequest}
       />
     </Screen>
