@@ -24,6 +24,11 @@ import NashContractKit from './src/features/account_balance/contract.kit.utils';
 import ReadContractDataKit from './src/features/withdraw_and_deposit/sagas/ReadContractDataKit';
 import {ApolloProvider} from '@apollo/client';
 import {apolloClient} from './src/features/graphql/graphql_client';
+import {ContractEventsListenerKit} from './src/utils/NashContractEventsKit';
+import {
+  generateActionQueryMyTransactions,
+  generateActionQueryPendingTransactions,
+} from './src/features/withdraw_and_deposit/redux_store/action.generators';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz",
@@ -34,13 +39,20 @@ LogBox.ignoreLogs([
 
 const App: React.FC<Props> = (props: Props) => {
   initTheme();
+  NashContractKit.createInstance();
+  ReadContractDataKit.createInstance();
 
   useEffect(() => {
     SplashScreen.hide();
   }, []);
 
-  NashContractKit.createInstance();
-  ReadContractDataKit.createInstance();
+  useEffect(() => {
+    if (props.publicAddress !== '') {
+      ContractEventsListenerKit.createInstance();
+      props.dispatchFetchPendingTransactions('refetch');
+      props.dispatchFetchMyTransactions('refetch', [0, 1, 2]);
+    }
+  }, [props, props.publicAddress]);
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -58,9 +70,13 @@ const App: React.FC<Props> = (props: Props) => {
 
 const mapStateToProps = (state: RootState) => ({
   onboarding_status: state.onboarding.status.name,
+  publicAddress: state.onboarding.publicAddress,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  dispatchFetchMyTransactions: generateActionQueryMyTransactions,
+  dispatchFetchPendingTransactions: generateActionQueryPendingTransactions,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 

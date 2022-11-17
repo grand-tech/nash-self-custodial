@@ -100,7 +100,10 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   }, [publicAddress, rates, transaction]);
 
   const performNextUserAction = () => {
-    if (NashCache.getPinCache() || NashCache.getPinCache()?.trim() !== '') {
+    if (
+      NashCache.getPinCache() !== null &&
+      NashCache.getPinCache()?.trim() !== ''
+    ) {
       props.dispatchActionSetLoading('Accepting request ...', '');
     } else {
       props.promptForPIN();

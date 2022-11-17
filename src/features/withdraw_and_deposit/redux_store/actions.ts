@@ -5,6 +5,8 @@ import {
   TransactionType,
 } from '../sagas/nash_escrow_types';
 
+export type ListUpdateActions = 'update' | 'remove' | 'add';
+
 export type QueryTransactionsUserActions = 'refetch' | 'fetch-more';
 
 export interface ActionQueryPendingTransactions {
@@ -54,6 +56,18 @@ export interface ActionCancelTransaction {
   pin: string;
 }
 
+export interface ActionUpdatePendingTransaction {
+  type: Actions.UPDATE_PENDING_TRANSACTION_LISTS;
+  transaction: NashEscrowTransaction;
+  action: ListUpdateActions;
+}
+
+export interface ActionUpdateMyTransaction {
+  type: Actions.UPDATE_MY_TRANSACTION_LISTS;
+  transaction: NashEscrowTransaction;
+  action: ListUpdateActions;
+}
+
 /**
  * Create a generic action type.
  */
@@ -63,4 +77,6 @@ export type ActionTypes =
   | ActionAgentFulfillRequest
   | ActionSetMyTransactions
   | ActionApproveTransaction
-  | ActionCancelTransaction;
+  | ActionCancelTransaction
+  | ActionUpdatePendingTransaction
+  | ActionUpdateMyTransaction;
