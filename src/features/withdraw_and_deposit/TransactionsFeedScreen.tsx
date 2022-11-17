@@ -18,6 +18,7 @@ import {Button, Text} from 'react-native-ui-lib';
 import {useFocusEffect} from '@react-navigation/native';
 import {FONTS} from '../../ui_lib_configs/fonts';
 import {AppColors} from '../../ui_lib_configs/colors';
+import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
 
 const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   // props.dispatchFetchPendingTxs();
@@ -79,7 +80,8 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       {props.pendingTransactions?.length === 0 ? (
-        <Text>Loading...</Text>
+        // <FeedLoaderComponent visible={false}/>
+        <FeedEmptyListComponent visible={true} />
       ) : (
         <FlatList
           data={props.pendingTransactions}
@@ -100,7 +102,7 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
         />
       )}
 
-      <BottomMenu parentProps={props} />
+      <BottomMenu navigation={props.navigation} />
     </Screen>
   );
 };
@@ -130,7 +132,5 @@ type StackProps = NativeStackScreenProps<
 >;
 
 type Props = StackProps & ReduxProps;
-
-export interface TransactionsFeedHomeScreenProps extends Props {}
 
 export default connector(TransactionsFeedHomeScreen);
