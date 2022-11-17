@@ -30,6 +30,8 @@ import ErrorModalComponent from '../../app_components/ErrorModalComponent';
 import LoadingModalComponent from '../../app_components/LoadingModalComponent';
 import SuccessModalComponent from '../../app_components/SuccessModalComponent';
 import {NashCache} from '../../utils/cache';
+import BottomMenu from './components/BottomMenu';
+import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
@@ -123,7 +125,8 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       {props.transactions?.length === 0 ? (
-        <Text>Loading...</Text>
+        // <FeedLoaderComponent visible={false}/>
+        <FeedEmptyListComponent visible={true} />
       ) : (
         <FlatList
           data={props.transactions}
@@ -164,7 +167,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         visible={props.ui_state === 'error' && isFocused}
         onRetry={performNextUserAction}
       />
-      {/* <BottomMenu parentProps={props} /> */}
+      <BottomMenu navigation={props.navigation} />
     </Screen>
   );
 };

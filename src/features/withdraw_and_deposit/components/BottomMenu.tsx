@@ -6,10 +6,10 @@ import {
 } from 'react-native-responsive-screen';
 import {Button} from 'react-native-ui-lib';
 import {connect, ConnectedProps} from 'react-redux';
+import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {TransactionType} from '../sagas/nash_escrow_types';
-import {TransactionsFeedHomeScreenProps} from '../TransactionsFeedScreen';
 
 const BottomMenu: React.FC<Props> = (props: Props) => {
   return (
@@ -24,7 +24,7 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
           ...FONTS.h4,
         }}
         onPress={() => {
-          props.parentProps.navigation.navigate('EnterAmountScreen', {
+          props.navigation.navigate('EnterAmountScreen', {
             transactionType: TransactionType.WITHDRAWAL,
           });
         }}
@@ -39,7 +39,7 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
           ...FONTS.h4,
         }}
         onPress={() => {
-          props.parentProps.navigation.navigate('EnterAmountScreen', {
+          props.navigation.navigate('EnterAmountScreen', {
             transactionType: TransactionType.DEPOSIT,
           });
         }}
@@ -59,19 +59,16 @@ const style = StyleSheet.create({
   },
 });
 
-// state: RootState
-const mapStateToProps = () => ({});
+const mapStateToProps = (_state: RootState) => ({});
 
-const mapDispatchToProps = {
-  // dispatchActionSetNormal: generateActionSetNormal,
-};
+const mapDispatchToProps = {};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
 interface Props extends ReduxProps {
-  parentProps: TransactionsFeedHomeScreenProps;
+  navigation: any;
 }
 
 export default connector(BottomMenu);
