@@ -6,7 +6,6 @@ import {RootState} from '../../../app-redux-store/store';
  * @returns the value stored in the public address state.
  */
 export const selectPublicAddress = (state: RootState) => {
-  // console.log(state);
   return state.onboarding.publicAddress;
 };
 

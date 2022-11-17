@@ -94,10 +94,8 @@ const RestoreAccountScreen = (props: Props) => {
    * Confirm seed phrase button handler logic.
    */
   const confirmSeedPhraseBtnHandler = async () => {
-    // console.log('props', props);
     if (inputSeedPhrase.length === 24) {
       props.dispatchSetLoading('Restoring account..', '');
-      console.log('Modal should appear');
     } else {
       props.dispatchSetError('Invalid mnemonic', '');
     }

@@ -57,9 +57,6 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
 
-    if (transaction.id === 5) {
-      console.log(transaction);
-    }
     let status = '';
     switch (transaction.status) {
       case 0:

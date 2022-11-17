@@ -85,7 +85,6 @@ const EnterAmountComponent: React.FC<Props> = (props: Props) => {
       if (typeof props.cEuroBalance === 'number') {
         b = Number(props.cEuroBalance.toFixed(2)).toLocaleString();
       }
-      console.log('dwedwedwedwe', coin, b);
     } else {
       if (typeof props.cUSDBalance === 'number') {
         b = Number(props.cUSDBalance.toFixed(2)).toLocaleString();

@@ -358,7 +358,6 @@ export function* watchApproveTransactionSaga() {
 export function* updateMyTransactionsListSaga(
   _action: ActionUpdateMyTransaction,
 ) {
-  console.log('updateMyTransactionsListSaga ===>', _action);
   const txs: NashEscrowTransaction[] = yield select(selectRampMyTransactions);
   const update = generateUpdatedList(_action.action, _action.transaction, txs);
   yield put(generateActionSetMyTransactions(update));
