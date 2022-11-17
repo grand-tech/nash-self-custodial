@@ -15,27 +15,13 @@ import {
 import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
-import {
-  generateActionApproveTransaction,
-  generateActionCancelTransaction,
-} from '../redux_store/action.generators';
-import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
-import SuccessModalComponent from '../../../app_components/SuccessModalComponent';
-import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
-import {NashCache} from '../../../utils/cache';
-import {
-  generateActionSetEnterPIN,
-  generateActionSetNormal,
-  generateActionSetLoading,
-} from '../../ui_state_manager/action.generators';
-import EnterPinModal from '../../../app_components/EnterPinModal';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
-  isScreenFocused: boolean;
+  performNextUserAction: any;
 }
 
-enum NextUserAction {
+export enum NextUserAction {
   CANCEL = 'Cancel',
 
   APPROVE = 'Approve',
@@ -97,31 +83,8 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
     setTransactionStatus(status);
   }, [publicAddress, rates, transaction]);
 
-  const performNextUserAction = () => {
-    if (
-      NashCache.getPinCache() !== null &&
-      NashCache.getPinCache()?.trim() !== ''
-    ) {
-      props.dispatchActionSetLoading('Accepting request ...', '');
-    } else {
-      props.promptForPIN();
-    }
-  };
-
-  const onPinMatched = (_p: string) => {
-    props.dispatchActionSetLoading('Accepting request ...', '');
-  };
-
-  const onShowLoadingModal = () => {
-    if (props.isScreenFocused) {
-      if (nextUserAction === NextUserAction.APPROVE) {
-        // dispatch approval action
-        props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
-      } else if (nextUserAction === NextUserAction.CANCEL) {
-        // dispatch agent approve action
-        props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
-      }
-    }
+  const onPress = () => {
+    props.performNextUserAction(nextUserAction, transaction);
   };
 
   return (
@@ -155,9 +118,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
 
       <View>
         {nextUserAction !== NextUserAction.NONE ? (
-          <TouchableOpacity
-            style={style.button}
-            onPress={performNextUserAction}>
+          <TouchableOpacity style={style.button} onPress={onPress}>
             <Text style={style.buttonText} body3>
               {nextUserAction.valueOf()}
             </Text>
@@ -170,27 +131,6 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           </TouchableOpacity>
         )}
       </View>
-
-      <EnterPinModal
-        target="privateKey"
-        onPinMatched={onPinMatched}
-        visible={props.ui_status === 'enter_pin' && props.isScreenFocused}
-      />
-
-      <LoadingModalComponent
-        onShowModal={onShowLoadingModal}
-        visible={props.ui_status === 'loading' && props.isScreenFocused}
-      />
-
-      <SuccessModalComponent
-        visible={props.ui_status === 'success' && props.isScreenFocused}
-        onPressOkay={() => {}}
-      />
-
-      <ErrorModalComponent
-        visible={props.ui_status === 'error' && props.isScreenFocused}
-        onRetry={performNextUserAction}
-      />
     </View>
   );
 };
@@ -245,13 +185,7 @@ const mapStateToProps = (state: RootState) => ({
   ui_status: state.ui_state.status,
 });
 
-const mapDispatchToProps = {
-  dispatchApproval: generateActionApproveTransaction,
-  dispatchCancelation: generateActionCancelTransaction,
-  promptForPIN: generateActionSetEnterPIN,
-  returnToNormal: generateActionSetNormal,
-  dispatchActionSetLoading: generateActionSetLoading,
-};
+const mapDispatchToProps = {};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
