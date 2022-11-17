@@ -57,9 +57,6 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
 
-    if (transaction.id === 5) {
-      console.log(transaction);
-    }
     let status = '';
     switch (transaction.status) {
       case 0:
@@ -100,7 +97,10 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   }, [publicAddress, rates, transaction]);
 
   const performNextUserAction = () => {
-    if (NashCache.getPinCache() || NashCache.getPinCache()?.trim() !== '') {
+    if (
+      NashCache.getPinCache() !== null &&
+      NashCache.getPinCache()?.trim() !== ''
+    ) {
       props.dispatchActionSetLoading('Accepting request ...', '');
     } else {
       props.promptForPIN();

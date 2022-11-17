@@ -9,13 +9,14 @@ import {
   ActionSetMyTransactions,
   ActionApproveTransaction,
   ActionCancelTransaction,
-} from './actions';
-import {
+  ActionUpdatePendingTransaction,
+  ActionUpdateMyTransaction,
   ActionAgentFulfillRequest,
   ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
   QueryTransactionsUserActions,
+  ListUpdateActions,
 } from './actions';
 
 export function generateActionQueryPendingTransactions(
@@ -101,5 +102,27 @@ export function generateActionCancelTransaction(
     type: Actions.CANCEL_TRANSACTION,
     transaction,
     pin,
+  };
+}
+
+export function generateActionUpdatePendingTransactions(
+  transaction: NashEscrowTransaction,
+  action: ListUpdateActions,
+): ActionUpdatePendingTransaction {
+  return {
+    type: Actions.UPDATE_PENDING_TRANSACTION_LISTS,
+    transaction,
+    action,
+  };
+}
+
+export function generateActionUpdateMyTransactions(
+  transaction: NashEscrowTransaction,
+  action: ListUpdateActions,
+): ActionUpdateMyTransaction {
+  return {
+    type: Actions.UPDATE_MY_TRANSACTION_LISTS,
+    transaction,
+    action,
   };
 }
