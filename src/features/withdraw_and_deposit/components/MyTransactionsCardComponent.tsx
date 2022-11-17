@@ -32,6 +32,7 @@ import EnterPinModal from '../../../app_components/EnterPinModal';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
+  isScreenFocused: boolean;
 }
 
 enum NextUserAction {
@@ -112,12 +113,14 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   };
 
   const onShowLoadingModal = () => {
-    if (nextUserAction === NextUserAction.APPROVE) {
-      // dispatch approval action
-      props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
-    } else if (nextUserAction === NextUserAction.CANCEL) {
-      // dispatch agent approve action
-      props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
+    if (props.isScreenFocused) {
+      if (nextUserAction === NextUserAction.APPROVE) {
+        // dispatch approval action
+        props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
+      } else if (nextUserAction === NextUserAction.CANCEL) {
+        // dispatch agent approve action
+        props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
+      }
     }
   };
 
@@ -171,21 +174,21 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       <EnterPinModal
         target="privateKey"
         onPinMatched={onPinMatched}
-        visible={props.ui_status === 'enter_pin'}
+        visible={props.ui_status === 'enter_pin' && props.isScreenFocused}
       />
 
       <LoadingModalComponent
         onShowModal={onShowLoadingModal}
-        visible={props.ui_status === 'loading'}
+        visible={props.ui_status === 'loading' && props.isScreenFocused}
       />
 
       <SuccessModalComponent
-        visible={props.ui_status === 'success'}
+        visible={props.ui_status === 'success' && props.isScreenFocused}
         onPressOkay={() => {}}
       />
 
       <ErrorModalComponent
-        visible={props.ui_status === 'error'}
+        visible={props.ui_status === 'error' && props.isScreenFocused}
         onRetry={performNextUserAction}
       />
     </View>

@@ -10,11 +10,13 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
 import {NashEscrowTransaction} from './sagas/nash_escrow_types';
 import {Text} from 'react-native-ui-lib';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import MyTransactionsCardComponent from './components/MyTransactionsCardComponent';
 // import BottomMenu from './components/BottomMenu';
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
+  const isFocused = useIsFocused();
+
   const refetchTransaction = () => {
     props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
   };
@@ -56,7 +58,10 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         <FlatList
           data={props.transactions}
           renderItem={({item}) => (
-            <MyTransactionsCardComponent transaction={item} />
+            <MyTransactionsCardComponent
+              transaction={item}
+              isScreenFocused={isFocused}
+            />
           )}
           keyExtractor={(item: NashEscrowTransaction) => {
             return item.id.toString();

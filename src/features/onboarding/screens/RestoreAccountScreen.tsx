@@ -179,7 +179,6 @@ const RestoreAccountScreen = (props: Props) => {
                 setErrorDialogVisibility(false);
               }}
               visible={errorDialogVisible}
-              errorMessage={'Invalid seed phrase!!'}
             />
 
             <LoadingModalComponent

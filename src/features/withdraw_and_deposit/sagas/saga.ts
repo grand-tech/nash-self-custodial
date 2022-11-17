@@ -373,7 +373,6 @@ export function* watchUpdateMyTransactionsListSaga() {
 export function* updatePendingTransactionsListSaga(
   _action: ActionUpdatePendingTransaction,
 ) {
-  console.log('updatePendingTransactionsListSaga ===>', _action);
   const txs: NashEscrowTransaction[] = yield select(
     selectRampPendingTransactions,
   );
@@ -448,7 +447,6 @@ export function* onRampOffRampSaga() {
   yield spawn(watchMakeRampExchangeRequestSaga);
   yield spawn(watchAgentFullfilRequestSaga);
   yield spawn(watchQueryMyTransactionsSaga);
-  yield spawn(watchAgentFullfilRequestSaga);
   yield spawn(watchApproveTransactionSaga);
   yield spawn(watchUpdateMyTransactionsListSaga);
   yield spawn(watchUpdatePendingTransactionsListSaga);
