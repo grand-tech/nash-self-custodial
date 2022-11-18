@@ -129,7 +129,10 @@ export class ContractEventsListenerKit {
     if (tx) {
       switch (event.event) {
         case 'TransactionInitEvent':
-          store.dispatch(generateActionUpdatePendingTransactions(tx, 'add'));
+          const publicAddress = store.getState().onboarding.publicAddress;
+          if (tx.clientAddress !== publicAddress) {
+            store.dispatch(generateActionUpdatePendingTransactions(tx, 'add'));
+          }
           this.fetchBalance(tx);
           break;
         case 'AgentPairingEvent':
