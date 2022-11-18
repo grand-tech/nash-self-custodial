@@ -1,17 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import {Button} from 'react-native-ui-lib';
 import {connect, ConnectedProps} from 'react-redux';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
+import ComingSoonModalComponent from '../../../app_components/ComingSoonModalComponent';
 
 const BottomMenu: React.FC<Props> = () => {
   const navigation = useNavigation();
+
+  const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
+
   return (
     <View style={style.container}>
       <Button
@@ -35,6 +36,16 @@ const BottomMenu: React.FC<Props> = () => {
         secondary
         labelStyle={{
           ...FONTS.h4,
+        }}
+        onPress={() => {
+          setComingSoonModalVisible(true);
+        }}
+      />
+
+      <ComingSoonModalComponent
+        visible={comingSoonModalVisible}
+        onCloseModal={() => {
+          setComingSoonModalVisible(false);
         }}
       />
     </View>
