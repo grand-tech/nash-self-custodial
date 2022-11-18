@@ -1,11 +1,16 @@
 import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Screen from '../../app_components/Screen';
-import {Button} from 'react-native-ui-lib';
-import {StyleSheet, ToastAndroid, View} from 'react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {Text} from 'react-native-ui-lib';
+import {StyleSheet, View} from 'react-native';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {AppColors} from '../../ui_lib_configs/colors';
 import ComingSoonModalComponent from '../../app_components/ComingSoonModalComponent';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {FONTS} from '../../ui_lib_configs/fonts';
 
 const SettingsHomeScreen = () => {
   const navigation = useNavigation();
@@ -14,35 +19,32 @@ const SettingsHomeScreen = () => {
 
   return (
     <Screen style={style.screenContainer}>
-      <Button
-        h2
-        link
-        label={'Private Key & Mnemonic'}
-        primary
-        // labelStyle={}
-        labelStyle={style.buttonStyle}
+      <TouchableOpacity
+        style={style.buttonStyle}
         onPress={() => {
           navigation.navigate('DisplayPrivateKeyAndMnemonic');
-        }}
-      />
+        }}>
+        <Text style={style.buttonLabelStyle}>Private Key & Mnemonic</Text>
+      </TouchableOpacity>
+
       <HR />
-      <Button
-        h2
-        link
-        label={'Change Pin'}
-        primary
-        onPress={() => setComingSoonModalVisible(true)}
-      />
+
+      <TouchableOpacity
+        style={style.buttonStyle}
+        onPress={() => setComingSoonModalVisible(true)}>
+        <Text style={style.buttonLabelStyle}>Change Pin</Text>
+      </TouchableOpacity>
+
       <HR />
-      <Button
-        h2
-        link
-        label={'Account Address'}
-        primary
+
+      <TouchableOpacity
+        style={style.buttonStyle}
         onPress={() => {
           navigation.navigate('DisplayAccountAddress');
-        }}
-      />
+        }}>
+        <Text style={style.buttonLabelStyle}>Account Address</Text>
+      </TouchableOpacity>
+
       <HR />
 
       <ComingSoonModalComponent
@@ -58,20 +60,22 @@ const SettingsHomeScreen = () => {
 const style = StyleSheet.create({
   screenContainer: {
     paddingTop: hp('7%'),
+    paddingHorizontal: wp('4%'),
+    alignItems: 'flex-start',
   },
-  hr: {flex: 1, height: 1, backgroundColor: AppColors.light_green},
-  hrText: {
-    width: 50,
-    textAlign: 'center',
-    color: AppColors.light_green,
-  },
+  hr: {flex: 1, height: 0.5, backgroundColor: AppColors.brown},
   hrContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  buttonStyle: {
-    textAlign: 'left',
+  buttonLabelStyle: {
+    ...FONTS.h3,
     alignContent: 'flex-start',
+    color: AppColors.link,
+  },
+  buttonStyle: {
+    marginVertical: hp('1%'),
+    width: wp('90%'),
   },
 });
 
@@ -80,7 +84,6 @@ export default SettingsHomeScreen;
 const HR = () => {
   return (
     <View style={style.hrContainer}>
-      <View style={style.hr} />
       <View style={style.hr} />
     </View>
   );

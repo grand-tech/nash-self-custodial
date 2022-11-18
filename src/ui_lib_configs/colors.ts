@@ -11,4 +11,5 @@ export enum AppColors {
   brown = '#6f665e',
   red = '#E63B2E',
   perfumeHaze = '#f7effa',
+  link = '#4184e4',
 }
