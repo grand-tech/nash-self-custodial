@@ -1,16 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Screen from '../../app_components/Screen';
 import {Button} from 'react-native-ui-lib';
 import {StyleSheet, ToastAndroid, View} from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import {AppColors} from '../../ui_lib_configs/colors';
+import ComingSoonModalComponent from '../../app_components/ComingSoonModalComponent';
 
 const SettingsHomeScreen = () => {
   const navigation = useNavigation();
+
+  const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
+
   return (
     <Screen style={style.screenContainer}>
       <Button
@@ -30,13 +31,7 @@ const SettingsHomeScreen = () => {
         link
         label={'Change Pin'}
         primary
-        onPress={() => {
-          ToastAndroid.showWithGravity(
-            'Coming soon.',
-            ToastAndroid.SHORT,
-            ToastAndroid.TOP,
-          );
-        }}
+        onPress={() => setComingSoonModalVisible(true)}
       />
       <HR />
       <Button
@@ -49,6 +44,13 @@ const SettingsHomeScreen = () => {
         }}
       />
       <HR />
+
+      <ComingSoonModalComponent
+        visible={comingSoonModalVisible}
+        onCloseModal={() => {
+          setComingSoonModalVisible(false);
+        }}
+      />
     </Screen>
   );
 };
