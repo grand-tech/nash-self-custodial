@@ -64,10 +64,19 @@ const EnterAmountComponent: React.FC<Props> = (props: Props) => {
   };
 
   const handleChange = (newValue: any) => {
-    if (amount === '' && newValue === '0') {
+    if (amount === '0' && newValue === '0') {
       return null;
     }
-    setAmount(amount + newValue);
+
+    if (amount.includes('.') && newValue === '.') {
+      return;
+    }
+
+    if (amount === '' && newValue === '.') {
+      newValue = '0.';
+    }
+
+    setAmount((amount + newValue).trim());
   };
 
   function handleDelete() {
@@ -132,7 +141,7 @@ const EnterAmountComponent: React.FC<Props> = (props: Props) => {
         labelStyle={{
           ...FONTS.h5,
         }}
-        disabled={amount.length === 0}
+        disabled={Number(amount) <= 0}
         onPress={() => {
           props.onSubmit(amount, coin);
         }}
