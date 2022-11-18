@@ -105,7 +105,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           {transaction.txType === TransactionType.DEPOSIT
             ? 'Deposit'
             : 'Withdrawal'}{' '}
-          Request {transaction.id}
+          Request
         </Text>
         <Text h2>
           cUSD {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
@@ -117,6 +117,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       </View>
 
       <View>
+        <Text s5>{transaction.id}</Text>
         {nextUserAction !== NextUserAction.NONE ? (
           <TouchableOpacity style={style.button} onPress={onPress}>
             <Text style={style.buttonText} body3>

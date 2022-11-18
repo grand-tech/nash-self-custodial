@@ -32,9 +32,11 @@ import SuccessModalComponent from '../../app_components/SuccessModalComponent';
 import {NashCache} from '../../utils/cache';
 import BottomMenu from './components/BottomMenu';
 import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
+import ComingSoonModalComponent from '../../app_components/ComingSoonModalComponent';
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
+  const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
 
   let tx: NashEscrowTransaction = {
     id: -1,
@@ -110,7 +112,9 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   ) => {
     setNextUserAction(_nextUserAction);
     setTransaction(_transaction);
-    if (_transaction.id >= 0 && nextUserAction !== NextUserAction.NONE) {
+    if (_nextUserAction === NextUserAction.CANCEL) {
+      setComingSoonModalVisible(true);
+    } else if (_transaction.id >= 0 && nextUserAction !== NextUserAction.NONE) {
       if (
         NashCache.getPinCache() !== null &&
         NashCache.getPinCache()?.trim() !== ''
@@ -166,6 +170,12 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
       <ErrorModalComponent
         visible={props.ui_state === 'error' && isFocused}
         onRetry={performNextUserAction}
+      />
+      <ComingSoonModalComponent
+        visible={comingSoonModalVisible}
+        onCloseModal={() => {
+          setComingSoonModalVisible(false);
+        }}
       />
       <BottomMenu navigation={props.navigation} />
     </Screen>
