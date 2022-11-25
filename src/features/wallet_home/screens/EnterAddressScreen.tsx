@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  InteractionManager,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -27,15 +28,17 @@ const EnterAddressScreen = () => {
   const [address, setAddress] = useState('');
 
   useFocusEffect(() => {
-    navigation.getParent()?.setOptions({headerShown: false});
-    navigation.setOptions({
-      title: 'Send Funds',
-      headerTransparent: true,
-    });
+    InteractionManager.runAfterInteractions(() => {
+      navigation.getParent()?.setOptions({headerShown: false});
+      navigation.setOptions({
+        title: 'Send Funds',
+        headerTransparent: true,
+      });
 
-    return () => {
-      navigation.getParent()?.setOptions({headerShown: true});
-    };
+      return () => {
+        navigation.getParent()?.setOptions({headerShown: true});
+      };
+    });
   });
 
   const submitAddress = () => {
