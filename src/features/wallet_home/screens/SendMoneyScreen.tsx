@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {InteractionManager, StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -17,10 +17,12 @@ import EnterAmountComponent from '../../../app_components/EnterAmountComponent';
 // TODO: Re-use enter amount component.
 const SendMoneyScreen: React.FC<Props> = (props: Props) => {
   useFocusEffect(() => {
-    props.navigation.getParent()?.setOptions({headerShown: false});
-    props.navigation.setOptions({
-      title: 'Enter Amount',
-      headerTransparent: true,
+    InteractionManager.runAfterInteractions(() => {
+      props.navigation.getParent()?.setOptions({headerShown: false});
+      props.navigation.setOptions({
+        title: 'Enter Amount',
+        headerTransparent: true,
+      });
     });
 
     return () => {

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Screen from '../../app_components/Screen';
-import {StyleSheet, View} from 'react-native';
+import {InteractionManager, StyleSheet, View} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps} from 'react-redux';
 import {Button, Text} from 'react-native-ui-lib';
@@ -33,14 +33,16 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   const [feesFiat, setFeesFiat] = useState('-');
 
   useFocusEffect(() => {
-    let title = 'Withdraw Request';
-    if (transaction.txType === 'DEPOSIT') {
-      title = 'Deposit Request';
-    }
-    props.navigation.getParent()?.setOptions({headerShown: false});
-    props.navigation.setOptions({
-      title: title,
-      headerTransparent: true,
+    InteractionManager.runAfterInteractions(() => {
+      let title = 'Withdraw Request';
+      if (transaction.txType === 'DEPOSIT') {
+        title = 'Deposit Request';
+      }
+      props.navigation.getParent()?.setOptions({headerShown: false});
+      props.navigation.setOptions({
+        title: title,
+        headerTransparent: true,
+      });
     });
 
     return () => {
