@@ -87,8 +87,6 @@ export function* setAccountPublicDataEncryptionKey(
     );
     yield put(generateActionSetNormal());
     yield put(generateActionSavedPublicDataEncryptionKey());
-    const p: string = yield select(selectPublicKey);
-    console.log(shortenedDEK, p);
   } catch (error) {
     console.log('error===> ', error);
   }
