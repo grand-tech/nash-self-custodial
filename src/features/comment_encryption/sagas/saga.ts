@@ -4,10 +4,7 @@ import {
   ActionSavePublicDataEncryptionKey,
   DEKActions,
 } from '../redux_store/actions';
-import {
-  selectPublicAddress,
-  selectPublicKey,
-} from '../../onboarding/redux_store/selectors';
+import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {AccountsWrapper} from '@celo/contractkit/lib/wrappers/Accounts';
 import {CeloTransactionObject, CeloTxReceipt} from '@celo/connect';
 import {
