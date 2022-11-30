@@ -1,4 +1,5 @@
 import {Actions, ActionTypes} from './actions';
+import {DEKActions} from '../../comment_encryption/redux_store/actions';
 
 /**
  * List of values expected on the onboarding status name.
@@ -25,6 +26,7 @@ interface OnboardingState {
   publicAddress: string;
   publicKey: string;
   user_name: string;
+  saved_public_dek: boolean;
   status: {
     name: OnboardingStatusNames;
     error: any | undefined;
@@ -41,6 +43,7 @@ const initialState: OnboardingState = {
   publicAddress: '',
   publicKey: '',
   user_name: '',
+  saved_public_dek: false,
   status: {
     name: OnboardingStatusNames.undefined,
     error: undefined,
@@ -105,6 +108,11 @@ export const onBoardingReducer = (
     case Actions.LOG_OUT:
       return {
         ...initialState,
+      };
+    case DEKActions.SAVED_DATA_ENCRYPTION_KEY:
+      return {
+        ...state,
+        saved_public_dek: true,
       };
     default:
       return state;

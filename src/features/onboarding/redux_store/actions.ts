@@ -1,3 +1,4 @@
+import {DEKActionTypes} from '../../comment_encryption/redux_store/actions';
 export enum Actions {
   SELECTED_LANGUAGE = 'ONBOARDING/SELECTED_LANGUAGE',
 
@@ -90,4 +91,5 @@ export type ActionTypes =
   | ActionAdoptedNewAccount
   | ActionSetUserName
   | ActionCreateNewAccount
-  | ActionLogOut;
+  | ActionLogOut
+  | DEKActionTypes;
