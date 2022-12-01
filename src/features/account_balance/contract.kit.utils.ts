@@ -19,13 +19,21 @@ export let nashEscrow: Contract;
 // const TAG = '[Contract Kit Utils]';
 
 export function initializeContractKit() {
-  web3 = new Web3('https://alfajores-forno.celo-testnet.org');
-  contractKit = newKitFromWeb3(web3);
+  if (!web3) {
+    web3 = new Web3('https://alfajores-forno.celo-testnet.org');
+    console.log('initContractKit');
+  }
 
-  nashEscrow = new web3.eth.Contract(
-    NashEscrowAbi as AbiItem[],
-    NASH_CONTRACT_ADDRESS,
-  );
+  if (!contractKit) {
+    contractKit = newKitFromWeb3(web3);
+  }
+
+  if (!nashEscrow) {
+    nashEscrow = new web3.eth.Contract(
+      NashEscrowAbi as AbiItem[],
+      NASH_CONTRACT_ADDRESS,
+    );
+  }
 }
 
 /**
