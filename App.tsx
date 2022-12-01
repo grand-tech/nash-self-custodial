@@ -20,11 +20,11 @@ import {connect, ConnectedProps} from 'react-redux';
 import {OnboardingStatusNames} from './src/features/onboarding/redux_store/reducers';
 import {navigationRef} from './src/navigation/navigation.service';
 import {LogBox} from 'react-native';
-import NashContractKit from './src/features/account_balance/contract.kit.utils';
 import ReadContractDataKit from './src/features/withdraw_and_deposit/sagas/ReadContractDataKit';
 import {ApolloProvider} from '@apollo/client';
 import {apolloClient} from './src/features/graphql/graphql_client';
 import {ContractEventsListenerKit} from './src/utils/NashContractEventsKit';
+import {initializeContractKit} from './src/features/account_balance/contract.kit.utils';
 import {
   generateActionQueryMyTransactions,
   generateActionQueryPendingTransactions,
@@ -39,7 +39,7 @@ LogBox.ignoreLogs([
 
 const App: React.FC<Props> = (props: Props) => {
   initTheme();
-  NashContractKit.createInstance();
+  initializeContractKit();
   ReadContractDataKit.createInstance();
 
   useEffect(() => {

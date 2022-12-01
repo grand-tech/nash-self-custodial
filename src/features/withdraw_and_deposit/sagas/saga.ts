@@ -1,4 +1,3 @@
-import {Contract} from 'web3-eth-contract';
 import {
   call,
   put,
@@ -22,7 +21,11 @@ import {
   ActionUpdateMyTransaction,
   ActionUpdatePendingTransaction,
 } from '../redux_store/actions';
-import NashContractKit from '../../account_balance/contract.kit.utils';
+import {
+  contractKit,
+  cUSDApproveAmount,
+  sendTransactionObject,
+} from '../../account_balance/contract.kit.utils';
 import {
   generateActionSetSuccess,
   generateActionSetError,
@@ -32,6 +35,7 @@ import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
 import {ListUpdateActions} from '../redux_store/actions';
+import {nashEscrow} from '../../account_balance/contract.kit.utils';
 import {
   selectRampMyTransactions,
   selectRampPendingTransactions,
@@ -132,32 +136,25 @@ export function* watchQueryMyTransactionsSaga() {
  */
 export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
   try {
-    const contractKit: NashContractKit = yield call(
-      NashContractKit.getInstance,
-    );
-    const contract = contractKit.getNashEscrow();
-
     const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
-    contractKit.kit?.addAccount(privateKey);
+    contractKit.addAccount(privateKey);
 
     const address: string = yield select(selectPublicAddress);
 
-    const amount =
-      contractKit.kit?.web3.utils.toWei(_action.amount.toString()) ?? '';
+    const amount = contractKit.web3.utils.toWei(_action.amount.toString());
 
     const tx = generateInitTransactionObject(
       amount.toString(),
       _action.transactionType,
-      contract,
     );
     // TODO: Figure out what to do with the boolean result
-    yield call(NashContractKit.cUSDApproveAmount, _action.amount, address);
+    yield call(cUSDApproveAmount, _action.amount, address);
 
     // TODO: figure out what to do with the receipt.
     // const receipt: any =
-    yield call(NashContractKit.sendTransactionObject, tx, address);
+    yield call(sendTransactionObject, tx, address);
 
-    yield call(NashContractKit.cUSDApproveAmount, 0, address);
+    yield call(cUSDApproveAmount, 0, address);
 
     yield put(generateActionSetSuccess('Initialized transaction.'));
 
@@ -174,18 +171,16 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
  * Generates the transaction object to be sent.
  * @param amount the amount involved in the transaction.
  * @param transactionType the transaction type.
- * @param contract the instance of the escrow smart contract.
  * @returns the composed transaction type.
  */
 function generateInitTransactionObject(
   amount: string,
   transactionType: TransactionType,
-  contract: Contract,
 ) {
   if (transactionType === TransactionType.DEPOSIT) {
-    return contract?.methods.initializeDepositTransaction(amount, '');
+    return nashEscrow.methods.initializeDepositTransaction(amount, '');
   } else {
-    return contract?.methods.initializeWithdrawalTransaction(amount, '');
+    return nashEscrow.methods.initializeWithdrawalTransaction(amount, '');
   }
 }
 
@@ -202,30 +197,19 @@ export function* watchMakeRampExchangeRequestSaga() {
 export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
   try {
     const transaction = _action.transaction;
-    const contractKit: NashContractKit = yield call(
-      NashContractKit.getInstance,
-    );
-    const contract = contractKit.getNashEscrow();
 
     const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
-    contractKit.kit?.addAccount(privateKey);
+    contractKit.addAccount(privateKey);
 
     const address: string = yield select(selectPublicAddress);
 
-    yield call(
-      NashContractKit.cUSDApproveAmount,
-      transaction.grossAmount,
-      address,
-    );
+    yield call(cUSDApproveAmount, transaction.grossAmount, address);
 
-    const tsxObj = generateAgentFulfillRequestTransactionObject(
-      transaction,
-      contract,
-    );
+    const tsxObj = generateAgentFulfillRequestTransactionObject(transaction);
 
-    yield call(NashContractKit.sendTransactionObject, tsxObj, address);
+    yield call(sendTransactionObject, tsxObj, address);
 
-    yield call(NashContractKit.cUSDApproveAmount, 0, address);
+    yield call(cUSDApproveAmount, 0, address);
 
     yield put(generateActionSetSuccess('Accepted transaction.'));
 
@@ -245,17 +229,16 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
  */
 function generateAgentFulfillRequestTransactionObject(
   transaction: NashEscrowTransaction,
-  contract: Contract,
 ) {
   const transactionType = transaction.txType;
 
   if (transactionType === TransactionType.DEPOSIT) {
-    return contract?.methods.agentAcceptDepositTransaction(
+    return nashEscrow.methods.agentAcceptDepositTransaction(
       transaction.id,
       '+254791725651',
     );
   } else {
-    return contract?.methods.agentAcceptWithdrawalTransaction(
+    return nashEscrow.methods.agentAcceptWithdrawalTransaction(
       transaction.id,
       '+254791725651',
     );
@@ -270,24 +253,6 @@ export function* cancelRequestSaga(_action: ActionCancelTransaction) {
   console.log('======', _action);
 
   try {
-    // const transaction = _action.transaction;
-    // const contractKit: NashContractKit = yield call(
-    //   NashContractKit.getInstance,
-    // );
-    // const contract = contractKit.getNashEscrow();
-
-    // const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
-    // contractKit.kit?.addAccount(privateKey);
-
-    // const address: string = yield select(selectPublicAddress);
-
-    // const tsxObj = contract?.methods.agentAcceptDepositTransaction(
-    //   transaction.id,
-    //   '+254791725651',
-    // );
-
-    // yield call(NashContractKit.sendTransactionObject, tsxObj, address);
-
     yield put(generateActionSetSuccess('Accepted transaction.'));
 
     yield put(generateActionQueryBalance());
@@ -301,18 +266,16 @@ export function* cancelRequestSaga(_action: ActionCancelTransaction) {
 /**
  * Generates the transaction object to be sent.
  * @param transaction the transaction type.
- * @param contract the instance of the escrow smart contract.
  * @returns the composed transaction type.
  */
 function generateCancelRequestTransaction(
   transaction: NashEscrowTransaction,
   publicAddress: string,
-  contract: Contract,
 ) {
   if (transaction.clientAddress === publicAddress) {
-    return contract?.methods.clientConfirmPayment(transaction.id);
+    return nashEscrow.methods.clientConfirmPayment(transaction.id);
   } else {
-    return contract?.methods.agentConfirmPayment(transaction.id);
+    return nashEscrow.methods.agentConfirmPayment(transaction.id);
   }
 }
 
@@ -322,23 +285,17 @@ export function* watchCancelRequestSaga() {
 
 export function* approveTransactionSaga(_action: ActionCancelTransaction) {
   try {
-    const contractKit: NashContractKit = yield call(
-      NashContractKit.getInstance,
-    );
-    const contract = contractKit.getNashEscrow();
-
     const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
-    contractKit.kit?.addAccount(privateKey);
+    contractKit.addAccount(privateKey);
 
     const address: string = yield select(selectPublicAddress);
 
     const tsxObj = generateCancelRequestTransaction(
       _action.transaction,
       address,
-      contract,
     );
 
-    yield call(NashContractKit.sendTransactionObject, tsxObj, address);
+    yield call(sendTransactionObject, tsxObj, address);
 
     yield put(generateActionSetSuccess('Approved transaction.'));
 
@@ -441,7 +398,7 @@ export function generateUpdatedList(
   return updates;
 }
 
-export function* onRampOffRampSaga() {
+export function* onRampOffRampSagas() {
   yield spawn(watchQueryPendingTransactionsSaga);
   yield spawn(watchMakeRampExchangeRequestSaga);
   yield spawn(watchAgentFullfilRequestSaga);

@@ -10,9 +10,15 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import BottomMenu from '../components/BottomMenu';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {RootState} from '../../../app-redux-store/store';
-import {connect, ConnectedProps} from 'react-redux';
+import {connect, ConnectedProps, useSelector} from 'react-redux';
+import {selectSavedPublicDEK} from '../../onboarding/redux_store/selectors';
+import {generateActionSavePublicDataEncryptionKey} from '../../comment_encryption/redux_store/action.generators';
+import {NashCache} from '../../../utils/cache';
+import {initializeContractKit} from '../../account_balance/contract.kit.utils';
 
 const WalletHomeScreen: React.FC<Props> = (props: Props) => {
+  const saved_public_dek = useSelector(selectSavedPublicDEK);
+
   const [totalBalanceFiat, setTotalBalanceFiat] = useState('-');
   const [cUSDFiatBalance, setCUSDFiatBalance] = useState('-');
   const [cEURFiatBalance, setCEURFiatBalance] = useState('-');
@@ -41,11 +47,19 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
     }
 
     setTotalBalanceFiat(Number(totalFiatBalance.toFixed(2)).toLocaleString());
+
+    if (!saved_public_dek) {
+      initializeContractKit();
+      const pin = NashCache.getPinCache() ?? '202222';
+      props.dispatchSaveDEK(pin);
+    }
   }, [
+    props,
     props.cEuroBalance,
     props.cRealBalance,
     props.cUSDBalance,
     props.currencyConversionRates,
+    saved_public_dek,
   ]);
 
   return (
@@ -177,7 +191,9 @@ const mapStateToProps = (state: RootState) => ({
   currencyConversionRates: state.currency_conversion_rates,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  dispatchSaveDEK: generateActionSavePublicDataEncryptionKey,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 

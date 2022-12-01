@@ -39,3 +39,11 @@ export const selectVerifiedMnemonicBackup = (state: RootState) =>
  */
 export const selectStoredEncryptedPrivateKey = (state: RootState) =>
   state.onboarding.storedEncryptedPrivateKey;
+
+/**
+ * Retrieves value state from redux store.
+ * @param state the applications redux state.
+ * @returns the value stored in the saved public DEK state.
+ */
+export const selectSavedPublicDEK = (state: RootState) =>
+  state.onboarding.saved_public_dek;

@@ -121,7 +121,7 @@ export function* watchLogOut() {
 /**
  * Root saga of the module/feature.
  */
-export function* onboardingSaga() {
+export function* onboardingSagas() {
   yield spawn(watchCreateNewAccount);
   yield spawn(watchRestoreExistingAccount);
   yield spawn(watchLogOut);
