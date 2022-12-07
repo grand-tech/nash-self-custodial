@@ -179,9 +179,9 @@ function generateInitTransactionObject(
   transactionType: TransactionType,
 ) {
   if (transactionType === TransactionType.DEPOSIT) {
-    return nashEscrow.methods.initializeDepositTransaction(amount, '');
+    return nashEscrow.methods.initializeDepositTransaction(amount);
   } else {
-    return nashEscrow.methods.initializeWithdrawalTransaction(amount, '');
+    return nashEscrow.methods.initializeWithdrawalTransaction(amount);
   }
 }
 

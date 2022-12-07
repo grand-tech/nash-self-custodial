@@ -87,12 +87,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -167,12 +167,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -247,12 +247,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -327,12 +327,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -407,12 +407,92 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
+            type: 'string',
+          },
+        ],
+        indexed: false,
+        internalType: 'struct NashEscrow.NashTransaction',
+        name: 'wtx',
+        type: 'tuple',
+      },
+    ],
+    name: 'SavedClientCommentEvent',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum NashEscrow.TransactionType',
+            name: 'txType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'address',
+            name: 'clientAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'agentAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'enum NashEscrow.Status',
+            name: 'status',
+            type: 'uint8',
+          },
+          {
+            internalType: 'uint256',
+            name: 'netAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'agentFee',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'nashFee',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'grossAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bool',
+            name: 'agentApproval',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'clientApproval',
+            type: 'bool',
+          },
+          {
+            internalType: 'string',
+            name: 'agentPaymentDetails',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -487,12 +567,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -514,7 +594,7 @@ export const NashEscrowAbi = [
       },
       {
         internalType: 'string',
-        name: '_phoneNumber',
+        name: '_paymentDetails',
         type: 'string',
       },
     ],
@@ -532,7 +612,7 @@ export const NashEscrowAbi = [
       },
       {
         internalType: 'string',
-        name: '_phoneNumber',
+        name: '_paymentDetails',
         type: 'string',
       },
     ],
@@ -563,6 +643,24 @@ export const NashEscrowAbi = [
       },
     ],
     name: 'clientConfirmPayment',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_transactionid',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: '_comment',
+        type: 'string',
+      },
+    ],
+    name: 'clientWritePaymentInformation',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -690,12 +788,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -802,12 +900,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -888,12 +986,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -984,12 +1082,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
@@ -1008,11 +1106,6 @@ export const NashEscrowAbi = [
         name: '_amount',
         type: 'uint256',
       },
-      {
-        internalType: 'string',
-        name: '_phoneNumber',
-        type: 'string',
-      },
     ],
     name: 'initializeDepositTransaction',
     outputs: [],
@@ -1025,11 +1118,6 @@ export const NashEscrowAbi = [
         internalType: 'uint256',
         name: '_amount',
         type: 'uint256',
-      },
-      {
-        internalType: 'string',
-        name: '_phoneNumber',
-        type: 'string',
       },
     ],
     name: 'initializeWithdrawalTransaction',
@@ -1098,12 +1186,12 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'agentPhoneNumber',
+            name: 'agentPaymentDetails',
             type: 'string',
           },
           {
             internalType: 'string',
-            name: 'clientPhoneNumber',
+            name: 'clientPaymentDetails',
             type: 'string',
           },
         ],
