@@ -4,7 +4,11 @@ import {
   ActionSavePublicDataEncryptionKey,
   DEKActions,
 } from '../redux_store/actions';
-import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
+import {
+  selectPublicAddress,
+  selectPublicKey,
+  selectSavedPublicDEK,
+} from '../../onboarding/redux_store/selectors';
 import {AccountsWrapper} from '@celo/contractkit/lib/wrappers/Accounts';
 import {CeloTransactionObject, CeloTxReceipt} from '@celo/connect';
 import {
@@ -18,6 +22,14 @@ import {
   generateActionSetSuccess,
 } from '../../ui_state_manager/action.generators';
 import {generateActionSavedPublicDataEncryptionKey} from '../redux_store/action.generators';
+import {
+  constructEscrowCommentString,
+  encryptEscrowTXComment,
+  EscrowTxComment,
+  nashEncryptComment,
+} from './comment.encryption.utils';
+import {selectFiatPaymentMethod} from '../../withdraw_and_deposit/redux_store/selectors';
+import {PaymentDetails} from '../../withdraw_and_deposit/redux_store/reducers';
 
 /**
  * Listen for the action to set an accounts public data
@@ -66,7 +78,6 @@ export function* setAccountPublicDataEncryptionKey(
         address,
       );
 
-      console.log('=====>', receipt.status);
       yield call(setDEKSaga, accounts, address, shortenedDEK);
     } else {
       const savedDEK: string = yield call(
@@ -116,14 +127,12 @@ export function* setDEKSaga(
  * @param publicAddress the account who`s public key is to be fetched.
  * @returns the public data encryption key.
  */
-export function* fetchAccountPublicDataEncryptionKey(publicAddress: string) {
-  const contracts = contractKit.contracts;
-  if (contracts) {
-    const accounts: AccountsWrapper = yield call(contracts.getAccounts);
-    const dek: string = yield call(
-      accounts.getDataEncryptionKey,
-      publicAddress,
-    );
+export async function fetchAccountPublicDataEncryptionKey(
+  publicAddress: string,
+) {
+  if (contractKit) {
+    const accounts: AccountsWrapper = await contractKit.contracts.getAccounts();
+    const dek: string = await accounts.getDataEncryptionKey(publicAddress);
     return dek;
   }
   return '';
@@ -134,4 +143,46 @@ export function* fetchAccountPublicDataEncryptionKey(publicAddress: string) {
  */
 export function* dataEncryptionSagas() {
   yield spawn(watchSetAccountPublicDataEncryptionKey);
+}
+
+/**
+ * Object with escrow content to be encrypted.
+ * @param clientAddress the clients address.
+ * @param agentAddress the agents address.
+ */
+export function* encryptEscrowComment(
+  clientAddress: string,
+  agentAddress: string,
+) {
+  const myAddress: string = yield select(selectPublicAddress);
+  let recepientDEK = '';
+  let senderDEK = '';
+  const paymentInfo: PaymentDetails = yield select(selectFiatPaymentMethod);
+  const comment: EscrowTxComment = {
+    mpesaNumber: paymentInfo.phoneNumber,
+    payBill: paymentInfo.paybill,
+    accountNumber: paymentInfo.accountNo,
+    paymentName: paymentInfo.name,
+  };
+  if (myAddress === clientAddress) {
+    senderDEK = yield select(selectPublicKey);
+    recepientDEK = yield call(
+      fetchAccountPublicDataEncryptionKey,
+      agentAddress,
+    );
+  } else {
+    senderDEK = yield call(fetchAccountPublicDataEncryptionKey, clientAddress);
+    recepientDEK = yield select(selectPublicKey);
+  }
+
+  if (!recepientDEK || !senderDEK || recepientDEK === '' || senderDEK === '') {
+    return '';
+  }
+
+  const cypherText = encryptEscrowTXComment(comment, senderDEK, recepientDEK);
+
+  if (cypherText.success) {
+    return cypherText.comment;
+  }
+  return '';
 }

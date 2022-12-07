@@ -21,7 +21,6 @@ export let nashEscrow: Contract;
 export function initializeContractKit() {
   if (!web3) {
     web3 = new Web3('https://alfajores-forno.celo-testnet.org');
-    console.log('initContractKit');
   }
 
   if (!contractKit) {
@@ -33,6 +32,7 @@ export function initializeContractKit() {
       NashEscrowAbi as AbiItem[],
       NASH_CONTRACT_ADDRESS,
     );
+    console.log('initContractKit');
   }
 }
 
@@ -159,14 +159,14 @@ export async function cUSDApproveAmount(_amount: number, account: string) {
 
   let tx;
   if (_amount === 0) {
-    tx = cUSD?.decreaseAllowance(NASH_CONTRACT_ADDRESS, '0');
+    tx = cUSD.decreaseAllowance(NASH_CONTRACT_ADDRESS, '0');
   } else {
-    tx = cUSD?.approve(NASH_CONTRACT_ADDRESS, amount);
+    tx = cUSD.approve(NASH_CONTRACT_ADDRESS, amount);
   }
 
-  const receipt = tx?.sendAndWaitForReceipt({
+  const receipt = tx.sendAndWaitForReceipt({
     from: account,
-    feeCurrency: cUSD?.address,
+    feeCurrency: cUSD.address,
   });
   return receipt;
 }

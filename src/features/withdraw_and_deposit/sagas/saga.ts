@@ -44,6 +44,7 @@ import {
   ActionQueryMyTransactions,
   ActionCancelTransaction,
 } from '../redux_store/actions';
+import {encryptEscrowComment} from '../../comment_encryption/sagas/saga';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -200,19 +201,20 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
 
     const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
     contractKit.addAccount(privateKey);
-
     const address: string = yield select(selectPublicAddress);
-
     yield call(cUSDApproveAmount, transaction.grossAmount, address);
-
-    const tsxObj = generateAgentFulfillRequestTransactionObject(transaction);
-
+    const paymentInfoCypherText: string = yield call(
+      encryptEscrowComment,
+      transaction.clientAddress,
+      transaction.agentAddress,
+    );
+    const tsxObj = generateAgentFulfillRequestTransactionObject(
+      transaction,
+      paymentInfoCypherText,
+    );
     yield call(sendTransactionObject, tsxObj, address);
-
     yield call(cUSDApproveAmount, 0, address);
-
     yield put(generateActionSetSuccess('Accepted transaction.'));
-
     yield put(generateActionQueryBalance());
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
@@ -224,23 +226,24 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
 /**
  * Generates the transaction object to be sent.
  * @param transaction the transaction type.
- * @param contract the instance of the escrow smart contract.
+ * @param paymentInfoCypherText encrypted payment information.
  * @returns the composed transaction type.
  */
 function generateAgentFulfillRequestTransactionObject(
   transaction: NashEscrowTransaction,
+  paymentInfoCypherText: string,
 ) {
   const transactionType = transaction.txType;
 
   if (transactionType === TransactionType.DEPOSIT) {
     return nashEscrow.methods.agentAcceptDepositTransaction(
       transaction.id,
-      '+254791725651',
+      paymentInfoCypherText,
     );
   } else {
     return nashEscrow.methods.agentAcceptWithdrawalTransaction(
       transaction.id,
-      '+254791725651',
+      paymentInfoCypherText,
     );
   }
 }
@@ -250,8 +253,6 @@ export function* watchAgentFullfilRequestSaga() {
 }
 
 export function* cancelRequestSaga(_action: ActionCancelTransaction) {
-  console.log('======', _action);
-
   try {
     yield put(generateActionSetSuccess('Accepted transaction.'));
 

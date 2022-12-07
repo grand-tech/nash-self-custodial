@@ -41,7 +41,7 @@ export function encryptEscrowTXComment(
   receiversDEK: string,
 ) {
   const comment = constructEscrowCommentString(escrowTxComment);
-  return encryptComment(sendersDEK, receiversDEK, comment);
+  return nashEncryptComment(sendersDEK, receiversDEK, comment);
 }
 
 /**
@@ -51,7 +51,7 @@ export function encryptEscrowTXComment(
  * @param comment the comment to be encrypted.
  * @returns the encryption process result.
  */
-export function encryptComment(
+export function nashEncryptComment(
   sendersDEK: string,
   receiversDEK: string,
   comment: string,
