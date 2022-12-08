@@ -14,4 +14,5 @@ export type WithdrawalAndDepositNavigationStackParamsList = {
     transactionType: TransactionType;
   };
   FulfillRequestScreen: {transaction: NashEscrowTransaction};
+  ViewRequestScreen: {transaction: NashEscrowTransaction};
 };

@@ -18,9 +18,7 @@ import {
 } from './sagas/nash_escrow_types';
 import {Text} from 'react-native-ui-lib';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import MyTransactionsCardComponent, {
-  NextUserAction,
-} from './components/MyTransactionsCardComponent';
+import MyTransactionsCardComponent from './components/MyTransactionsCardComponent';
 import {
   generateActionSetEnterPIN,
   generateActionSetLoading,
@@ -33,6 +31,7 @@ import {NashCache} from '../../utils/cache';
 import BottomMenu from './components/BottomMenu';
 import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
 import ComingSoonModalComponent from '../../app_components/ComingSoonModalComponent';
+import {NextUserAction} from './transaction.user.actions.enum';
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
@@ -50,8 +49,8 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     grossAmount: 0,
     agentApproval: '',
     clientApproval: '',
-    clientPhoneNumber: '',
-    agentPhoneNumber: '',
+    clientPaymentDetails: '',
+    agentPaymentDetails: '',
   };
 
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
@@ -138,6 +137,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
             <MyTransactionsCardComponent
               transaction={item}
               performNextUserAction={performNextUserAction}
+              navigation={props.navigation}
             />
           )}
           keyExtractor={(item: NashEscrowTransaction) => {

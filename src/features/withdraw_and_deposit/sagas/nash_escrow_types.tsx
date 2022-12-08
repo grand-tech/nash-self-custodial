@@ -35,8 +35,8 @@ export enum Status {
  * @property { number } agentFee - the amount of money/crypto levied by the agent.
  * @property { boolean } agentApproval - true on agents approval.
  * @property { boolean } clientApproval - true on clients approval.
- * @property { string } clientPhoneNumber - the client`s phone number.
- * @property { string } agentPhoneNumber - the agent`s phone number.
+ * @property { string } clientPaymentDetails - the client`s phone number.
+ * @property { string } agentPaymentDetails - the agent`s phone number.
  */
 export type NashEscrowTransaction = {
   id: number;
@@ -50,8 +50,8 @@ export type NashEscrowTransaction = {
   grossAmount: number;
   agentApproval: string;
   clientApproval: string;
-  clientPhoneNumber: string;
-  agentPhoneNumber: string;
+  clientPaymentDetails: string;
+  agentPaymentDetails: string;
 };
 
 /**
@@ -67,8 +67,8 @@ export type NashEscrowTransaction = {
  * @property { number } agentFee - the amount of money/crypto levied by the agent.
  * @property { boolean } agentApproval - true on agents approval.
  * @property { boolean } clientApproval - true on clients approval.
- * @property { string } clientPhoneNumber - the client`s phone number.
- * @property { string } agentPhoneNumber - the agent`s phone number.
+ * @property { string } clientPaymentDetails - the client`s phone number.
+ * @property { string } agentPaymentDetails - the agent`s phone number.
  */
 export interface NashTransaction {
   id: string;
@@ -83,8 +83,8 @@ export interface NashTransaction {
   grossAmount: number;
   agentApproval: string;
   clientApproval: string;
-  clientPhoneNumber: string;
-  agentPhoneNumber: string;
+  clientPaymentDetails: string;
+  agentPaymentDetails: string;
 }
 
 /**
