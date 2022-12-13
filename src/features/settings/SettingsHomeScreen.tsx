@@ -11,10 +11,15 @@ import {AppColors} from '../../ui_lib_configs/colors';
 import ComingSoonModalComponent from '../../app_components/ComingSoonModalComponent';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {FONTS} from '../../ui_lib_configs/fonts';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {SettingsNavigationStackParamsList} from './navigation/navigation.params.type';
 
-const SettingsHomeScreen = () => {
-  const navigation = useNavigation();
+type NavigationProps = NativeStackScreenProps<
+  SettingsNavigationStackParamsList,
+  'SettingsHome'
+>;
 
+const SettingsHomeScreen = (props: NavigationProps) => {
   const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
 
   return (
@@ -22,7 +27,7 @@ const SettingsHomeScreen = () => {
       <TouchableOpacity
         style={style.buttonStyle}
         onPress={() => {
-          navigation.navigate('DisplayPrivateKeyAndMnemonic');
+          props.navigation.navigate('DisplayPrivateKeyAndMnemonic');
         }}>
         <Text style={style.buttonLabelStyle}>Private Key & Mnemonic</Text>
       </TouchableOpacity>
@@ -40,12 +45,22 @@ const SettingsHomeScreen = () => {
       <TouchableOpacity
         style={style.buttonStyle}
         onPress={() => {
-          navigation.navigate('DisplayAccountAddress');
+          props.navigation.navigate('DisplayAccountAddress');
         }}>
         <Text style={style.buttonLabelStyle}>Account Address</Text>
       </TouchableOpacity>
 
       <HR />
+      <HR />
+      <HR />
+
+      <TouchableOpacity
+        style={style.buttonStyle}
+        onPress={() => {
+          props.navigation.navigate('EnterMpesaPaymentInfoScreen');
+        }}>
+        <Text style={style.buttonLabelStyle}>Fiat Payment</Text>
+      </TouchableOpacity>
 
       <ComingSoonModalComponent
         visible={comingSoonModalVisible}

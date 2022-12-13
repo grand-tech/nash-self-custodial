@@ -37,12 +37,12 @@ export enum FiatPaymentMethod {
 const initialState: RampFiatPaymentMethods = {
   last_updated: new Date().getTime(),
   payment_methods: {
-    name: 'Jane Done',
+    name: '',
     paymentMethod: FiatPaymentMethod.MPESA_PHONE_NUMBER,
-    phoneNumber: '+254791725651',
+    phoneNumber: '',
     paybill: '',
     accountNo: '',
-    setPaymentDetails: true,
+    setPaymentDetails: false,
   },
   default_payment_method: FiatPaymentMethod.MPESA_PHONE_NUMBER,
 };
@@ -60,6 +60,14 @@ export const rampFiatPaymentMethods = (
     case Actions.UPDATE_PAYMENT_METHODS:
       return {
         ...state,
+        payment_methods: {
+          name: action.name,
+          paymentMethod: FiatPaymentMethod.MPESA_PHONE_NUMBER,
+          phoneNumber: action.mpesaPhoneNumber,
+          paybill: '',
+          accountNo: '',
+          setPaymentDetails: true,
+        },
         last_updated: new Date().getTime(),
       };
     default:

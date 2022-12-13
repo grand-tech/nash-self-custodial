@@ -81,7 +81,7 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     );
     yield put(generateActionSetNormal());
     //TODO: figure out what to do with this after adding attestation and comment encryption.
-    yield put(generateActionCompletedOnboarding());
+    navigate('EnterMpesaPaymentInfoScreen');
   } catch (error: any) {
     console.log('error', error);
     yield put(

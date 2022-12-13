@@ -11,4 +11,5 @@ export type OnboardingNavigationStackParamsList = {
   WriteDownRecoveryPhraseScreen: {mnemonic: string};
   ConfirmRecoveryPhraseScreen: {mnemonic: string};
   RestoreAccount: {pin: string};
+  EnterMpesaPaymentInfoScreen: undefined;
 };

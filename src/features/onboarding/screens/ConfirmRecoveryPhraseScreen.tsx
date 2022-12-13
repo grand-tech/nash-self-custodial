@@ -29,7 +29,6 @@ import {
 } from '../../../utils/seed.phrase.validation.utils';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
-import {generateActionCompletedOnboarding} from '../redux_store/action.generators';
 import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
 
 type NavigationProps = NativeStackScreenProps<
@@ -69,7 +68,7 @@ const ConfirmRecoveryPhraseScreen = (props: Props) => {
   const confirmSeedPhraseBtnHandler = () => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
     if (seedPhrase === seedPhraseStr) {
-      props.completeOnboarding();
+      props.navigation.navigate('EnterMpesaPaymentInfoScreen');
     } else {
       setErrorDialogVisibility(true);
     }
@@ -179,7 +178,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = {
-  completeOnboarding: generateActionCompletedOnboarding,
+  // completeOnboarding: generateActionCompletedOnboarding,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

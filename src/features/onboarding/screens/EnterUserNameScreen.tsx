@@ -63,7 +63,7 @@ const EnterUserNameScreen = (props: EnterUserNameScreenProps) => {
                   color={AppColors.black}
                   containerStyle={{marginBottom: hp('1.00%')}}
                   floatingPlaceholder
-                  placeholder="Enter Full Name"
+                  placeholder="Enter Your Name"
                   maxLength={200}
                   editable={true}
                   disabledColor={AppColors.brown}

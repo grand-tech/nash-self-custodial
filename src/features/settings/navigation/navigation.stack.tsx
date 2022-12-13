@@ -4,6 +4,7 @@ import SettingsHomeScreen from '../SettingsHomeScreen';
 import DisplayAccountAddress from '../DisplayAccountAddress';
 import DisplayPrivateKeyAndMnemonic from '../DisplayPrivateKeyAndMnemonic';
 import {SettingsNavigationStackParamsList} from './navigation.params.type';
+import EnterMpesaPaymentInfoScreen from '../../ramp_payment_information/screens/EnterMpesaPaymentInfoScreen';
 
 const Stack = createNativeStackNavigator<SettingsNavigationStackParamsList>();
 
@@ -36,6 +37,10 @@ const navigationStack = (
     <Stack.Screen
       name="DisplayPrivateKeyAndMnemonic"
       component={DisplayPrivateKeyAndMnemonic}
+    />
+    <Stack.Screen
+      name="EnterMpesaPaymentInfoScreen"
+      component={EnterMpesaPaymentInfoScreen}
     />
   </>
 );
