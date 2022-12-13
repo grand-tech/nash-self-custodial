@@ -1,5 +1,6 @@
 import {Actions, ActionTypes} from './actions';
 import {DEKActions} from '../../comment_encryption/redux_store/actions';
+import {GlobalActions} from '../../../app-redux-store/global_redux_actions/action.patterns';
 
 /**
  * List of values expected on the onboarding status name.
@@ -105,14 +106,15 @@ export const onBoardingReducer = (
         ...state,
         user_name: action.userName,
       };
-    case Actions.LOG_OUT:
-      return {
-        ...initialState,
-      };
+
     case DEKActions.SAVED_DATA_ENCRYPTION_KEY:
       return {
         ...state,
         saved_public_dek: true,
+      };
+    case GlobalActions.LOG_OUT: // should be the second last case in all reducers
+      return {
+        ...initialState,
       };
     default:
       return state;

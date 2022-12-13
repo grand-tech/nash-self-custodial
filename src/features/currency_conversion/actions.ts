@@ -1,3 +1,4 @@
+import {ActionLogOut} from '../../app-redux-store/global_redux_actions/actions';
 import {Actions} from './action.patterns';
 import {CurrencyLayerRates} from './currencyLayerUtils';
 
@@ -21,5 +22,6 @@ export interface ActionCacheCurrencyConversionSates {
 }
 
 export type ActionTypes =
+  | ActionLogOut //should be at the beginning of all reducers.
   | ActionCacheCurrencyConversionSates
   | ActionFetchCurrencyConversionRates;

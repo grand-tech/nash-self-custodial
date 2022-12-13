@@ -10,7 +10,6 @@ import {
   ActionAdoptedNewAccount,
   ActionAdoptNewAccount,
   ActionCompletedOnboarding,
-  ActionLogOut,
 } from './actions';
 
 /**
@@ -132,11 +131,5 @@ export function generateActionRestoreExistingAccount(
     type: Actions.RESTORE_EXISTING_ACCOUNT,
     pin: pin,
     mnemonic: mnemonic,
-  };
-}
-
-export function generateActionLogout(): ActionLogOut {
-  return {
-    type: Actions.LOG_OUT,
   };
 }

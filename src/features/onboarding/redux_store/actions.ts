@@ -1,3 +1,4 @@
+import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
 import {DEKActionTypes} from '../../comment_encryption/redux_store/actions';
 export enum Actions {
   SELECTED_LANGUAGE = 'ONBOARDING/SELECTED_LANGUAGE',
@@ -73,14 +74,11 @@ export interface ActionAdoptedNewAccount {
   publicAddress: string;
 }
 
-export interface ActionLogOut {
-  type: Actions.LOG_OUT;
-}
-
 /**
  * Create a generic action type.
  */
 export type ActionTypes =
+  | ActionLogOut //should be at the beginning of all reducers.
   | ActionSelectedLanguage
   | ActionChooseCreateNewAccount
   | ActionConfirmSeedPhrase
@@ -91,5 +89,4 @@ export type ActionTypes =
   | ActionAdoptedNewAccount
   | ActionSetUserName
   | ActionCreateNewAccount
-  | ActionLogOut
   | DEKActionTypes;

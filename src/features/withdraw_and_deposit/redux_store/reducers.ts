@@ -1,6 +1,7 @@
 import {Actions} from './action.patterns';
 import {ActionTypes} from './actions';
 import {NashEscrowTransaction} from '../sagas/nash_escrow_types';
+import {GlobalActions} from '../../../app-redux-store/global_redux_actions/action.patterns';
 
 /**
  * Onboarding state object.
@@ -42,6 +43,10 @@ export const rampStateReducer = (
         ...state,
         my_transactions: action.transactions,
         last_updated: new Date().getTime(),
+      };
+    case GlobalActions.LOG_OUT: // should be the second last case in all reducers
+      return {
+        ...initialState,
       };
     default:
       return state;

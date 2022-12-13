@@ -1,3 +1,4 @@
+import {GlobalActions} from '../../../app-redux-store/global_redux_actions/action.patterns';
 import {Actions, ActionTypes} from './actions';
 
 /**
@@ -36,7 +37,7 @@ export const balanceReducer = (
         cUSD: action.balance.cUSD,
         lastUpdated: Date.now(),
       };
-    case Actions.LOG_OUT:
+    case GlobalActions.LOG_OUT: // should be the second last case in all reducers
       return {
         ...initialState,
       };
