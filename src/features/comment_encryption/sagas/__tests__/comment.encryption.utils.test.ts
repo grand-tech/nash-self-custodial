@@ -1,6 +1,6 @@
 import {
-  decryptComment,
   encryptEscrowTXComment,
+  nashDecryptComment,
 } from '../comment.encryption.utils';
 import {constructEscrowCommentObject} from '../comment.encryption.utils';
 import {
@@ -133,7 +133,7 @@ describe('Encrypt and decrypt comment.', () => {
     );
     expect(encryptionResult.success).toBe(true);
 
-    let decryptionResult1 = decryptComment(
+    let decryptionResult1 = nashDecryptComment(
       encryptionResult.comment,
       TEST_ACC_1.privateKey,
       true,
@@ -143,7 +143,7 @@ describe('Encrypt and decrypt comment.', () => {
     expect(decryptionResult1.success).toBe(true);
     expect(commentStr).toEqual(decryptionResult1.comment);
 
-    let decryptionResult2 = decryptComment(
+    let decryptionResult2 = nashDecryptComment(
       encryptionResult.comment,
       TEST_ACC_2.privateKey,
       false,
@@ -167,7 +167,7 @@ describe('Encrypt and decrypt comment.', () => {
     );
     expect(encryptionResult.success).toBe(true);
 
-    let decryptionResult1 = decryptComment(
+    let decryptionResult1 = nashDecryptComment(
       encryptionResult.comment,
       TEST_ACC_1.privateKey,
       false,
@@ -177,7 +177,7 @@ describe('Encrypt and decrypt comment.', () => {
     expect(decryptionResult1.success).toBe(false);
     expect(commentStr).not.toEqual(decryptionResult1.comment);
 
-    let decryptionResult2 = decryptComment(
+    let decryptionResult2 = nashDecryptComment(
       encryptionResult.comment,
       TEST_ACC_2.privateKey,
       true,
