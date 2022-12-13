@@ -22,12 +22,20 @@ import {generateRampActionUpdateFiatPaymentMethods} from '../../ramp_payment_inf
 import {generateActionCompletedOnboarding} from '../../onboarding/redux_store/action.generators';
 import {selectOnboardingStatus} from '../../onboarding/redux_store/selectors';
 import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
+import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
+import {SettingsNavigationStackParamsList} from '../../settings/navigation/navigation.params.type';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 /**
  * Create account screen props.
  * @typedef {Object} CreateAccountScreenProps properties expected by the create account component.
  * @property { string} onboarding_status the components to be rendered on the constructed screen.
  */
+
+type NavigationProps = NativeStackScreenProps<
+  SettingsNavigationStackParamsList,
+  'EnterMpesaPaymentInfoScreen'
+>;
 
 /**
  * Contains the screen to enter user name.
@@ -42,7 +50,7 @@ const EnterMpesaPaymentInfoScreen = (props: Props) => {
     props.updatePaymentMethod(name, phoneNumber);
 
     if (onboarded.name === OnboardingStatusNames.onboarding_complete) {
-      // navigate to the next screen.
+      props.navigation.navigate('SettingsHome');
     } else {
       props.completeOnboarding();
     }
@@ -174,6 +182,6 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
-interface Props extends ReduxProps {}
+type Props = ReduxProps & NavigationProps;
 
 export default connector(EnterMpesaPaymentInfoScreen);

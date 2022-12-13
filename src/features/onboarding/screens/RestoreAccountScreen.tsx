@@ -47,10 +47,6 @@ type NavigationProps = NativeStackScreenProps<
   'RestoreAccount'
 >;
 
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 /**
  * Contains the onboarding UI.
  */
