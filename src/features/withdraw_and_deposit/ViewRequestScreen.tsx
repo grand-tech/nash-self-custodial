@@ -55,43 +55,45 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
    * Process transaction status.
    */
   useEffect(() => {
-    let status = '';
-    switch (transaction.status) {
-      case 0:
-        status = 'Awaiting Agent';
-        setNextUserAction(NextUserAction.CANCEL);
-        break;
-      case 1:
-        if (
-          transaction.agentApproval &&
-          transaction.agentAddress === myAddress
-        ) {
-          status = 'Awaiting Client Approval';
-          setNextUserAction(NextUserAction.NONE);
-        } else if (
-          transaction.clientApproval &&
-          transaction.clientAddress === myAddress
-        ) {
-          status = 'Awaiting Agent Approval';
-          setNextUserAction(NextUserAction.NONE);
-        } else {
-          status = 'Awaiting Your Approval';
-          if (transaction.agentAddress === myAddress) {
-            setNextUserAction(NextUserAction.APPROVE);
-          } else if (transaction.clientAddress === myAddress) {
-            setNextUserAction(NextUserAction.APPROVE);
+    InteractionManager.runAfterInteractions(() => {
+      let status = '';
+      switch (transaction.status) {
+        case 0:
+          status = 'Awaiting Agent';
+          setNextUserAction(NextUserAction.CANCEL);
+          break;
+        case 1:
+          if (
+            transaction.agentApproval &&
+            transaction.agentAddress === myAddress
+          ) {
+            status = 'Awaiting Client Approval';
+            setNextUserAction(NextUserAction.NONE);
+          } else if (
+            transaction.clientApproval &&
+            transaction.clientAddress === myAddress
+          ) {
+            status = 'Awaiting Agent Approval';
+            setNextUserAction(NextUserAction.NONE);
+          } else {
+            status = 'Awaiting Your Approval';
+            if (transaction.agentAddress === myAddress) {
+              setNextUserAction(NextUserAction.APPROVE);
+            } else if (transaction.clientAddress === myAddress) {
+              setNextUserAction(NextUserAction.APPROVE);
+            }
           }
-        }
-        break;
-      case 3:
-        status = 'Confirmed';
-        break;
-      default:
-        status = 'Completed';
-        break;
-    }
+          break;
+        case 3:
+          status = 'Confirmed';
+          break;
+        default:
+          status = 'Completed';
+          break;
+      }
 
-    setTransactionStatus(status);
+      setTransactionStatus(status);
+    });
   }, [myAddress, rates, transaction]);
 
   /**
@@ -109,64 +111,73 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         headerTransparent: true,
       });
     });
-
-    return () => {
-      props.navigation.getParent()?.setOptions({headerShown: true});
-    };
   });
 
   /**
    * Handle currency coversion.
    */
   useFocusEffect(() => {
-    let amount = 0;
-    let fees = 0;
+    InteractionManager.runAfterInteractions(() => {
+      let amount = 0;
+      let fees = 0;
 
-    if (rates?.KESUSD) {
-      amount = transaction.netAmount / rates?.KESUSD;
-    }
+      if (rates?.KESUSD) {
+        amount = transaction.netAmount / rates?.KESUSD;
+      }
 
-    if (rates?.KESUSD) {
-      fees = transaction.agentFee / rates?.KESUSD;
-    }
+      if (rates?.KESUSD) {
+        fees = transaction.agentFee / rates?.KESUSD;
+      }
 
-    setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
-    setFeesFiat(Number(fees.toFixed(2)).toLocaleString());
+      setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
+      setFeesFiat(Number(fees.toFixed(2)).toLocaleString());
+    });
   });
 
   /**
    * Handle comment decryption.
    */
   useEffect(() => {
-    let comment = '';
-    console.log('tranbsaction obj ====>', transaction.id);
-    if (myAddress === transaction.agentAddress) {
-      // TODO: Figure out where and how to get the private key.
-      const plainText = nashDecryptComment(
-        transaction.agentPaymentDetails,
-        '59f8b7c417f05597e6b0e555629b1a2ca4ffdbd5f5253529e33c98f3fea4e032',
-        false,
-      );
+    InteractionManager.runAfterInteractions(() => {
+      let comment = '';
 
-      if (plainText.success) {
-        comment = plainText.comment;
+      let privateKey = '';
+
+      if (myAddress === '0xFf1A74330dd9e899E5a857E251F8880554F6A260') {
+        privateKey =
+          '99107ec34ccba22db14b416f73d26edb1db7c90ccca10de8d25e11a592391aa6';
+      } else {
+        privateKey =
+          '59f8b7c417f05597e6b0e555629b1a2ca4ffdbd5f5253529e33c98f3fea4e032';
       }
-    }
 
-    if (myAddress === transaction.clientAddress) {
-      const plainText = nashDecryptComment(
-        transaction.agentPaymentDetails,
-        '59f8b7c417f05597e6b0e555629b1a2ca4ffdbd5f5253529e33c98f3fea4e032',
-        true,
-      );
+      if (myAddress === transaction.agentAddress) {
+        // TODO: Figure out where and how to get the private key.
+        const plainText = nashDecryptComment(
+          transaction.clientPaymentDetails,
+          privateKey,
+          false,
+        );
 
-      if (plainText.success) {
-        comment = plainText.comment;
+        if (plainText.success) {
+          comment = plainText.comment;
+        }
       }
-    }
 
-    setPaymentDetails(constructEscrowCommentObject(comment));
-    console.log(comment, paymentDetails);
+      if (myAddress === transaction.clientAddress) {
+        const plainText = nashDecryptComment(
+          transaction.agentPaymentDetails,
+          privateKey,
+          true,
+        );
+
+        if (plainText.success) {
+          comment = plainText.comment;
+        }
+      }
+
+      setPaymentDetails(constructEscrowCommentObject(comment));
+    });
   }, [transaction]);
 
   /**

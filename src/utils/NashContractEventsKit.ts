@@ -12,6 +12,7 @@ import ReadContractDataKit from '../features/withdraw_and_deposit/sagas/ReadCont
 import {store} from '../app-redux-store/store';
 import {generateActionQueryBalance} from '../features/account_balance/redux_store/action.generators';
 import {NashEscrowTransaction} from '../features/withdraw_and_deposit/sagas/nash_escrow_types';
+import {generateActionAddClientPaymentInfoToTx} from '../features/comment_encryption/redux_store/action.generators';
 
 /**
  * Contains nash event listener logic.
@@ -71,12 +72,12 @@ export class ContractEventsListenerKit {
   listenToNashEscrowContract() {
     this.addContractEventListener(
       'TransactionInitEvent',
-      this.transactionPairedEventHandler,
+      this.transactionEventHandler,
     );
 
     this.addContractEventListener(
       'AgentPairingEvent',
-      this.transactionPairedEventHandler,
+      this.transactionEventHandler,
     );
 
     this.setFilteredEventListener('ClientConfirmationEvent');
@@ -97,14 +98,14 @@ export class ContractEventsListenerKit {
 
     this.addContractEventListener(
       eventName,
-      this.transactionPairedEventHandler,
+      this.transactionEventHandler,
       eventName,
       {filter: clientFilter},
     );
 
     this.addContractEventListener(
       eventName,
-      this.transactionPairedEventHandler,
+      this.transactionEventHandler,
       eventName,
       {filter: agentFilter},
     );
@@ -120,16 +121,16 @@ export class ContractEventsListenerKit {
     }
   }
 
-  transactionPairedEventHandler = async (event: EventData) => {
+  transactionEventHandler = async (event: EventData) => {
     console.log('Event data [ ' + event.event + ' ]');
 
     const tx = ReadContractDataKit.getInstance()?.convertToNashTransactionObj(
       event.returnValues[0],
     );
+    const publicAddress = store.getState().onboarding.publicAddress;
     if (tx) {
       switch (event.event) {
         case 'TransactionInitEvent':
-          const publicAddress = store.getState().onboarding.publicAddress;
           if (tx.clientAddress !== publicAddress) {
             store.dispatch(generateActionUpdatePendingTransactions(tx, 'add'));
           }
@@ -137,7 +138,12 @@ export class ContractEventsListenerKit {
           break;
         case 'AgentPairingEvent':
           store.dispatch(generateActionUpdatePendingTransactions(tx, 'remove'));
-          store.dispatch(generateActionUpdateMyTransactions(tx, 'add'));
+          if (tx.clientAddress === publicAddress) {
+            store.dispatch(generateActionAddClientPaymentInfoToTx(tx));
+            store.dispatch(generateActionUpdateMyTransactions(tx, 'update'));
+          } else {
+            store.dispatch(generateActionUpdateMyTransactions(tx, 'add'));
+          }
           this.fetchBalance(tx);
           break;
         case 'ClientConfirmationEvent':

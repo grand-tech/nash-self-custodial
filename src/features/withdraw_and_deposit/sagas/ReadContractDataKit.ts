@@ -62,7 +62,6 @@ export default class ReadContractDataKit {
    */
   static createInstance() {
     if (typeof ReadContractDataKit.readDataContractKit === 'undefined') {
-      console.log('create read instance');
       ReadContractDataKit.readDataContractKit = new ReadContractDataKit();
     }
   }

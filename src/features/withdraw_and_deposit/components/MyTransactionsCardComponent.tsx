@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Pressable, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import Identicon from 'react-native-identicon';
 import {connect, ConnectedProps, useSelector} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
@@ -93,7 +93,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <Pressable onPress={onCardPress}>
+      <TouchableOpacity onPress={onCardPress}>
         <View style={style.cardContainer}>
           <Identicon
             value={
@@ -139,7 +139,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
             )}
           </View>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </>
   );
 };

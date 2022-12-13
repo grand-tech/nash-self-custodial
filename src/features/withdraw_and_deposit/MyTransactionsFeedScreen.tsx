@@ -79,10 +79,6 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         headerTransparent: true,
       });
     });
-
-    return () => {
-      props.navigation.getParent()?.setOptions({headerShown: true});
-    };
   });
 
   const fetchMoreTransactions = () => {

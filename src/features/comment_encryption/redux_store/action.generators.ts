@@ -1,4 +1,6 @@
+import {NashEscrowTransaction} from '../../withdraw_and_deposit/sagas/nash_escrow_types';
 import {
+  ActionAddClientsPaymentInfoToTransaction,
   ActionSavedPublicDataEncryptionKey,
   ActionSavePublicDataEncryptionKey,
   DEKActions,
@@ -25,5 +27,18 @@ export function generateActionSavePublicDataEncryptionKey(
 export function generateActionSavedPublicDataEncryptionKey(): ActionSavedPublicDataEncryptionKey {
   return {
     type: DEKActions.SAVED_DATA_ENCRYPTION_KEY,
+  };
+}
+
+/**
+ * Generates saved data encryption key action.
+ * @returns saved data encryption key action.
+ */
+export function generateActionAddClientPaymentInfoToTx(
+  transaction: NashEscrowTransaction,
+): ActionAddClientsPaymentInfoToTransaction {
+  return {
+    type: DEKActions.ADD_CLIENTS_PAYMENT_INFO_TO_TRANSACTION,
+    transaction,
   };
 }

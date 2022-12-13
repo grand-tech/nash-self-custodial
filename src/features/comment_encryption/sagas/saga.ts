@@ -1,18 +1,26 @@
-import {call, put, select, spawn, takeLeading} from 'redux-saga/effects';
+import {
+  call,
+  put,
+  select,
+  spawn,
+  takeEvery,
+  takeLeading,
+} from 'redux-saga/effects';
 import {getStoredPrivateKey} from '../../onboarding/utils';
 import {
+  ActionAddClientsPaymentInfoToTransaction,
   ActionSavePublicDataEncryptionKey,
   DEKActions,
 } from '../redux_store/actions';
 import {
   selectPublicAddress,
   selectPublicKey,
-  selectSavedPublicDEK,
 } from '../../onboarding/redux_store/selectors';
 import {AccountsWrapper} from '@celo/contractkit/lib/wrappers/Accounts';
 import {CeloTransactionObject, CeloTxReceipt} from '@celo/connect';
 import {
   contractKit,
+  nashEscrow,
   sendTransactionObject,
 } from '../../account_balance/contract.kit.utils';
 import {compressedPubKey} from '@celo/cryptographic-utils';
@@ -23,13 +31,11 @@ import {
 } from '../../ui_state_manager/action.generators';
 import {generateActionSavedPublicDataEncryptionKey} from '../redux_store/action.generators';
 import {
-  constructEscrowCommentString,
   encryptEscrowTXComment,
   EscrowTxComment,
-  nashEncryptComment,
 } from './comment.encryption.utils';
-import {selectFiatPaymentMethod} from '../../withdraw_and_deposit/redux_store/selectors';
-import {PaymentDetails} from '../../withdraw_and_deposit/redux_store/reducers';
+import {selectFiatPaymentMethod} from '../../ramp_payment_information/redux_store/selectors';
+import {PaymentDetails} from '../../ramp_payment_information/redux_store/reducers';
 
 /**
  * Listen for the action to set an accounts public data
@@ -101,7 +107,7 @@ export function* setAccountPublicDataEncryptionKey(
 }
 
 /**
- *
+ * Writes an accounts data encryption key to the smart contract.
  * @param accountsWrapper instance of the accounts smart contracts wrapper.
  * @param accountAddress the account address.
  * @param shortenedDEK shortened data encryption key.
@@ -119,7 +125,6 @@ export function* setDEKSaga(
     tx.txo,
     accountAddress,
   );
-  console.log(receipt.status);
 }
 
 /**
@@ -136,13 +141,6 @@ export async function fetchAccountPublicDataEncryptionKey(
     return dek;
   }
   return '';
-}
-
-/**
- * Spawns all the action listeners for the respective sagas.
- */
-export function* dataEncryptionSagas() {
-  yield spawn(watchSetAccountPublicDataEncryptionKey);
 }
 
 /**
@@ -185,4 +183,55 @@ export function* encryptEscrowComment(
     return cypherText.comment;
   }
   return '';
+}
+
+/**
+ * Listen for the action to set an accounts public data
+ *  encryption key in the accounts smart contract.
+ */
+export function* watchAddClientsPaymentInfoToSaga() {
+  yield takeEvery(
+    DEKActions.ADD_CLIENTS_PAYMENT_INFO_TO_TRANSACTION,
+    addClientsPaymentInfoToSaga,
+  );
+}
+
+/**
+ * Sets the data encryption key of an account in the accounts smart contract.
+ * @param action the action and the required details.
+ */
+export function* addClientsPaymentInfoToSaga(
+  action: ActionAddClientsPaymentInfoToTransaction,
+) {
+  try {
+    const address: string = yield select(selectPublicAddress);
+    const transaction = action.transaction;
+    const paymentInfoCypherText: string = yield call(
+      encryptEscrowComment,
+      transaction.clientAddress,
+      transaction.agentAddress,
+    );
+
+    const tx = nashEscrow.methods.clientWritePaymentInformation(
+      transaction.id,
+      paymentInfoCypherText,
+    );
+
+    const receipt: CeloTxReceipt = yield call(
+      sendTransactionObject,
+      tx,
+      address,
+    );
+    // TODO: figure out what to do with the receipt.
+  } catch (error) {
+    console.log('error===> ', error);
+  }
+}
+
+/**
+ * Spawns all the action listeners for the respective sagas.
+ */
+export function* dataEncryptionSagas() {
+  yield spawn(watchSetAccountPublicDataEncryptionKey);
+  yield spawn(watchAddClientsPaymentInfoToSaga);
 }

@@ -16,6 +16,7 @@ import {
   removeStoredItem,
 } from '../../../utils/session.key.storage.utils';
 import {Result} from 'react-native-keychain';
+import {store} from '../../../app-redux-store/store';
 
 /**
  * The number of words to be contained in the mnemonic.

@@ -15,22 +15,6 @@ interface RampState {
   pending_transactions: Array<NashEscrowTransaction>;
   my_transactions: Array<NashEscrowTransaction>;
   last_updated: number;
-  fiat_payment_method: PaymentDetails;
-}
-
-export interface PaymentDetails {
-  name: string;
-  paymentMethod: FiatPaymentMethod;
-  phoneNumber: string;
-  paybill: string;
-  accountNo: string;
-  setPaymentDetails: boolean;
-}
-
-export enum FiatPaymentMethod {
-  MPESA_PHONE_NUMBER,
-  MPESA_POCHI_LA_BIASHARA,
-  MPESA_PAYBILL,
 }
 
 /**
@@ -40,14 +24,6 @@ const initialState: RampState = {
   pending_transactions: [],
   my_transactions: [],
   last_updated: new Date().getTime(),
-  fiat_payment_method: {
-    name: 'Allen Muhani',
-    paymentMethod: FiatPaymentMethod.MPESA_PHONE_NUMBER,
-    phoneNumber: '+254791725651',
-    paybill: '',
-    accountNo: '',
-    setPaymentDetails: true,
-  },
 };
 
 export const rampStateReducer = (
