@@ -4,6 +4,7 @@ import {
   NashEscrowTransaction,
   TransactionType,
 } from '../sagas/nash_escrow_types';
+import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
 
 export type ListUpdateActions = 'update' | 'remove' | 'add';
 
@@ -72,6 +73,7 @@ export interface ActionUpdateMyTransaction {
  * Create a generic action type.
  */
 export type ActionTypes =
+  | ActionLogOut //should be at the beginning of all reducers.
   | ActionQueryPendingTransactions
   | ActionSetPendingTransactions
   | ActionAgentFulfillRequest

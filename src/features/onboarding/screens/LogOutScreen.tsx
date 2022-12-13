@@ -6,9 +6,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useDispatch} from 'react-redux';
-import {generateActionLogout} from '../redux_store/action.generators';
 import {Text} from 'react-native-ui-lib';
 import {Screen} from 'react-native-screens';
+import {generateActionLogout} from '../../../app-redux-store/global_redux_actions/action.generators';
 
 /**
  * Screen displayed when the user is logging out.

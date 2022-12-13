@@ -1,3 +1,4 @@
+import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
 import {NashEscrowTransaction} from '../../withdraw_and_deposit/sagas/nash_escrow_types';
 
 export enum DEKActions {
@@ -27,6 +28,7 @@ export interface ActionAddClientsPaymentInfoToTransaction {
  * Create a generic action type.
  */
 export type DEKActionTypes =
+  | ActionLogOut //should be at the beginning of all reducers.
   | ActionSavePublicDataEncryptionKey
   | ActionSavedPublicDataEncryptionKey
   | ActionAddClientsPaymentInfoToTransaction;

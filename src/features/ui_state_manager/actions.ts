@@ -1,3 +1,4 @@
+import {ActionLogOut} from '../../app-redux-store/global_redux_actions/actions';
 import {Actions} from './action.patterns';
 
 /**
@@ -59,6 +60,7 @@ export interface ActionSuccess {
  * Create a generic action type.
  */
 export type ActionTypes =
+  | ActionLogOut //should be at the beginning of all reducers.
   | ActionSetLoading
   | ActionSetError
   | ActionSetNormal

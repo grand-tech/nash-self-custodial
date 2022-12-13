@@ -1,3 +1,4 @@
+import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
 import {Actions} from './action.patterns';
 
 /**
@@ -17,5 +18,6 @@ export interface ActionUpdateDefaultFiatPaymentMethods {
  * Create a generic action type.
  */
 export type ActionTypes =
+  | ActionLogOut //should be at the beginning of all reducers.
   | ActionUpdateFiatPaymentMethods
   | ActionUpdateDefaultFiatPaymentMethods;
