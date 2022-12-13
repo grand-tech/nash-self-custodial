@@ -6,6 +6,7 @@ import ConfirmTransactionDetailsScreen from '../ConfirmTransactionDetailsScreen'
 import FulfillRequestScreen from '../FulfillRequestScreen';
 import MyTransactionsFeedScreen from '../MyTransactionsFeedScreen';
 import TransactionsFeedScreen from '../TransactionsFeedScreen';
+import ViewRequestScreen from '../ViewRequestScreen';
 
 const Stack =
   createNativeStackNavigator<WithdrawalAndDepositNavigationStackParamsList>();
@@ -45,5 +46,6 @@ const navigationStack = (
       name="MyTransactionsFeedScreen"
       component={MyTransactionsFeedScreen}
     />
+    <Stack.Screen name="ViewRequestScreen" component={ViewRequestScreen} />
   </>
 );

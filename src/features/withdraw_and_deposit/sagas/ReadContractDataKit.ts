@@ -62,7 +62,6 @@ export default class ReadContractDataKit {
    */
   static createInstance() {
     if (typeof ReadContractDataKit.readDataContractKit === 'undefined') {
-      console.log('create read instance');
       ReadContractDataKit.readDataContractKit = new ReadContractDataKit();
     }
   }
@@ -251,8 +250,8 @@ export default class ReadContractDataKit {
       grossAmount: Number(this.kit?.web3.utils.fromWei(tx[8], 'ether')),
       agentApproval: tx[9],
       clientApproval: tx[10],
-      agentPhoneNumber: tx[11],
-      clientPhoneNumber: tx[12],
+      agentPaymentDetails: tx[11],
+      clientPaymentDetails: tx[12],
     };
 
     return nashTx;
@@ -286,8 +285,8 @@ export default class ReadContractDataKit {
         ),
         agentApproval: tx.agentApproval,
         clientApproval: tx.clientApproval,
-        agentPhoneNumber: tx.agentPhoneNumber,
-        clientPhoneNumber: tx.clientPhoneNumber,
+        agentPaymentDetails: tx.agentPaymentDetails,
+        clientPaymentDetails: tx.clientPaymentDetails,
       };
       list.push(nashTx);
     });
@@ -309,5 +308,5 @@ export default class ReadContractDataKit {
 //       grossAmount: Number(this.kit?.web3.utils.fromWei(tx[10], 'ether')),
 //       agentApproval: tx[11],
 //       clientApproval: tx[12],
-//       agentPhoneNumber: tx[13],
-//       clientPhoneNumber: tx[14],
+//       agentPaymentDetails: tx[13],
+//       clientPaymentDetails: tx[14],

@@ -15,18 +15,18 @@ import {
 import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {WithdrawalAndDepositNavigationStackParamsList} from '../navigation/navigation.params.type';
+import {NextUserAction} from '../transaction.user.actions.enum';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
   performNextUserAction: any;
-}
-
-export enum NextUserAction {
-  CANCEL = 'Cancel',
-
-  APPROVE = 'Approve',
-
-  NONE = '',
+  navigation: NativeStackNavigationProp<
+    WithdrawalAndDepositNavigationStackParamsList,
+    'MyTransactionsFeedScreen',
+    undefined
+  >;
 }
 
 const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
@@ -87,52 +87,60 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
     props.performNextUserAction(nextUserAction, transaction);
   };
 
-  return (
-    <View style={style.cardContainer}>
-      <Identicon
-        value={
-          transaction.agentAddress +
-          transaction.id +
-          transaction.clientAddress +
-          transaction.netAmount +
-          Date.now().toString()
-        }
-        style={{marginTop: hp('0.9%')}}
-        size={29}
-      />
-      <View>
-        <Text style={{...FONTS.body2, fontSize: hp('2.7%')}}>
-          {transaction.txType === TransactionType.DEPOSIT
-            ? 'Deposit'
-            : 'Withdrawal'}{' '}
-          Request
-        </Text>
-        <Text h2>
-          cUSD {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
-        </Text>
-        <Text body3>Ksh {fiatNetValue}</Text>
-        <Text body3 style={style.statusText}>
-          {transactionStatus}
-        </Text>
-      </View>
+  const onCardPress = () => {
+    props.navigation.navigate('ViewRequestScreen', {transaction});
+  };
 
-      <View>
-        <Text s5>{transaction.id}</Text>
-        {nextUserAction !== NextUserAction.NONE ? (
-          <TouchableOpacity style={style.button} onPress={onPress}>
-            <Text style={style.buttonText} body3>
-              {nextUserAction.valueOf()}
+  return (
+    <>
+      <TouchableOpacity onPress={onCardPress}>
+        <View style={style.cardContainer}>
+          <Identicon
+            value={
+              transaction.agentAddress +
+              transaction.id +
+              transaction.clientAddress +
+              transaction.netAmount +
+              Date.now().toString()
+            }
+            style={{marginTop: hp('0.9%')}}
+            size={29}
+          />
+          <View>
+            <Text style={{...FONTS.body2, fontSize: hp('2.7%')}}>
+              {transaction.txType === TransactionType.DEPOSIT
+                ? 'Deposit'
+                : 'Withdrawal'}{' '}
+              Request
             </Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={style.invisibleButton} disabled={true}>
-            <Text style={style.buttonText} body3>
-              {nextUserAction.valueOf()}
+            <Text h2>
+              cUSD {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
             </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
+            <Text body3>Ksh {fiatNetValue}</Text>
+            <Text body3 style={style.statusText}>
+              {transactionStatus}
+            </Text>
+          </View>
+
+          <View>
+            <Text s5>{transaction.id}</Text>
+            {nextUserAction !== NextUserAction.NONE ? (
+              <TouchableOpacity style={style.button} onPress={onPress}>
+                <Text style={style.buttonText} body3>
+                  {nextUserAction.valueOf()}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={style.invisibleButton} disabled={true}>
+                <Text style={style.buttonText} body3>
+                  {nextUserAction.valueOf()}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+    </>
   );
 };
 

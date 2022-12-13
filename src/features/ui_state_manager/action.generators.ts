@@ -39,7 +39,6 @@ export function generateActionSetNormal(): ActionSetNormal {
  * @returns an instance of set enter pin action.
  */
 export function generateActionSetEnterPIN(tag?: string): ActionEnterPIN {
-  console.log('generateActionSetEnterPIN() ====> ', tag);
   return {
     type: Actions.SET_ENTER_PIN,
   };
@@ -68,7 +67,6 @@ export function generateActionSetLoading(
   body: string,
   tag?: string,
 ): ActionSetLoading {
-  console.log('generateActionSetLoading() ====> ', tag);
   return {
     type: Actions.SET_LOADING,
     title: title,

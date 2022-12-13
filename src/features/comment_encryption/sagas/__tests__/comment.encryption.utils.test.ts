@@ -1,8 +1,8 @@
-import {decryptComment} from '../comment.encryption.utils';
 import {
-  constructEscrowCommentObject,
-  encryptComment,
+  decryptComment,
+  encryptEscrowTXComment,
 } from '../comment.encryption.utils';
+import {constructEscrowCommentObject} from '../comment.encryption.utils';
 import {
   TEST_ACC_1,
   TEST_ACC_2,
@@ -120,12 +120,16 @@ describe('Construct comment object tests', () => {
 
 describe('Encrypt and decrypt comment.', () => {
   it('Happy path', async () => {
-    const commentStr =
-      'mpesaNumber:#:+254700000000*#*payBill:#:2022*#*accountNumber:#:XSDWECS*#*paymentName:#:John Done';
-    const encryptionResult = encryptComment(
+    const comment: EscrowTxComment = {
+      mpesaNumber: '+254700000000',
+      payBill: '2022',
+      accountNumber: 'XSDWECS',
+      paymentName: 'John Done',
+    };
+    const encryptionResult = encryptEscrowTXComment(
+      comment,
       TEST_ACC_1.publicKey,
       TEST_ACC_2.publicKey,
-      commentStr,
     );
     expect(encryptionResult.success).toBe(true);
 
@@ -135,6 +139,7 @@ describe('Encrypt and decrypt comment.', () => {
       true,
     );
 
+    const commentStr = constructEscrowCommentString(comment);
     expect(decryptionResult1.success).toBe(true);
     expect(commentStr).toEqual(decryptionResult1.comment);
 
@@ -149,12 +154,16 @@ describe('Encrypt and decrypt comment.', () => {
   });
 
   it('Wrong private key', async () => {
-    const commentStr =
-      'mpesaNumber:#:+254700000000*#*payBill:#:2022*#*accountNumber:#:XSDWECS*#*paymentName:#:John Done';
-    const encryptionResult = encryptComment(
+    const comment: EscrowTxComment = {
+      mpesaNumber: '+254700000000',
+      payBill: '2022',
+      accountNumber: 'XSDWECS',
+      paymentName: 'John Done',
+    };
+    const encryptionResult = encryptEscrowTXComment(
+      comment,
       TEST_ACC_1.publicKey,
       TEST_ACC_2.publicKey,
-      commentStr,
     );
     expect(encryptionResult.success).toBe(true);
 
@@ -164,6 +173,7 @@ describe('Encrypt and decrypt comment.', () => {
       false,
     );
 
+    const commentStr = constructEscrowCommentString(comment);
     expect(decryptionResult1.success).toBe(false);
     expect(commentStr).not.toEqual(decryptionResult1.comment);
 
