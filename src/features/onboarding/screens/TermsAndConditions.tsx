@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {connect} from 'react-redux';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -10,58 +10,57 @@ import {
 import {Button, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
 
 /**
  * Contains the onboarding UI.
  */
-const TermsAndConditions = () => {
-  const navigation = useNavigation();
-
+const TermsAndConditions = (props: Props) => {
   return (
     <Screen style={style.rootComponent}>
       <View style={style.container}>
         {/* Tittle section */}
-        <View>
-          <Text color={AppColors.light_green} displayBold>
-            Terms &amp; Conditions
-          </Text>
+        <Text color={AppColors.light_green} displayBold>
+          Terms &amp; Conditions
+        </Text>
+        <ScrollView style={style.scrollView}>
           <Text color={AppColors.black} body3>
             In order to use our services, please read and accept our User
             Agreement and Terms by blicking the accept button below.{' '}
           </Text>
-        </View>
 
-        {/* Body text group section. */}
-        <View style={style.textGroup}>
-          <Text color={AppColors.light_green} h2>
-            Data and Privacy
-          </Text>
-          <Text color={AppColors.black} body3>
-            By joining this network, you give us permission to collect anonymous
-            information about your use of the app. Additionally, if you connect
-            your phone number, a hashed copy of it will be stored on the Celo
-            network. If you grant Nash access to your contact list, Nash will
-            import each contact's name and phone number to allow users to
-            connect through the Nash app. To learn how we collect and use this
-            information please review our Privacy Policy.
-          </Text>
-        </View>
+          {/* Body text group section. */}
+          <View style={style.textGroup}>
+            <Text color={AppColors.light_green} h2>
+              Data and Privacy
+            </Text>
+            <Text color={AppColors.black} body3>
+              By joining this network, you give us permission to collect
+              anonymous information about your use of the app. Additionally, if
+              you connect your phone number, a hashed copy of it will be stored
+              on the Celo network. If you grant Nash access to your contact
+              list, Nash will import each contact's name and phone number to
+              allow users to connect through the Nash app. To learn how we
+              collect and use this information please review our Privacy Policy.
+            </Text>
+          </View>
 
-        <View style={style.textGroup}>
-          <Text color={AppColors.light_green} h2>
-            Celo Dollar and Nash Account
-          </Text>
-          <Text color={AppColors.black} body3>
-            By joining this network, you give us permission to collect anonymous
-            information about your use of the app. Additionally, if you connect
-            your phone number, a hashed copy of it will be stored on the Celo
-            network. If you grant Nash access to your contact list, Nash will
-            import each contact's name and phone number to allow users to
-            connect through the Nash app. To learn how we collect and use this
-            information please review our Privacy Policy.
-          </Text>
-        </View>
+          <View style={style.textGroup}>
+            <Text color={AppColors.light_green} h2>
+              Celo Dollar and Nash Account
+            </Text>
+            <Text color={AppColors.black} body3>
+              By joining this network, you give us permission to collect
+              anonymous information about your use of the app. Additionally, if
+              you connect your phone number, a hashed copy of it will be stored
+              on the Celo network. If you grant Nash access to your contact
+              list, Nash will import each contact's name and phone number to
+              allow users to connect through the Nash app. To learn how we
+              collect and use this information please review our Privacy Policy.
+            </Text>
+          </View>
+        </ScrollView>
 
         {/* Button group section. */}
         <View style={style.buttonGroup}>
@@ -75,7 +74,7 @@ const TermsAndConditions = () => {
               ...FONTS.h4,
             }}
             onPress={() => {
-              navigation.navigate('EnterUserName');
+              props.navigation.navigate('EnterUserName');
             }}
           />
         </View>
@@ -93,9 +92,20 @@ const mapStateToProps = (state: RootState) => ({
   onboarded: state.onboarding.status,
 });
 
+type NavigationProps = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'TermsAndConditions'
+>;
+
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(TermsAndConditions);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
+
+type Props = ReduxProps & NavigationProps;
+
+export default connector(TermsAndConditions);
 
 const style = StyleSheet.create({
   container: {
@@ -124,4 +134,5 @@ const style = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop: hp('4%'),
   },
+  scrollView: {maxHeight: hp('75%')},
 });
