@@ -68,7 +68,11 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   });
 
   const fetchMoreTransactions = () => {
-    props.dispatchFetchPendingTxs('fetch-more');
+    if (props.pendingTransactions?.length > 10) {
+      props.dispatchFetchPendingTxs('fetch-more');
+    } else {
+      props.dispatchFetchPendingTxs('refetch');
+    }
   };
 
   const onFulFillRequest = (item: NashEscrowTransaction) => {
