@@ -82,7 +82,11 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   });
 
   const fetchMoreTransactions = () => {
-    props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3]);
+    if (props.transactions?.length > 10) {
+      props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3]);
+    } else {
+      props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
+    }
   };
 
   const onPinMatched = (_p: string) => {
