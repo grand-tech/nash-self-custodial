@@ -4,7 +4,7 @@ import Screen from '../../app_components/Screen';
 import {FlatList, InteractionManager, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
-  widthPercentageToDP,
+  widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {connect, ConnectedProps} from 'react-redux';
 import {generateActionQueryPendingTransactions} from './redux_store/action.generators';
@@ -52,7 +52,7 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
               }}
               outline={true}
               outlineColor={AppColors.black}
-              style={{marginRight: widthPercentageToDP('2%')}}
+              style={{marginRight: wp('2%')}}
               onPress={() => {
                 props.navigation.navigate('MyTransactionsFeedScreen');
               }}
