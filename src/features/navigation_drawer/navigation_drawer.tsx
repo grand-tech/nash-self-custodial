@@ -26,13 +26,8 @@ export const NavigationDrawer = () => {
       <Drawer.Screen
         name="Withdraw & Deposit"
         component={WithdrawalAndDepositStack}
-        // options={{headerTransparent: true}}
       />
-      <Drawer.Screen
-        name="Settings"
-        component={SettingsStack}
-        // options={{headerTransparent: true}}
-      />
+      <Drawer.Screen name="Settings" component={SettingsStack} />
       <Drawer.Screen name="Logout" component={LogOutScreen} />
     </Drawer.Navigator>
   );

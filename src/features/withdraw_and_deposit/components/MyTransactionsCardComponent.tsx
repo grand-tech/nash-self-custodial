@@ -18,6 +18,7 @@ import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {NextUserAction} from '../transaction.user.actions.enum';
+import {generateActionAddClientPaymentInfoToTx} from '../../comment_encryption/redux_store/action.generators';
 
 interface Props extends ReduxProps {
   transaction: NashEscrowTransaction;
@@ -82,6 +83,16 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
 
     setTransactionStatus(status);
   }, [publicAddress, rates, transaction]);
+
+  useEffect(() => {
+    if (
+      transaction.clientAddress === publicAddress &&
+      transaction.clientPaymentDetails === '' &&
+      transaction.status !== 0
+    ) {
+      props.generateActionAddClientPaymentInfo(transaction);
+    }
+  });
 
   const onPress = () => {
     props.performNextUserAction(nextUserAction, transaction);
@@ -194,7 +205,9 @@ const mapStateToProps = (state: RootState) => ({
   ui_status: state.ui_state.status,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  generateActionAddClientPaymentInfo: generateActionAddClientPaymentInfoToTx,
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
