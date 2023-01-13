@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-ui-lib';
-import {StyleSheet, View} from 'react-native';
+import {InteractionManager, StyleSheet, View} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -15,6 +15,9 @@ import {selectSavedPublicDEK} from '../../onboarding/redux_store/selectors';
 import {generateActionSavePublicDataEncryptionKey} from '../../comment_encryption/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
 import {initializeContractKit} from '../../account_balance/contract.kit.utils';
+import {useFocusEffect} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';
 
 const WalletHomeScreen: React.FC<Props> = (props: Props) => {
   const saved_public_dek = useSelector(selectSavedPublicDEK);
@@ -23,6 +26,17 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
   const [cUSDFiatBalance, setCUSDFiatBalance] = useState('-');
   const [cEURFiatBalance, setCEURFiatBalance] = useState('-');
   const [cREALFiatBalance, setCREALFiatBalance] = useState('-');
+
+  useFocusEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      props.navigation.setOptions({
+        title: '',
+        headerTransparent: true,
+      });
+    });
+
+    return () => {};
+  });
 
   useEffect(() => {
     const rates = props.currencyConversionRates.rates;
@@ -191,6 +205,11 @@ const mapStateToProps = (state: RootState) => ({
   currencyConversionRates: state.currency_conversion_rates,
 });
 
+type NavigationProps = NativeStackScreenProps<
+  WalletHomeNavigationStackParamsList,
+  'WalletHomeScreen'
+>;
+
 const mapDispatchToProps = {
   dispatchSaveDEK: generateActionSavePublicDataEncryptionKey,
 };
@@ -199,5 +218,5 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
-type Props = ReduxProps;
+type Props = ReduxProps & NavigationProps;
 export default connector(WalletHomeScreen);
