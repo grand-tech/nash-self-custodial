@@ -1,31 +1,5 @@
 export const NashEscrowAbi = [
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_cUSDTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_agentFee',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_nashFee',
-        type: 'uint256',
-      },
-      {
-        internalType: 'address',
-        name: '_nashTreasuryAddress',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -94,6 +68,11 @@ export const NashEscrowAbi = [
             internalType: 'string',
             name: 'clientPaymentDetails',
             type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
           },
         ],
         indexed: false,
@@ -175,6 +154,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         indexed: false,
         internalType: 'struct NashEscrow.NashTransaction',
@@ -254,6 +238,11 @@ export const NashEscrowAbi = [
             internalType: 'string',
             name: 'clientPaymentDetails',
             type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
           },
         ],
         indexed: false,
@@ -335,6 +324,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         indexed: false,
         internalType: 'struct NashEscrow.NashTransaction',
@@ -343,6 +337,38 @@ export const NashEscrowAbi = [
       },
     ],
     name: 'ConfirmationCompletedEvent',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint8',
+        name: 'version',
+        type: 'uint8',
+      },
+    ],
+    name: 'Initialized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
     type: 'event',
   },
   {
@@ -414,6 +440,11 @@ export const NashEscrowAbi = [
             internalType: 'string',
             name: 'clientPaymentDetails',
             type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
           },
         ],
         indexed: false,
@@ -495,6 +526,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         indexed: false,
         internalType: 'struct NashEscrow.NashTransaction',
@@ -574,6 +610,11 @@ export const NashEscrowAbi = [
             internalType: 'string',
             name: 'clientPaymentDetails',
             type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
           },
         ],
         indexed: false,
@@ -796,6 +837,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         internalType: 'struct NashEscrow.NashTransaction[]',
         name: '',
@@ -908,6 +954,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         internalType: 'struct NashEscrow.NashTransaction',
         name: '',
@@ -993,6 +1044,11 @@ export const NashEscrowAbi = [
             internalType: 'string',
             name: 'clientPaymentDetails',
             type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
           },
         ],
         internalType: 'struct NashEscrow.NashTransaction',
@@ -1090,6 +1146,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         internalType: 'struct NashEscrow.NashTransaction[]',
         name: '',
@@ -1102,9 +1163,37 @@ export const NashEscrowAbi = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: '_nashTreasuryAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_nashFees',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_agentFees',
+        type: 'uint256',
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: '_amount',
         type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_exchangeToken',
+        type: 'address',
       },
     ],
     name: 'initializeDepositTransaction',
@@ -1118,6 +1207,11 @@ export const NashEscrowAbi = [
         internalType: 'uint256',
         name: '_amount',
         type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_exchangeToken',
+        type: 'address',
       },
     ],
     name: 'initializeWithdrawalTransaction',
@@ -1194,6 +1288,11 @@ export const NashEscrowAbi = [
             name: 'clientPaymentDetails',
             type: 'string',
           },
+          {
+            internalType: 'address',
+            name: 'exchangeToken',
+            type: 'address',
+          },
         ],
         internalType: 'struct NashEscrow.NashTransaction',
         name: 'wtx',
@@ -1214,6 +1313,78 @@ export const NashEscrowAbi = [
       },
     ],
     stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_newTreasuryAddress',
+        type: 'address',
+      },
+    ],
+    name: 'setNashTreasury',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_agentFees',
+        type: 'uint256',
+      },
+    ],
+    name: 'updateAgentFees',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_nashFees',
+        type: 'uint256',
+      },
+    ],
+    name: 'updateNashFees',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ];

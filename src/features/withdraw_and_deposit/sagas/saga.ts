@@ -45,6 +45,9 @@ import {
   ActionCancelTransaction,
 } from '../redux_store/actions';
 import {encryptEscrowComment} from '../../comment_encryption/sagas/saga';
+import {ContractKit, StableToken} from '@celo/contractkit';
+import {stableTokenInfos} from '@celo/contractkit/lib/celo-tokens';
+import {CeloTxObject} from '@celo/connect';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -144,9 +147,11 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
 
     const amount = contractKit.web3.utils.toWei(_action.amount.toString());
 
-    const tx = generateInitTransactionObject(
+    const tx: CeloTxObject<any> = yield call(
+      generateInitTransactionObject,
       amount.toString(),
       _action.transactionType,
+      _action.coin,
     );
     // TODO: Figure out what to do with the boolean result
     yield call(cUSDApproveAmount, _action.amount, address);
@@ -174,14 +179,22 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
  * @param transactionType the transaction type.
  * @returns the composed transaction type.
  */
-function generateInitTransactionObject(
+async function generateInitTransactionObject(
   amount: string,
   transactionType: TransactionType,
+  coin: StableToken,
 ) {
+  const tokenContract = await contractKit.contracts.getStableToken(coin);
   if (transactionType === TransactionType.DEPOSIT) {
-    return nashEscrow.methods.initializeDepositTransaction(amount);
+    return nashEscrow.methods.initializeDepositTransaction(
+      amount,
+      tokenContract.address,
+    );
   } else {
-    return nashEscrow.methods.initializeWithdrawalTransaction(amount);
+    return nashEscrow.methods.initializeWithdrawalTransaction(
+      amount,
+      tokenContract.address,
+    );
   }
 }
 
