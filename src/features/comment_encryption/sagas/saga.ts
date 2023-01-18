@@ -6,7 +6,6 @@ import {
   takeEvery,
   takeLeading,
 } from 'redux-saga/effects';
-import {getStoredPrivateKey} from '../../onboarding/utils';
 import {
   ActionAddClientsPaymentInfoToTransaction,
   ActionSavePublicDataEncryptionKey,
@@ -36,6 +35,7 @@ import {
 } from './comment.encryption.utils';
 import {selectFiatPaymentMethod} from '../../ramp_payment_information/redux_store/selectors';
 import {PaymentDetails} from '../../ramp_payment_information/redux_store/reducers';
+import {NashCache} from '../../../utils/cache';
 
 /**
  * Listen for the action to set an accounts public data
@@ -59,7 +59,7 @@ export function* setAccountPublicDataEncryptionKey(
     const address: string = yield select(selectPublicAddress);
 
     // create a private key session.
-    const privateKey: string = yield call(getStoredPrivateKey, action.pin);
+    const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
 
     const accounts: AccountsWrapper = yield call([

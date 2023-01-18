@@ -31,7 +31,6 @@ import {
   generateActionSetSuccess,
   generateActionSetError,
 } from '../../ui_state_manager/action.generators';
-import {getStoredPrivateKey} from '../../onboarding/utils';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
@@ -46,10 +45,8 @@ import {
   ActionCancelTransaction,
 } from '../redux_store/actions';
 import {encryptEscrowComment} from '../../comment_encryption/sagas/saga';
-import {ContractKit, StableToken} from '@celo/contractkit';
-import {stableTokenInfos} from '@celo/contractkit/lib/celo-tokens';
+import {StableToken} from '@celo/contractkit';
 import {CeloTxObject} from '@celo/connect';
-import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 
 /**
@@ -143,7 +140,7 @@ export function* watchQueryMyTransactionsSaga() {
  */
 export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
   try {
-    const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
+    const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
 
     const address: string = yield select(selectPublicAddress);
@@ -188,7 +185,6 @@ async function generateInitTransactionObject(
   coin: StableToken,
 ) {
   const tokenContract = await contractKit.contracts.getStableToken(coin);
-  console.log('=====================>', coin, tokenContract.address);
   if (transactionType === TransactionType.DEPOSIT) {
     return nashEscrow.methods.initializeDepositTransaction(
       amount,
@@ -225,7 +221,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
 
     var stableToken: StableToken = (<any>StableToken)[symbol];
 
-    const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
+    const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
     const address: string = yield select(selectPublicAddress);
     yield call(
@@ -318,7 +314,7 @@ export function* watchCancelRequestSaga() {
 
 export function* approveTransactionSaga(_action: ActionCancelTransaction) {
   try {
-    const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
+    const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
 
     const address: string = yield select(selectPublicAddress);

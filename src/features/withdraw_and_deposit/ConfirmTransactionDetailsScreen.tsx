@@ -68,8 +68,9 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   });
 
   const sendRequest = () => {
-    setPin(NashCache.getPinCache() ?? '');
-    if (pin && pin.trim() !== '') {
+    const p = NashCache.getPinCache() ?? '';
+    setPin(p);
+    if (p !== '') {
       props.dispatchActionSetLoading('Sending request', '');
     } else {
       props.promptForPIN();

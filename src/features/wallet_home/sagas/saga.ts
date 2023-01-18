@@ -1,7 +1,6 @@
 import {StableToken} from '@celo/contractkit';
 import {call, put, select, spawn, takeLatest} from 'redux-saga/effects';
 import {ActionSendFunds} from '../redux_store/actions';
-import {getStoredPrivateKey} from '../../onboarding/utils';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {Actions} from '../redux_store/actions';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
@@ -15,6 +14,7 @@ import {
   sendCUSD,
   web3,
 } from '../../account_balance/contract.kit.utils';
+import {NashCache} from '../../../utils/cache';
 
 export function* watchSendFunds() {
   yield takeLatest(Actions.SEND_FUNDS, sendFunds);
@@ -24,7 +24,7 @@ export function* sendFunds(action: ActionSendFunds) {
   const amount = web3.utils.toWei(action.amount.toString());
   const coin = action.coin;
 
-  const privateKey: string = yield call(getStoredPrivateKey, action.pin);
+  const privateKey: string = NashCache.getPrivateKey();
   const address: string = yield select(selectPublicAddress);
 
   contractKit.addAccount(privateKey);
