@@ -1,7 +1,6 @@
 import {StableToken} from '@celo/contractkit';
 import {call, put, select, spawn, takeLatest} from 'redux-saga/effects';
 import {ActionSendFunds} from '../redux_store/actions';
-import {getStoredPrivateKey} from '../../onboarding/utils';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {Actions} from '../redux_store/actions';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
