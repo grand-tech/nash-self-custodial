@@ -15,6 +15,7 @@ import {
   sendCUSD,
   web3,
 } from '../../account_balance/contract.kit.utils';
+import {NashCache} from '../../../utils/cache';
 
 export function* watchSendFunds() {
   yield takeLatest(Actions.SEND_FUNDS, sendFunds);
@@ -24,7 +25,7 @@ export function* sendFunds(action: ActionSendFunds) {
   const amount = web3.utils.toWei(action.amount.toString());
   const coin = action.coin;
 
-  const privateKey: string = yield call(getStoredPrivateKey, action.pin);
+  const privateKey: string = NashCache.getPrivateKey();
   const address: string = yield select(selectPublicAddress);
 
   contractKit.addAccount(privateKey);
