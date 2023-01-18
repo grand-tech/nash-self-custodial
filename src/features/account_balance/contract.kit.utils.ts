@@ -149,13 +149,18 @@ export async function sendTransactionObject(
 
 /**
  * Approve the nash to use a certain amount of cUSD from the users.
+ * @param coin the stable token to be approved.
  * @param _amount the amount that can be used by a smart contract.
  * @param account the address of the sender.
  * @returns approval receipt.
  */
-export async function cUSDApproveAmount(_amount: number, account: string) {
+export async function stableTokenApproveAmount(
+  coin: StableToken,
+  _amount: number,
+  account: string,
+) {
   const amount = contractKit.web3.utils.toWei((_amount + 1).toString()) ?? '';
-  let cUSD = await contractKit.contracts.getStableToken(StableToken.cUSD);
+  let cUSD = await contractKit.contracts.getStableToken(coin);
 
   let tx;
   if (_amount === 0) {

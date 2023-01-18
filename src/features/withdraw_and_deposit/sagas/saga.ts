@@ -23,8 +23,9 @@ import {
 } from '../redux_store/actions';
 import {
   contractKit,
-  cUSDApproveAmount,
+  stableTokenApproveAmount,
   sendTransactionObject,
+  web3,
 } from '../../account_balance/contract.kit.utils';
 import {
   generateActionSetSuccess,
@@ -48,6 +49,8 @@ import {encryptEscrowComment} from '../../comment_encryption/sagas/saga';
 import {ContractKit, StableToken} from '@celo/contractkit';
 import {stableTokenInfos} from '@celo/contractkit/lib/celo-tokens';
 import {CeloTxObject} from '@celo/connect';
+import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
+import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -154,13 +157,13 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
       _action.coin,
     );
     // TODO: Figure out what to do with the boolean result
-    yield call(cUSDApproveAmount, _action.amount, address);
+    yield call(stableTokenApproveAmount, _action.coin, _action.amount, address);
 
     // TODO: figure out what to do with the receipt.
     // const receipt: any =
     yield call(sendTransactionObject, tx, address);
 
-    yield call(cUSDApproveAmount, 0, address);
+    yield call(stableTokenApproveAmount, _action.coin, 0, address);
 
     yield put(generateActionSetSuccess('Initialized transaction.'));
 
@@ -185,6 +188,7 @@ async function generateInitTransactionObject(
   coin: StableToken,
 ) {
   const tokenContract = await contractKit.contracts.getStableToken(coin);
+  console.log('=====================>', coin, tokenContract.address);
   if (transactionType === TransactionType.DEPOSIT) {
     return nashEscrow.methods.initializeDepositTransaction(
       amount,
@@ -212,10 +216,24 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
   try {
     const transaction = _action.transaction;
 
+    const stableTokenContract = newStableToken(
+      web3,
+      transaction.enxchangeToken,
+    );
+    const n = stableTokenContract.methods.symbol();
+    const symbol: string = yield call(n.call);
+
+    var stableToken: StableToken = (<any>StableToken)[symbol];
+
     const privateKey: string = yield call(getStoredPrivateKey, _action.pin);
     contractKit.addAccount(privateKey);
     const address: string = yield select(selectPublicAddress);
-    yield call(cUSDApproveAmount, transaction.grossAmount, address);
+    yield call(
+      stableTokenApproveAmount,
+      stableToken,
+      transaction.grossAmount,
+      address,
+    );
     const paymentInfoCypherText: string = yield call(
       encryptEscrowComment,
       transaction.clientAddress,
@@ -225,8 +243,9 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
       transaction,
       paymentInfoCypherText,
     );
+
     yield call(sendTransactionObject, tsxObj, address);
-    yield call(cUSDApproveAmount, 0, address);
+    yield call(stableTokenApproveAmount, stableToken, 0, address);
     yield put(generateActionSetSuccess('Accepted transaction.'));
     yield put(generateActionQueryBalance());
   } catch (error: any) {

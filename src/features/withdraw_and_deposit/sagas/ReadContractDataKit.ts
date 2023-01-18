@@ -9,11 +9,7 @@ import {
 } from '../../../utils/smart_contracts/smart_contract_addresses';
 import {KARMA_ABI} from '../../../utils/smart_contract_abis/KarmaAbi';
 import {NashEscrowAbi} from '../../../utils/smart_contract_abis/NashEscrowAbi';
-import {
-  NashEscrowTransaction,
-  TransactionType,
-  NashTransaction,
-} from './nash_escrow_types';
+import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
 
 /**
  * Nash contract kit.
@@ -252,61 +248,8 @@ export default class ReadContractDataKit {
       clientApproval: tx[10],
       agentPaymentDetails: tx[11],
       clientPaymentDetails: tx[12],
+      enxchangeToken: tx[13],
     };
-
     return nashTx;
   }
-
-  /**
-   * Convert response to nash transaction object.
-   * @param txs the list of transactions.
-   * @returns the nash transaction object.
-   */
-  convertToNashTransactions(txs: NashTransaction[]): NashEscrowTransaction[] {
-    const list: NashEscrowTransaction[] = [];
-    txs.forEach((tx: NashTransaction) => {
-      const nashTx: NashEscrowTransaction = {
-        id: tx.index,
-        txType: tx.txType,
-        clientAddress: tx.clientAddress,
-        agentAddress: tx.agentAddress,
-        status: tx.status,
-        netAmount: Number(
-          this.kit?.web3.utils.fromWei(tx.netAmount.toString(), 'ether'),
-        ),
-        agentFee: Number(
-          this.kit?.web3.utils.fromWei(tx.agentFee.toString(), 'ether'),
-        ),
-        nashFee: Number(
-          this.kit?.web3.utils.fromWei(tx.nashFee.toString(), 'ether'),
-        ),
-        grossAmount: Number(
-          this.kit?.web3.utils.fromWei(tx.grossAmount.toString(), 'ether'),
-        ),
-        agentApproval: tx.agentApproval,
-        clientApproval: tx.clientApproval,
-        agentPaymentDetails: tx.agentPaymentDetails,
-        clientPaymentDetails: tx.clientPaymentDetails,
-      };
-      list.push(nashTx);
-    });
-
-    return list;
-  }
 }
-
-// id: parseInt(tx[0], 10),
-//       txType: TransactionType[parseInt(tx[1], 10)],
-//       clientAddress: tx[2],
-//       agentAddress: tx[3],
-//       status: parseInt(tx[4], 10),
-//       netAmount: Number(this.kit?.web3.utils.fromWei(tx[5], 'ether')),
-//       cryptoFiatConversionRate: tx[6],
-//       fiatCurrencyCode: tx[7],
-//       agentFee: Number(this.kit?.web3.utils.fromWei(tx[8], 'ether')),
-//       nashFee: Number(this.kit?.web3.utils.fromWei(tx[9], 'ether')),
-//       grossAmount: Number(this.kit?.web3.utils.fromWei(tx[10], 'ether')),
-//       agentApproval: tx[11],
-//       clientApproval: tx[12],
-//       agentPaymentDetails: tx[13],
-//       clientPaymentDetails: tx[14],
