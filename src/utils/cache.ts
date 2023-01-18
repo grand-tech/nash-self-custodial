@@ -1,3 +1,5 @@
+import {getStoredPrivateKey} from '../features/onboarding/utils';
+
 /**
  * Pin cache.
  * @typedef { object } PinCache.
@@ -21,6 +23,9 @@ export class NashCache {
   private static DEFAULT_CACHE_LIFESPAN = 600000; // 10 minutes
 
   public static DEFAULT_RAMP_PAGINATOR_VALUE = 10000;
+
+  // TODO: It may be better to move this to redux.
+  private static PRIVATE_KEY_CACHE = '';
 
   /**
    * Holds pin numbers.
@@ -49,6 +54,21 @@ export class NashCache {
     } else {
       NashCache.CACHE_LIFESPAN = lifespan;
     }
+  }
+
+  /**
+   * Sets the private static key.
+   * @param privateKey the private key cache.
+   */
+  static setPrivateKeyCache(privateKey: string) {
+    this.PRIVATE_KEY_CACHE = privateKey;
+  }
+
+  /**
+   * Gets the cached private key.
+   */
+  static getPrivateKey() {
+    return this.PRIVATE_KEY_CACHE;
   }
 
   /**
@@ -85,8 +105,10 @@ export class NashCache {
    * Caches pin number.
    * @param pin the pin number to be cached.
    */
-  static setPinCache(pin: string) {
+  static async setPinCache(pin: string) {
     NashCache.setDefaultLifeSpan();
+    const privateKey = await getStoredPrivateKey(pin);
+    this.PRIVATE_KEY_CACHE = privateKey ?? '';
     let expiryTime = NashCache.CACHE_LIFESPAN + Date.now();
     this.pinCache = {
       cacheExpiryTime: expiryTime,

@@ -50,6 +50,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
   const [paymentDetails, setPaymentDetails] = useState(paymentInfo);
   const [transactionStatus, setTransactionStatus] = useState('-');
+  const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
 
   /**
    * Process transaction status.
@@ -141,14 +142,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     InteractionManager.runAfterInteractions(() => {
       let comment = '';
 
-      let privateKey = '';
-
-      if (myAddress === '0xFf1A74330dd9e899E5a857E251F8880554F6A260') {
-        privateKey =
-          '99107ec34ccba22db14b416f73d26edb1db7c90ccca10de8d25e11a592391aa6';
-      } else {
-        privateKey =
-          '59f8b7c417f05597e6b0e555629b1a2ca4ffdbd5f5253529e33c98f3fea4e032';
+      if (privateKey === '') {
+        // Retrieve and decrypt the private
+        //  key for comment decryption.
+        props.promptForPIN();
       }
 
       if (myAddress === transaction.agentAddress) {
@@ -178,7 +175,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
 
       setPaymentDetails(constructEscrowCommentObject(comment));
     });
-  }, [transaction]);
+  }, [transaction, privateKey]);
 
   /**
    * Display loading modal or prompt user for PIN.
@@ -199,8 +196,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onPinMatched = async (p: string) => {
-    NashCache.setPinCache(p);
-    props.dispatchActionSetLoading('Accepting request ...', '');
+    await NashCache.setPinCache(p);
+    setPrivateKey(NashCache.getPrivateKey());
   };
 
   const onShowLoadingModal = () => {
