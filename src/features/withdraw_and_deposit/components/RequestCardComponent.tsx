@@ -25,10 +25,29 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
   const rates = props.currency_conversion_rates;
 
   const [fiatNetValue, setFiatNetValue] = useState('-');
+  const [symbol, setSymbol] = useState('cUSD');
 
   useEffect(() => {
-    if (rates?.KESUSD) {
-      const fiatValue = transaction.netAmount / rates?.KESUSD;
+    if (rates) {
+      let rate = rates?.KESUSD;
+      for (const coin of props.stable_coins) {
+        if (coin.address === transaction.enxchangeToken) {
+          if (coin.symbol === 'cUSD') {
+            rate = rates.KESUSD;
+          }
+
+          if (coin.symbol === 'cEUR') {
+            rate = rates.KESEUR;
+          }
+
+          if (coin.symbol === 'cREAL') {
+            rate = rates.KESBRL;
+          }
+          setSymbol(coin.symbol);
+        }
+      }
+
+      const fiatValue = transaction.netAmount / rate;
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
   }, [rates, transaction]);
@@ -58,7 +77,7 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
           Request
         </Text>
         <Text h2>
-          cUSD {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
+          {symbol} {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
         </Text>
         <Text body1>Ksh {fiatNetValue}</Text>
       </View>
@@ -104,6 +123,7 @@ const style = StyleSheet.create({
 
 const mapStateToProps = (state: RootState) => ({
   currency_conversion_rates: state.currency_conversion_rates.rates,
+  stable_coins: state.stable_coin_info.addresses,
 });
 
 const mapDispatchToProps = {};

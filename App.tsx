@@ -29,6 +29,7 @@ import {
   generateActionQueryMyTransactions,
   generateActionQueryPendingTransactions,
 } from './src/features/withdraw_and_deposit/redux_store/action.generators';
+import {generateActionQueryStableCoinInfo} from './src/app-redux-store/global_redux_actions/action.generators';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz",
@@ -50,6 +51,8 @@ const App: React.FC<Props> = (props: Props) => {
     if (props.publicAddress !== '') {
       ContractEventsListenerKit.createInstance();
       props.dispatchFetchPendingTransactions('refetch');
+      props.dispatchActionQueryStableCoinInfo();
+
       props.dispatchFetchMyTransactions('refetch', [0, 1, 2]);
     }
   }, [props, props.publicAddress]);
@@ -76,6 +79,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   dispatchFetchMyTransactions: generateActionQueryMyTransactions,
   dispatchFetchPendingTransactions: generateActionQueryPendingTransactions,
+  dispatchActionQueryStableCoinInfo: generateActionQueryStableCoinInfo,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

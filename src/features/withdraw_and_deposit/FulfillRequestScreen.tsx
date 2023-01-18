@@ -31,6 +31,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   const rates = props.rates;
   const [amountFiat, setAmountFiat] = useState('-');
   const [feesFiat, setFeesFiat] = useState('-');
+  const [symbol, setSymbol] = useState('cUSD');
 
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -51,19 +52,34 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   });
 
   useFocusEffect(() => {
-    let amount = 0;
-    let fees = 0;
+    if (rates) {
+      let rate = rates?.KESUSD;
+      for (const coin of props.stable_coins) {
+        if (coin.address === transaction.enxchangeToken) {
+          if (coin.symbol === 'cUSD') {
+            rate = rates.KESUSD;
+          }
 
-    if (rates?.KESUSD) {
-      amount = transaction.netAmount / rates?.KESUSD;
+          if (coin.symbol === 'cEUR') {
+            rate = rates.KESEUR;
+          }
+
+          if (coin.symbol === 'cREAL') {
+            rate = rates.KESBRL;
+          }
+          setSymbol(coin.symbol);
+        }
+      }
+      let amount = 0;
+      let fees = 0;
+
+      amount = transaction.netAmount / rate;
+
+      fees = transaction.agentFee / rate;
+
+      setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
+      setFeesFiat(Number(fees.toFixed(2)).toLocaleString());
     }
-
-    if (rates?.KESUSD) {
-      fees = transaction.agentFee / rates?.KESUSD;
-    }
-
-    setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
-    setFeesFiat(Number(fees.toFixed(2)).toLocaleString());
   });
 
   const sendRequest = () => {
@@ -104,7 +120,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
           <Text h2>Amount</Text>
 
           <Text h2>
-            {Number(transaction.netAmount.toFixed(2)).toLocaleString()} cUSD
+            {Number(transaction.netAmount.toFixed(2)).toLocaleString()} {symbol}
           </Text>
         </View>
         <View style={style.div}>
@@ -114,7 +130,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
         <View style={style.div}>
           <Text body1>Profit</Text>
           <Text body1>
-            {Number(transaction.agentFee.toFixed(2)).toLocaleString()} cUSD
+            {Number(transaction.agentFee.toFixed(2)).toLocaleString()} {symbol}
           </Text>
         </View>
         <View style={style.div}>
@@ -176,6 +192,7 @@ const style = StyleSheet.create({
 const mapStateToProps = (state: RootState) => ({
   ui_status: state.ui_state.status,
   rates: state.currency_conversion_rates.rates,
+  stable_coins: state.stable_coin_info.addresses,
 });
 
 const mapDispatchToProps = {
