@@ -48,6 +48,7 @@ import {encryptEscrowComment} from '../../comment_encryption/sagas/saga';
 import {StableToken} from '@celo/contractkit';
 import {CeloTxObject} from '@celo/connect';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
+import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -147,18 +148,23 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
 
     const amount = contractKit.web3.utils.toWei(_action.amount.toString());
 
+    const tokenContract: StableTokenWrapper = yield call(
+      [contractKit.contracts, contractKit.contracts.getStableToken],
+      _action.coin,
+    );
+
     const tx: CeloTxObject<any> = yield call(
       generateInitTransactionObject,
       amount.toString(),
       _action.transactionType,
-      _action.coin,
+      tokenContract.address,
     );
     // TODO: Figure out what to do with the boolean result
     yield call(stableTokenApproveAmount, _action.coin, _action.amount, address);
 
     // TODO: figure out what to do with the receipt.
     // const receipt: any =
-    yield call(sendTransactionObject, tx, address);
+    yield call(sendTransactionObject, tx, address, tokenContract.address);
 
     yield call(stableTokenApproveAmount, _action.coin, 0, address);
 
@@ -182,18 +188,14 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
 async function generateInitTransactionObject(
   amount: string,
   transactionType: TransactionType,
-  coin: StableToken,
+  coinAddress: String,
 ) {
-  const tokenContract = await contractKit.contracts.getStableToken(coin);
   if (transactionType === TransactionType.DEPOSIT) {
-    return nashEscrow.methods.initializeDepositTransaction(
-      amount,
-      tokenContract.address,
-    );
+    return nashEscrow.methods.initializeDepositTransaction(amount, coinAddress);
   } else {
     return nashEscrow.methods.initializeWithdrawalTransaction(
       amount,
-      tokenContract.address,
+      coinAddress,
     );
   }
 }
@@ -240,7 +242,12 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
       paymentInfoCypherText,
     );
 
-    yield call(sendTransactionObject, tsxObj, address);
+    yield call(
+      sendTransactionObject,
+      tsxObj,
+      address,
+      transaction.enxchangeToken,
+    );
     yield call(stableTokenApproveAmount, stableToken, 0, address);
     yield put(generateActionSetSuccess('Accepted transaction.'));
     yield put(generateActionQueryBalance());
@@ -324,7 +331,12 @@ export function* approveTransactionSaga(_action: ActionCancelTransaction) {
       address,
     );
 
-    yield call(sendTransactionObject, tsxObj, address);
+    yield call(
+      sendTransactionObject,
+      tsxObj,
+      address,
+      _action.transaction.enxchangeToken,
+    );
 
     yield put(generateActionSetSuccess('Approved transaction.'));
 

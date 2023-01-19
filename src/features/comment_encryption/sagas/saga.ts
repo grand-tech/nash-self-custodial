@@ -36,6 +36,8 @@ import {
 import {selectFiatPaymentMethod} from '../../ramp_payment_information/redux_store/selectors';
 import {PaymentDetails} from '../../ramp_payment_information/redux_store/reducers';
 import {NashCache} from '../../../utils/cache';
+import {selectStableCoinAddresses} from '../../../app-redux-store/global_redux_actions/selectors';
+import {ReduxCoin} from '../../../app-redux-store/global_redux_actions/reducers';
 
 /**
  * Listen for the action to set an accounts public data
@@ -57,6 +59,7 @@ export function* setAccountPublicDataEncryptionKey(
 ) {
   try {
     const address: string = yield select(selectPublicAddress);
+    const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
 
     // create a private key session.
     const privateKey: string = NashCache.getPrivateKey();
@@ -82,6 +85,7 @@ export function* setAccountPublicDataEncryptionKey(
         sendTransactionObject,
         tx.txo,
         address,
+        addresses[0].address,
       );
 
       yield call(setDEKSaga, accounts, address, shortenedDEK);
@@ -117,6 +121,7 @@ export function* setDEKSaga(
   accountAddress: string,
   shortenedDEK: string,
 ) {
+  const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
   const tx: CeloTransactionObject<void> =
     accountsWrapper.setAccountDataEncryptionKey(shortenedDEK);
 
@@ -124,6 +129,7 @@ export function* setDEKSaga(
     sendTransactionObject,
     tx.txo,
     accountAddress,
+    addresses[0].address,
   );
 }
 
@@ -204,6 +210,7 @@ export function* addClientsPaymentInfoToSaga(
   action: ActionAddClientsPaymentInfoToTransaction,
 ) {
   try {
+    const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
     const address: string = yield select(selectPublicAddress);
     const transaction = action.transaction;
     const paymentInfoCypherText: string = yield call(
@@ -221,6 +228,7 @@ export function* addClientsPaymentInfoToSaga(
       sendTransactionObject,
       tx,
       address,
+      addresses[0].address,
     );
     // TODO: figure out what to do with the receipt.
   } catch (error) {
