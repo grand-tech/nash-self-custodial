@@ -1,7 +1,6 @@
 import {ContractKit, newKitFromWeb3, StableToken} from '@celo/contractkit';
 import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
-import {ERC20_ADDRESS} from '../../utils/smart_contracts/smart_contract_addresses';
 import {NashEscrowAbi} from '../../utils/smart_contract_abis/NashEscrowAbi';
 import {AbiItem} from 'web3-utils';
 import BigNumber from 'bignumber.js';
@@ -133,11 +132,12 @@ export async function sendCREAL(
 export async function sendTransactionObject(
   txObject: CeloTxObject<any>,
   senderAccount: string,
+  stableTokenAddress: string,
 ) {
-  const gasPrice = await fetchGasPrice(ERC20_ADDRESS);
+  const gasPrice = await fetchGasPrice(stableTokenAddress);
   let txResult = await contractKit.sendTransactionObject(txObject, {
     from: senderAccount,
-    feeCurrency: ERC20_ADDRESS,
+    feeCurrency: stableTokenAddress,
     gasPrice: gasPrice.toString(),
   });
 
@@ -180,6 +180,7 @@ export async function stableTokenApproveAmount(
  * @returns the gas price estimate.
  */
 export async function fetchGasPrice(tokenAddress: string): Promise<BigNumber> {
+  // improve gass estimation algorithm to pick gass price token based on balance.
   const gasPriceMinimum = await contractKit.contracts.getGasPriceMinimum();
   const latestGasPrice = await gasPriceMinimum?.getGasPriceMinimum(
     tokenAddress,
