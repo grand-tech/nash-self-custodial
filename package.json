@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android-dev": "react-native run-android --variant=dev",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
@@ -34,6 +35,7 @@
     "react-native": "0.70.1",
     "react-native-animated-loader": "^1.0.0",
     "react-native-bip39": "^2.3.0",
+    "react-native-config": "^1.4.12",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.6.2",
     "react-native-identicon": "^1.0.14",

@@ -1,5 +1,13 @@
 apply plugin: "com.android.application"
 
+project.ext.envConfigFiles = [
+  release: ".env",
+  dev: ".env.development",
+  stage: ".env.staging",
+];
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -138,9 +146,10 @@ android {
         applicationId "com.nash"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode project.env.get("VERSION_CODE").toInteger()
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+        resValue "string", "build_config_package", "com.nash"
 
         if (isNewArchitectureEnabled()) {
             // We configure the CMake build only if you decide to opt-in for the New Architecture.

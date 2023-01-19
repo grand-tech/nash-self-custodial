@@ -1,14 +1,12 @@
 import {ContractKit, newKitFromWeb3, StableToken} from '@celo/contractkit';
 import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
-import {
-  ERC20_ADDRESS,
-  NASH_CONTRACT_ADDRESS,
-} from '../../utils/smart_contracts/smart_contract_addresses';
+import {ERC20_ADDRESS} from '../../utils/smart_contracts/smart_contract_addresses';
 import {NashEscrowAbi} from '../../utils/smart_contract_abis/NashEscrowAbi';
 import {AbiItem} from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import {CeloTxObject} from '@celo/connect';
+import Config from 'react-native-config';
 
 export let web3: Web3;
 
@@ -20,7 +18,7 @@ export let nashEscrow: Contract;
 
 export function initializeContractKit() {
   if (!web3) {
-    web3 = new Web3('https://alfajores-forno.celo-testnet.org');
+    web3 = new Web3(Config.CELO_NETWORK_URL ?? '');
   }
 
   if (!contractKit) {
@@ -30,7 +28,7 @@ export function initializeContractKit() {
   if (!nashEscrow) {
     nashEscrow = new web3.eth.Contract(
       NashEscrowAbi as AbiItem[],
-      NASH_CONTRACT_ADDRESS,
+      Config.NASH_CONTRACT_ADDRESS,
     );
     console.log('initContractKit');
   }
@@ -164,9 +162,9 @@ export async function stableTokenApproveAmount(
 
   let tx;
   if (_amount === 0) {
-    tx = cUSD.decreaseAllowance(NASH_CONTRACT_ADDRESS, '0');
+    tx = cUSD.decreaseAllowance(Config.NASH_CONTRACT_ADDRESS ?? '', '0');
   } else {
-    tx = cUSD.approve(NASH_CONTRACT_ADDRESS, amount);
+    tx = cUSD.approve(Config.NASH_CONTRACT_ADDRESS ?? '', amount);
   }
 
   const receipt = tx.sendAndWaitForReceipt({

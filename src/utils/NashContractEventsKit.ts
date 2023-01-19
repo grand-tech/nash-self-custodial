@@ -3,7 +3,6 @@ import Web3 from 'web3';
 import {EventOptions} from '@celo/contractkit/lib/generated/types';
 import {AbiItem} from 'web3-utils';
 import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
-import {NASH_CONTRACT_ADDRESS} from './smart_contracts/smart_contract_addresses';
 import {
   generateActionUpdatePendingTransactions,
   generateActionUpdateMyTransactions,
@@ -13,6 +12,7 @@ import {store} from '../app-redux-store/store';
 import {generateActionQueryBalance} from '../features/account_balance/redux_store/action.generators';
 import {NashEscrowTransaction} from '../features/withdraw_and_deposit/sagas/nash_escrow_types';
 import {generateActionAddClientPaymentInfoToTx} from '../features/comment_encryption/redux_store/action.generators';
+import Config from 'react-native-config';
 
 /**
  * Contains nash event listener logic.
@@ -49,7 +49,7 @@ export class ContractEventsListenerKit {
    * Instance of websocket provider.
    */
   public provider = new Web3.providers.WebsocketProvider(
-    'wss://alfajores-forno.celo-testnet.org/ws',
+    Config.CELO_WEBSOCKET_NETWORK_URL ?? '',
   );
   // .WebsocketProvider(configs.CONTRACT_KIT_LISTENER!);
 
@@ -174,14 +174,14 @@ export class ContractEventsListenerKit {
     let sequentialRetryCount = 0;
 
     this.provider = new Web3.providers.WebsocketProvider(
-      'wss://alfajores-forno.celo-testnet.org/ws',
+      Config.CELO_WEBSOCKET_NETWORK_URL ?? '',
     );
 
     this.web3 = new Web3(this.provider);
 
     this.nashEscrowContract = new this.web3.eth.Contract(
       NashEscrowAbi as AbiItem[],
-      NASH_CONTRACT_ADDRESS,
+      Config.NASH_CONTRACT_ADDRESS,
     );
 
     // logic to reset the connection.

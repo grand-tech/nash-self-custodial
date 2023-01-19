@@ -1,12 +1,9 @@
 import {ContractKit, newKitFromWeb3} from '@celo/contractkit';
+import Config from 'react-native-config';
 import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
 import {NashCache} from '../../../utils/cache';
-import {
-  KARMA_CONTRACT_ADDRESS,
-  NASH_CONTRACT_ADDRESS,
-} from '../../../utils/smart_contracts/smart_contract_addresses';
 import {KARMA_ABI} from '../../../utils/smart_contract_abis/KarmaAbi';
 import {NashEscrowAbi} from '../../../utils/smart_contract_abis/NashEscrowAbi';
 import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
@@ -68,16 +65,16 @@ export default class ReadContractDataKit {
   private constructor() {
     // console.log("configs.CONTRACT_KIT_URI!", configs.CONTRACT_KIT_URI!);
     // this.web3 = new Web3(configs.CONTRACT_KIT_URI!);
-    this.web3 = new Web3('https://alfajores-forno.celo-testnet.org');
+    this.web3 = new Web3(Config.CELO_WEBSOCKET_NETWORK_URL ?? '');
 
     this.nashEscrowContract = new this.web3.eth.Contract(
       NashEscrowAbi as AbiItem[],
-      NASH_CONTRACT_ADDRESS,
+      Config.NASH_CONTRACT_ADDRESS,
     );
 
     this.karmaContract = new this.web3.eth.Contract(
       KARMA_ABI as AbiItem[],
-      KARMA_CONTRACT_ADDRESS,
+      Config.KARMA_CONTRACT_ADDRESS,
     );
     this.kit = newKitFromWeb3(this.web3);
   }
