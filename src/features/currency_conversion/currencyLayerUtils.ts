@@ -1,3 +1,5 @@
+import Config from 'react-native-config';
+
 export interface CurrencyLayerRates {
   KESBRL: number;
   KESEUR: number;
@@ -15,7 +17,7 @@ export async function getCurrencyRates() {
     'https://api.apilayer.com/currency_data/live?source=KES&currencies=EUR%2C%20USD%2C%20BRL',
     {
       headers: {
-        apiKey: 'GpXJZO3e5pMj7rFXIdGJo80zWmfYh5Fo',
+        apiKey: Config.CURRENCY_LAYER_API_KEY ?? '',
         method: 'GET',
       },
     },
