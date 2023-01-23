@@ -127,7 +127,10 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
           <Text h2 />
           <Text h2>{amountFiat} Ksh</Text>
         </View>
-        <View style={style.div}>
+
+        {/* TODO: Figure out what to do with the request screen. */}
+
+        {/* <View style={style.div}>
           <Text body1>Profit</Text>
           <Text body1>
             {Number(transaction.agentFee.toFixed(2)).toLocaleString()} {symbol}
@@ -136,7 +139,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
         <View style={style.div}>
           <Text body1 />
           <Text body1>{feesFiat} Ksh</Text>
-        </View>
+        </View> */}
       </View>
 
       <Button
