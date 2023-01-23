@@ -52,6 +52,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
   const [symbol, setSymbol] = useState('cUSD');
+  const [loaderMessage, setLoaderMessage] = useState('');
 
   /**
    * Process transaction status.
@@ -71,6 +72,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           ) {
             status = 'Awaiting Client Approval';
             setNextUserAction(NextUserAction.NONE);
+            setLoaderMessage('Approving transaction ...');
           } else if (
             transaction.clientApproval &&
             transaction.clientAddress === myAddress
@@ -84,6 +86,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             } else if (transaction.clientAddress === myAddress) {
               setNextUserAction(NextUserAction.APPROVE);
             }
+            setLoaderMessage('Approving transaction ...');
           }
           break;
         case 3:
@@ -201,11 +204,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       NashCache.getPinCache() !== null &&
       NashCache.getPinCache()?.trim() !== ''
     ) {
-      props.dispatchActionSetLoading(
-        'Accepting request ...',
-        '',
-        'Send Request',
-      );
+      props.dispatchActionSetLoading(loaderMessage, '', 'Send Request');
     } else {
       props.promptForPIN();
     }
@@ -214,6 +213,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const onPinMatched = async (p: string) => {
     await NashCache.setPinCache(p);
     setPrivateKey(NashCache.getPrivateKey());
+    props.dispatchActionSetNormal();
   };
 
   const onShowLoadingModal = () => {
@@ -223,7 +223,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
       } else if (nextUserAction === NextUserAction.CANCEL) {
         // dispatch agent approve action
-        props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
+        props.dispatchCancelation(
+          transaction,
+          NashCache.getPinCache() ?? 'Cancel request',
+        );
       }
     }
   };
@@ -248,7 +251,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             <Text h2 />
             <Text h2>{amountFiat} Ksh</Text>
           </View>
-          <View style={style.div}>
+          {/* Remove the profit feature. */}
+          {/* <View style={style.div}>
             <Text body1>Profit</Text>
             <Text body1>
               {Number(transaction.agentFee.toFixed(2)).toLocaleString()}{' '}
@@ -258,7 +262,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           <View style={style.div}>
             <Text body1 />
             <Text body1>{feesFiat} Ksh</Text>
-          </View>
+          </View> */}
         </View>
 
         <View style={style.paymentDetails}>
@@ -294,7 +298,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         <Text h3>{transactionStatus}</Text>
       </View>
 
-      {nextUserAction === NextUserAction.NONE ? (
+      {nextUserAction === NextUserAction.NONE ||
+      nextUserAction === NextUserAction.CANCEL ? (
         <Text body3></Text>
       ) : (
         <Button
@@ -367,6 +372,7 @@ const mapDispatchToProps = {
   dispatchActionSetLoading: generateActionSetLoading,
   dispatchApproval: generateActionApproveTransaction,
   dispatchCancelation: generateActionCancelTransaction,
+  dispatchActionSetNormal: generateActionSetNormal,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
