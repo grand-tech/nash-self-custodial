@@ -214,6 +214,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const onPinMatched = async (p: string) => {
     await NashCache.setPinCache(p);
     setPrivateKey(NashCache.getPrivateKey());
+    props.dispatchActionSetNormal();
   };
 
   const onShowLoadingModal = () => {
@@ -223,7 +224,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
       } else if (nextUserAction === NextUserAction.CANCEL) {
         // dispatch agent approve action
-        props.dispatchCancelation(transaction, NashCache.getPinCache() ?? '');
+        props.dispatchCancelation(
+          transaction,
+          NashCache.getPinCache() ?? 'Cancel request',
+        );
       }
     }
   };
@@ -295,7 +299,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         <Text h3>{transactionStatus}</Text>
       </View>
 
-      {nextUserAction === NextUserAction.NONE ? (
+      {nextUserAction === NextUserAction.NONE ||
+      nextUserAction === NextUserAction.CANCEL ? (
         <Text body3></Text>
       ) : (
         <Button
@@ -368,6 +373,7 @@ const mapDispatchToProps = {
   dispatchActionSetLoading: generateActionSetLoading,
   dispatchApproval: generateActionApproveTransaction,
   dispatchCancelation: generateActionCancelTransaction,
+  dispatchActionSetNormal: generateActionSetNormal,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
