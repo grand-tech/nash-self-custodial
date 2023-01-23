@@ -33,11 +33,11 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   const amount = props.route.params.amount;
   const [fiat, setFiat] = useState('-');
   const [pin, setPin] = useState('');
+  const [title, setTitle] = useState('Withdraw Request');
 
   useFocusEffect(() => {
-    let title = 'Withdraw Request';
     if (props.route.params.transactionType === TransactionType.DEPOSIT) {
-      title = 'Deposit Request';
+      setTitle('Deposit Request');
     }
     props.navigation.getParent()?.setOptions({headerShown: false});
     props.navigation.setOptions({
@@ -71,7 +71,10 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
     const p = NashCache.getPinCache() ?? '';
     setPin(p);
     if (p !== '') {
-      props.dispatchActionSetLoading('Sending request', '');
+      props.dispatchActionSetLoading(
+        'Initialzing ' + title.toLowerCase() + ' ...',
+        '',
+      );
     } else {
       props.promptForPIN();
     }

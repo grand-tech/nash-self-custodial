@@ -52,6 +52,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
   const [symbol, setSymbol] = useState('cUSD');
+  const [loaderMessage, setLoaderMessage] = useState('');
 
   /**
    * Process transaction status.
@@ -71,6 +72,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           ) {
             status = 'Awaiting Client Approval';
             setNextUserAction(NextUserAction.NONE);
+            setLoaderMessage('Approving transaction ...');
           } else if (
             transaction.clientApproval &&
             transaction.clientAddress === myAddress
@@ -84,6 +86,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             } else if (transaction.clientAddress === myAddress) {
               setNextUserAction(NextUserAction.APPROVE);
             }
+            setLoaderMessage('Approving transaction ...');
           }
           break;
         case 3:
@@ -201,11 +204,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       NashCache.getPinCache() !== null &&
       NashCache.getPinCache()?.trim() !== ''
     ) {
-      props.dispatchActionSetLoading(
-        'Accepting request ...',
-        '',
-        'Send Request',
-      );
+      props.dispatchActionSetLoading(loaderMessage, '', 'Send Request');
     } else {
       props.promptForPIN();
     }

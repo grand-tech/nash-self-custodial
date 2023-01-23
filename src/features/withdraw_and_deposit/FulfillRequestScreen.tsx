@@ -32,12 +32,12 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   const [amountFiat, setAmountFiat] = useState('-');
   const [feesFiat, setFeesFiat] = useState('-');
   const [symbol, setSymbol] = useState('cUSD');
+  const [title, setTitle] = useState('Withdraw Request');
 
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      let title = 'Withdraw Request';
       if (transaction.txType === 'DEPOSIT') {
-        title = 'Deposit Request';
+        setTitle('Deposit Request');
       }
       props.navigation.getParent()?.setOptions({headerShown: false});
       props.navigation.setOptions({
@@ -88,7 +88,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
       NashCache.getPinCache()?.trim() !== ''
     ) {
       props.dispatchActionSetLoading(
-        'Accepting request ...',
+        'Accepting ' + title.toLocaleLowerCase() + ' ...',
         '',
         'Send Request',
       );
