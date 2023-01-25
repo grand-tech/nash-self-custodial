@@ -15,6 +15,7 @@ import {
   web3,
 } from '../../account_balance/contract.kit.utils';
 import {NashCache} from '../../../utils/cache';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 export function* watchSendFunds() {
   yield takeLatest(Actions.SEND_FUNDS, sendFunds);
@@ -57,6 +58,10 @@ export function* sendFunds(action: ActionSendFunds) {
     yield put(generateActionSetSuccess('Transaction successful.'));
     yield put(generateActionQueryBalance());
   } catch (error: any) {
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] sendFunds' + error.name,
+    );
     console.log(error);
     yield put(generateActionSetError(error.toString(), error.message));
   }

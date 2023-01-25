@@ -1,5 +1,6 @@
 import * as Keychain from 'react-native-keychain';
 import {decryptCypherText, encryptPlainText} from './encryption.utils';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 const TAG = 'storage/keychain';
 
@@ -47,8 +48,12 @@ export async function storeItem(
     }
 
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.log(TAG, 'Error storing item', error, value);
+    crashlytics().recordError(
+      new Error(error),
+      '[function] storeItem: ' + error.name,
+    );
     throw error;
   }
 }
@@ -72,9 +77,12 @@ export async function retrieveStoredItem(
       return null;
     }
     return item.password;
-  } catch (error) {
+  } catch (error: any) {
     console.log(TAG, 'Error retrieving stored item', error, true);
-    // throw error
+    crashlytics().recordError(
+      new Error(error),
+      '[function] retrieveStoredItem: ' + error.name,
+    );
   }
 }
 
@@ -90,7 +98,10 @@ export async function removeStoredItem(storageKey: string) {
     });
   } catch (error) {
     console.log(TAG, 'Error clearing item', error, true);
-    // throw error
+    crashlytics().recordError(
+      new Error(error),
+      '[function] removeStoredItem: ' + error.name,
+    );
   }
 }
 
@@ -137,7 +148,11 @@ export async function getEncryptedItem(
       throw new Error('No mnemonic found in storage');
     }
     return decryptCypherText(encryptedMnemonic, password);
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(
+      new Error(error),
+      '[function] getEncryptedItem: ' + error.name,
+    );
     return null;
   }
 }

@@ -38,6 +38,7 @@ import {PaymentDetails} from '../../ramp_payment_information/redux_store/reducer
 import {NashCache} from '../../../utils/cache';
 import {selectStableCoinAddresses} from '../../../app-redux-store/global_redux_actions/selectors';
 import {ReduxCoin} from '../../../app-redux-store/global_redux_actions/reducers';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 /**
  * Listen for the action to set an accounts public data
@@ -105,7 +106,11 @@ export function* setAccountPublicDataEncryptionKey(
     );
     yield put(generateActionSetNormal());
     yield put(generateActionSavedPublicDataEncryptionKey());
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] setAccountPublicDataEncryptionKey' + error.name,
+    );
     console.log('error===> ', error);
   }
 }
@@ -231,7 +236,11 @@ export function* addClientsPaymentInfoToSaga(
       addresses[0].address,
     );
     // TODO: figure out what to do with the receipt.
-  } catch (error) {
+  } catch (error: any) {
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] addClientsPaymentInfoToSaga' + error.name,
+    );
     console.log('error===> ', error);
   }
 }

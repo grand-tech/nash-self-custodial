@@ -1,4 +1,6 @@
 import {contractKit} from './contract.kit.utils';
+import crashlytics from '@react-native-firebase/crashlytics';
+
 export interface WalletBalance {
   cUSD: number;
   CELO: number;
@@ -44,8 +46,9 @@ export async function getBalance(address: string) {
       cREAL: balanceObj.cREAL,
     };
     return bal;
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
+    crashlytics().recordError(new Error(err), 'utils.getBalance()');
     return bal;
   }
 }
