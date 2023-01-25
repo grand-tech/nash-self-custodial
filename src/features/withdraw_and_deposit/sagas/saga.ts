@@ -49,6 +49,7 @@ import {StableToken} from '@celo/contractkit';
 import {CeloTxObject} from '@celo/connect';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -175,6 +176,10 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
     console.log('Error', error);
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] makeRampExchangeRequestSaga: ' + error.name,
+    );
     yield put(generateActionSetError(error.message, error.message));
   }
 }
@@ -254,6 +259,10 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
     console.log('Error', error);
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] agentFullfilRequestSaga: ' + error.name,
+    );
     yield put(generateActionSetError(error.message, error.message));
   }
 }
@@ -295,6 +304,10 @@ export function* cancelRequestSaga(_action: ActionCancelTransaction) {
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
     console.log('Error', error);
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] cancelRequestSaga: ' + error.name,
+    );
     yield put(generateActionSetError(error.message, error.message));
   }
 }
@@ -345,6 +358,10 @@ export function* approveTransactionSaga(_action: ActionCancelTransaction) {
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
     console.log('Error', error);
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] approveTransactionSaga: ' + error.name,
+    );
     yield put(generateActionSetError(error.message, error.message));
   }
 }

@@ -10,16 +10,14 @@ import {AccountInformation} from './interfaces';
 import {Actions, ActionCreateNewAccount} from '../redux_store/actions';
 import {NashCache} from '../../../utils/cache';
 import {navigate} from '../../../navigation/navigation.service';
-import {
-  generateActionAdoptedNewAccount,
-  generateActionCompletedOnboarding,
-} from '../redux_store/action.generators';
+import {generateActionAdoptedNewAccount} from '../redux_store/action.generators';
 import {ActionRestoreExistingAccount} from '../redux_store/actions';
 import {
   generateActionSetNormal,
   generateActionSetLoading,
   generateActionSetError,
 } from '../../ui_state_manager/action.generators';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 /**
  * Creates a new account and saves its details.
@@ -54,6 +52,10 @@ function* createAccount(action: ActionCreateNewAccount) {
     yield put(
       generateActionSetError(error.toString(), 'Failed to create account'),
     );
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] createAccount: ' + error.name,
+    );
   }
 }
 
@@ -83,7 +85,10 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     //TODO: figure out what to do with this after adding attestation and comment encryption.
     navigate('EnterMpesaPaymentInfoScreen');
   } catch (error: any) {
-    console.log('error', error);
+    crashlytics().recordError(
+      new Error(error),
+      '[SAGA] restoreExistingAccount: ' + error.name,
+    );
     yield put(
       generateActionSetError(error.toString(), 'Failed to restore account'),
     );
