@@ -91,7 +91,7 @@ const RestoreAccountScreen = (props: Props) => {
    */
   const confirmSeedPhraseBtnHandler = async () => {
     if (inputSeedPhrase.length === 24) {
-      props.dispatchSetLoading('Restoring account..', '');
+      props.dispatchSetLoading('Restoring account ...', '');
     } else {
       props.dispatchSetError('Invalid mnemonic', '');
     }

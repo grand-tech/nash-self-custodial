@@ -4,8 +4,7 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {StyleSheet, View} from 'react-native';
-import Screen from '../../app_components/Screen';
+import {Pressable, StyleSheet, ToastAndroid, View} from 'react-native';
 import {Text} from 'react-native-ui-lib';
 import Lottie from 'lottie-react-native';
 import {connect, ConnectedProps} from 'react-redux';
@@ -18,6 +17,8 @@ import {
 } from 'react-native-responsive-screen';
 import {FONTS} from '../../ui_lib_configs/fonts';
 import Identicon from 'react-native-identicon';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const CustomDrawerContent = (props: Props) => {
   const [totalBalanceFiat, setTotalBalanceFiat] = useState('-');
@@ -63,7 +64,7 @@ const CustomDrawerContent = (props: Props) => {
   ]);
 
   return (
-    <Screen>
+    <View style={[styles.container]}>
       <View>
         <View
           style={{
@@ -99,8 +100,30 @@ const CustomDrawerContent = (props: Props) => {
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
 
-      <Text>Version 0.0.1-dev</Text>
-    </Screen>
+      <Pressable
+        onPress={() => {
+          Clipboard.setString(props.publicAddress);
+          ToastAndroid.showWithGravity(
+            'Copied public address.',
+            ToastAndroid.SHORT,
+            ToastAndroid.TOP,
+          );
+        }}>
+        <View style={styles.publicAddressView}>
+          <Icon
+            name="copy"
+            color={AppColors.green}
+            size={20}
+            style={styles.copyIcon}
+          />
+          <Text body4 style={styles.publicAddress} numberOfLines={1}>
+            {props.publicAddress}
+          </Text>
+        </View>
+      </Pressable>
+
+      <Text style={styles.versionNumber}>Version 0.0.1-dev</Text>
+    </View>
   );
 };
 
@@ -128,6 +151,7 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 type ReduxProps = ConnectedProps<typeof connector>;
 
 type Props = DrawerContentComponentProps & ReduxProps;
+
 export default connector(CustomDrawerContent);
 
 const styles = StyleSheet.create({
@@ -178,5 +202,32 @@ const styles = StyleSheet.create({
   animation: {
     height: hp('4%'),
     alignSelf: 'center',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: AppColors.gray,
+  },
+  publicAddressView: {
+    backgroundColor: '#ffff',
+    width: wp('60%'),
+    alignContent: 'center',
+    padding: wp('3.5%'),
+    flexDirection: 'row',
+    borderRadius: wp('2%'),
+    marginBottom: hp('10%'),
+    marginHorizontal: wp('2%'),
+  },
+  publicAddress: {
+    textAlign: 'center',
+    color: AppColors.green,
+  },
+  copyIcon: {
+    paddingRight: wp('3%'),
+    paddingLeft: wp('1%'),
+  },
+  versionNumber: {
+    alignSelf: 'flex-end',
+    marginRight: wp('5%'),
+    marginBottom: hp('2%'),
   },
 });
