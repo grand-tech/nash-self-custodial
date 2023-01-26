@@ -9,6 +9,7 @@
  * @format
  */
 
+import analytics from '@react-native-firebase/analytics';
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import SplashScreen from 'react-native-splash-screen';
@@ -32,8 +33,8 @@ import {
 import {generateActionQueryStableCoinInfo} from './src/app-redux-store/global_redux_actions/action.generators';
 
 LogBox.ignoreLogs([
-  "Warning: The provided value 'moz",
-  "Warning: The provided value 'ms-stream",
+  "Warning: The provided value 'moz'",
+  "Warning: The provided value 'ms-stream'",
   "The provided value 'moz-chunked-arraybuffer'",
   "The provided value 'ms-stream' is not a valid",
 ]);
@@ -42,6 +43,7 @@ const App: React.FC<Props> = (props: Props) => {
   initTheme();
   initializeContractKit();
   ReadContractDataKit.createInstance();
+  const routeNameRef = React.useRef<String>();
 
   useEffect(() => {
     SplashScreen.hide();
@@ -57,8 +59,38 @@ const App: React.FC<Props> = (props: Props) => {
     }
   }, [props, props.publicAddress]);
 
+  /**
+   * On navigation container ready.
+   */
+  const onNavContainerReady = () => {
+    routeNameRef.current = routeNameRef.current =
+      typeof navigationRef?.current?.getCurrentRoute()?.name === 'undefined'
+        ? ''
+        : navigationRef?.current?.getCurrentRoute()?.name;
+  };
+
+  /**
+   * On navigation container state change.
+   */
+  const onNavContainerStateChange = async () => {
+    const previousRouteName = routeNameRef.current;
+    const currentRouteName = navigationRef?.current?.getCurrentRoute()?.name;
+
+    if (previousRouteName !== currentRouteName) {
+      await analytics().logScreenView({
+        screen_name: currentRouteName,
+        screen_class: currentRouteName,
+      });
+    }
+    routeNameRef.current =
+      typeof currentRouteName === 'undefined' ? '' : currentRouteName;
+  };
+
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={onNavContainerReady}
+      onStateChange={onNavContainerStateChange}>
       <ApolloProvider client={apolloClient}>
         {props.onboarding_status ===
         OnboardingStatusNames.onboarding_complete ? (
