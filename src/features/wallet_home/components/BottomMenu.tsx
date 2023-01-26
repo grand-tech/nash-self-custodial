@@ -7,8 +7,10 @@ import {AppColors} from '../../../ui_lib_configs/colors';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {useNavigation} from '@react-navigation/native';
 import ComingSoonModalComponent from '../../../app_components/ComingSoonModalComponent';
+import analytics from '@react-native-firebase/analytics';
+import {RootState} from '../../../app-redux-store/store';
 
-const BottomMenu: React.FC<Props> = () => {
+const BottomMenu: React.FC<Props> = (props: Props) => {
   const navigation = useNavigation();
 
   const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
@@ -37,8 +39,13 @@ const BottomMenu: React.FC<Props> = () => {
         labelStyle={{
           ...FONTS.h4,
         }}
-        onPress={() => {
+        onPress={async () => {
           setComingSoonModalVisible(true);
+          await analytics().logEvent('coming_soon', {
+            address: props.address,
+            feature: '[wallet_home] request funds',
+            timestamp: new Date().getMilliseconds(),
+          });
         }}
       />
 
@@ -62,8 +69,9 @@ const style = StyleSheet.create({
   },
 });
 
-// state: RootState
-const mapStateToProps = () => ({});
+const mapStateToProps = (_state: RootState) => ({
+  address: _state.onboarding.publicAddress,
+});
 
 const mapDispatchToProps = {
   // dispatchActionSetNormal: generateActionSetNormal,

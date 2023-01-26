@@ -109,7 +109,7 @@ export function* setAccountPublicDataEncryptionKey(
   } catch (error: any) {
     crashlytics().recordError(
       new Error(error),
-      '[SAGA] setAccountPublicDataEncryptionKey' + error.name,
+      '[SAGA] setAccountPublicDataEncryptionKey: ' + error.name,
     );
     console.log('error===> ', error);
   }
@@ -239,7 +239,7 @@ export function* addClientsPaymentInfoToSaga(
   } catch (error: any) {
     crashlytics().recordError(
       new Error(error),
-      '[SAGA] addClientsPaymentInfoToSaga' + error.name,
+      '[SAGA] addClientsPaymentInfoToSaga: ' + error.name,
     );
     console.log('error===> ', error);
   }

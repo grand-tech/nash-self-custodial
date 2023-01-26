@@ -13,6 +13,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {FONTS} from '../../ui_lib_configs/fonts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SettingsNavigationStackParamsList} from './navigation/navigation.params.type';
+import analytics from '@react-native-firebase/analytics';
 
 type NavigationProps = NativeStackScreenProps<
   SettingsNavigationStackParamsList,
@@ -36,7 +37,13 @@ const SettingsHomeScreen = (props: NavigationProps) => {
 
       <TouchableOpacity
         style={style.buttonStyle}
-        onPress={() => setComingSoonModalVisible(true)}>
+        onPress={async () => {
+          setComingSoonModalVisible(true);
+          await analytics().logEvent('coming_soon', {
+            feature: '[settings] change pin',
+            timestamp: new Date().getMilliseconds(),
+          });
+        }}>
         <Text style={style.buttonLabelStyle}>Change Pin</Text>
       </TouchableOpacity>
 

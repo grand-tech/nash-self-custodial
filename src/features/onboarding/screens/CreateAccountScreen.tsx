@@ -16,6 +16,7 @@ import {
   chooseCreateNewAccount,
   chooseRestoreExistingAccount,
 } from '../redux_store/action.generators';
+import analytics from '@react-native-firebase/analytics';
 
 // /**
 //  * Create account screen props.
@@ -65,9 +66,13 @@ const CreateAccountScreen = () => {
             labelStyle={{
               ...FONTS.h4,
             }}
-            onPress={() => {
+            onPress={async () => {
               dispatch(chooseCreateNewAccount());
               navigation.navigate('TermsAndConditions');
+              await analytics().logEvent('coming_soon', {
+                feature: '[onboarding] select create account',
+                timestamp: new Date().getMilliseconds(),
+              });
             }}
           />
           <Button
@@ -80,9 +85,13 @@ const CreateAccountScreen = () => {
             labelStyle={{
               ...FONTS.h4,
             }}
-            onPress={() => {
+            onPress={async () => {
               dispatch(chooseRestoreExistingAccount());
               navigation.navigate('TermsAndConditions');
+              await analytics().logEvent('coming_soon', {
+                feature: '[onboarding] select restore account',
+                timestamp: new Date().getMilliseconds(),
+              });
             }}
           />
         </View>

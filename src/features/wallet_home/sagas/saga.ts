@@ -60,7 +60,7 @@ export function* sendFunds(action: ActionSendFunds) {
   } catch (error: any) {
     crashlytics().recordError(
       new Error(error),
-      '[SAGA] sendFunds' + error.name,
+      '[SAGA] sendFunds: ' + error.name,
     );
     console.log(error);
     yield put(generateActionSetError(error.toString(), error.message));

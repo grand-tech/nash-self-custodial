@@ -96,7 +96,7 @@ export async function removeStoredItem(storageKey: string) {
     return Keychain.resetGenericPassword({
       service: storageKey,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.log(TAG, 'Error clearing item', error, true);
     crashlytics().recordError(
       new Error(error),
