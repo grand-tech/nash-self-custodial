@@ -1,5 +1,5 @@
-import FSStorage from "redux-persist-fs-storage";
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import FSStorage from 'redux-persist-fs-storage';
+import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -9,19 +9,21 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from "redux-persist";
-import { rootReducer } from "./reducers";
-import createSagaMiddleware from "redux-saga";
-import { rootSaga } from "../features/counter/saga";
+} from 'redux-persist';
+import {rootReducer} from './reducers';
+import createSagaMiddleware from 'redux-saga';
+import {rootSaga} from './saga';
 
 /**
  * Create redux persist configurations object.
  */
 const persistConfig = {
-  key: "root",
+  key: 'root',
   vsrsion: 1,
-  keyPrefix: "",
+  keyPrefix: '',
   storage: FSStorage(),
+  // figure out what best to do with wallet.
+  blacklist: ['ui_state', 'wallet_balance', 'ramp'],
 };
 
 /**
@@ -36,7 +38,7 @@ const sagaMiddleware = createSagaMiddleware();
  */
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       // thunk: false,
       serializableCheck: {
@@ -48,17 +50,12 @@ export const store = configureStore({
 /**
  * Method to run after rehydration.
  */
-const postRehydration = () => {
-  console.log(
-    "=>>>>>>>>>post rehydration<<<<<<<<<<<<<=",
-    store.getState().onboarding
-  );
-};
+const postRehydration = () => {};
 
 /**
- * Compose the persistor object.
+ * Compose the persister object.
  * @param store instance of redux store.
- * @param config the persistor config object.
+ * @param config the persister config object.
  * @param callback the method to run after rehydration.
  */
 export const persistor = persistStore(store, null, postRehydration);
