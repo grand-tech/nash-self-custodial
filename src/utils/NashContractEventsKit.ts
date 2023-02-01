@@ -83,6 +83,7 @@ export class ContractEventsListenerKit {
     this.setFilteredEventListener('ClientConfirmationEvent');
     this.setFilteredEventListener('AgentConfirmationEvent');
     this.setFilteredEventListener('ConfirmationCompletedEvent');
+    this.setFilteredEventListener('SavedClientCommentEvent');
     this.setFilteredEventListener('TransactionCompletionEvent');
   }
 
@@ -148,6 +149,7 @@ export class ContractEventsListenerKit {
           break;
         case 'ClientConfirmationEvent':
         case 'AgentConfirmationEvent':
+        case 'SavedClientCommentEvent':
         case 'ConfirmationCompletedEvent':
           store.dispatch(generateActionUpdateMyTransactions(tx, 'update'));
           break;

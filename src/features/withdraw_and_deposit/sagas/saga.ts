@@ -50,6 +50,7 @@ import {CeloTxObject} from '@celo/connect';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
+import {consoleLogger} from '@celo/base';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -243,7 +244,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
     yield call(
       stableTokenApproveAmount,
       stableToken,
-      transaction.grossAmount,
+      transaction.amount,
       address,
     );
     const paymentInfoCypherText: string = yield call(
@@ -287,7 +288,6 @@ function generateAgentFulfillRequestTransactionObject(
   paymentInfoCypherText: string,
 ) {
   const transactionType = transaction.txType;
-
   if (transactionType === TransactionType.DEPOSIT) {
     return nashEscrow.methods.agentAcceptDepositTransaction(
       transaction.id,
