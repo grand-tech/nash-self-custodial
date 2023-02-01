@@ -44,15 +44,13 @@ export type NashEscrowTransaction = {
   clientAddress: string;
   agentAddress: string;
   status: number;
-  netAmount: number;
-  agentFee: number;
-  nashFee: number;
-  grossAmount: number;
+  amount: number;
   agentApproval: string;
   clientApproval: string;
   agentPaymentDetails: string;
   clientPaymentDetails: string;
   enxchangeToken: string;
+  exchangeTokenLable: string;
 };
 
 /**

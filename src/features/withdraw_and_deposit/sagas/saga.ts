@@ -159,6 +159,7 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
       amount.toString(),
       _action.transactionType,
       tokenContract.address,
+      _action.coin,
     );
     // TODO: Figure out what to do with the boolean result
     yield call(stableTokenApproveAmount, _action.coin, _action.amount, address);
@@ -188,19 +189,27 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
  * Generates the transaction object to be sent.
  * @param amount the amount involved in the transaction.
  * @param transactionType the transaction type.
+ * @param coinAddress the smart contract address.
+ * @param coin the coin lable.
  * @returns the composed transaction type.
  */
 async function generateInitTransactionObject(
   amount: string,
   transactionType: TransactionType,
   coinAddress: String,
+  coin: String,
 ) {
   if (transactionType === TransactionType.DEPOSIT) {
-    return nashEscrow.methods.initializeDepositTransaction(amount, coinAddress);
+    return nashEscrow.methods.initializeDepositTransaction(
+      amount,
+      coinAddress,
+      coin,
+    );
   } else {
     return nashEscrow.methods.initializeWithdrawalTransaction(
       amount,
       coinAddress,
+      coin,
     );
   }
 }

@@ -43,7 +43,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     clientAddress: '',
     agentAddress: '',
     status: 0,
-    netAmount: 0,
+    amount: 0,
     agentFee: 0,
     nashFee: 0,
     grossAmount: 0,

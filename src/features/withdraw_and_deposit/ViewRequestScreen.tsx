@@ -145,7 +145,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           }
         }
 
-        amount = transaction.netAmount / rate;
+        amount = transaction.amount / rate;
         fees = transaction.agentFee / rate;
 
         setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
@@ -243,8 +243,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             <Text h2>Amount</Text>
 
             <Text h2>
-              {Number(transaction.netAmount.toFixed(2)).toLocaleString()}{' '}
-              {symbol}
+              {Number(transaction.amount.toFixed(2)).toLocaleString()} {symbol}
             </Text>
           </View>
           <View style={style.div}>
