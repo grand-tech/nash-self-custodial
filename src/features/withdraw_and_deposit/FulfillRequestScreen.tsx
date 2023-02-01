@@ -66,8 +66,6 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
       }
 
       let amount = 0;
-      let fees = 0;
-
       amount = transaction.amount / rate;
 
       setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
@@ -120,19 +118,6 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
           <Text h2 />
           <Text h2>{amountFiat} Ksh</Text>
         </View>
-
-        {/* TODO: Figure out what to do with the request screen. */}
-
-        {/* <View style={style.div}>
-          <Text body1>Profit</Text>
-          <Text body1>
-            {Number(transaction.agentFee.toFixed(2)).toLocaleString()} {transaction.exchangeTokenLable}
-          </Text>
-        </View>
-        <View style={style.div}>
-          <Text body1 />
-          <Text body1>{feesFiat} Ksh</Text>
-        </View> */}
       </View>
 
       <Button

@@ -44,13 +44,12 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     agentAddress: '',
     status: 0,
     amount: 0,
-    agentFee: 0,
-    nashFee: 0,
-    grossAmount: 0,
     agentApproval: '',
     clientApproval: '',
     clientPaymentDetails: '',
     agentPaymentDetails: '',
+    enxchangeToken: '',
+    exchangeTokenLable: '',
   };
 
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
