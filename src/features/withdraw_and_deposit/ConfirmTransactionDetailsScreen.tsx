@@ -72,7 +72,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
     setPin(p);
     if (p !== '') {
       props.dispatchActionSetLoading(
-        'Initialzing ' + title.toLowerCase() + ' ...',
+        'Initializing ' + title.toLowerCase() + ' ...',
         '',
       );
     } else {
