@@ -1,7 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect} from 'react';
 import Screen from '../../app_components/Screen';
-import {FlatList, InteractionManager, StyleSheet} from 'react-native';
+import {
+  FlatList,
+  InteractionManager,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -14,11 +19,11 @@ import BottomMenu from './components/BottomMenu';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
 import {NashEscrowTransaction} from './sagas/nash_escrow_types';
-import {Button, Text} from 'react-native-ui-lib';
+import {Text} from 'react-native-ui-lib';
 import {useFocusEffect} from '@react-navigation/native';
-import {FONTS} from '../../ui_lib_configs/fonts';
-import {AppColors} from '../../ui_lib_configs/colors';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
+import {AppColors} from '../../ui_lib_configs/colors';
 
 const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   // props.dispatchFetchPendingTxs();
@@ -43,20 +48,13 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
         headerShown: true,
         headerRight: () => {
           return (
-            <Button
-              size="xSmall"
-              label={'My Transactions'}
-              labelStyle={{
-                ...FONTS.body1,
-                color: AppColors.black,
-              }}
-              outline={true}
-              outlineColor={AppColors.black}
-              style={{marginRight: wp('2%')}}
+            <Pressable
+              style={{paddingRight: wp('3%')}}
               onPress={() => {
                 props.navigation.navigate('MyTransactionsFeedScreen');
-              }}
-            />
+              }}>
+              <Icon name="arrow-right" size={24} color={AppColors.black} />
+            </Pressable>
           );
         },
       });
@@ -105,7 +103,6 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
           ListEmptyComponent={<Text>Loading...</Text>}
         />
       )}
-
       <BottomMenu navigation={props.navigation} />
     </Screen>
   );
