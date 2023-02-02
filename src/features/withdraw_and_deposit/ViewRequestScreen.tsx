@@ -39,7 +39,6 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const transaction = props.route.params.transaction;
   const rates = props.rates;
   const [amountFiat, setAmountFiat] = useState('-');
-  const [feesFiat, setFeesFiat] = useState('-');
   const myAddress = useSelector(selectPublicAddress);
   const paymentInfo: EscrowTxComment = {
     mpesaNumber: '',
@@ -51,7 +50,6 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const [paymentDetails, setPaymentDetails] = useState(paymentInfo);
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
-  const [symbol, setSymbol] = useState('cUSD');
   const [loaderMessage, setLoaderMessage] = useState('');
 
   /**
@@ -125,31 +123,23 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     InteractionManager.runAfterInteractions(() => {
       if (rates) {
         let amount = 0;
-        let fees = 0;
 
         let rate = rates?.KESUSD;
-        for (const coin of props.stable_coins) {
-          if (coin.address === transaction.enxchangeToken) {
-            if (coin.symbol === 'cUSD') {
-              rate = rates.KESUSD;
-            }
-
-            if (coin.symbol === 'cEUR') {
-              rate = rates.KESEUR;
-            }
-
-            if (coin.symbol === 'cREAL') {
-              rate = rates.KESBRL;
-            }
-            setSymbol(coin.symbol);
-          }
+        if (transaction.exchangeTokenLable === 'cUSD') {
+          rate = rates.KESUSD;
         }
 
-        amount = transaction.netAmount / rate;
-        fees = transaction.agentFee / rate;
+        if (transaction.exchangeTokenLable === 'cEUR') {
+          rate = rates.KESEUR;
+        }
+
+        if (transaction.exchangeTokenLable === 'cREAL') {
+          rate = rates.KESBRL;
+        }
+
+        amount = transaction.amount / rate;
 
         setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
-        setFeesFiat(Number(fees.toFixed(2)).toLocaleString());
       }
     });
   });
@@ -243,26 +233,14 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             <Text h2>Amount</Text>
 
             <Text h2>
-              {Number(transaction.netAmount.toFixed(2)).toLocaleString()}{' '}
-              {symbol}
+              {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
+              {transaction.exchangeTokenLable}
             </Text>
           </View>
           <View style={style.div}>
             <Text h2 />
             <Text h2>{amountFiat} Ksh</Text>
           </View>
-          {/* Remove the profit feature. */}
-          {/* <View style={style.div}>
-            <Text body1>Profit</Text>
-            <Text body1>
-              {Number(transaction.agentFee.toFixed(2)).toLocaleString()}{' '}
-              {symbol}
-            </Text>
-          </View>
-          <View style={style.div}>
-            <Text body1 />
-            <Text body1>{feesFiat} Ksh</Text>
-          </View> */}
         </View>
 
         <View style={style.paymentDetails}>

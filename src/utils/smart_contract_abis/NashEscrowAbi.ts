@@ -31,22 +31,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -73,6 +58,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -116,22 +106,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -158,6 +133,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -201,22 +181,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -243,6 +208,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -286,22 +256,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -328,6 +283,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -403,22 +363,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -445,6 +390,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -488,22 +438,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -530,6 +465,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -573,22 +513,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -615,6 +540,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         indexed: false,
@@ -723,32 +653,6 @@ export const NashEscrowAbi = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_transactionid',
-        type: 'uint256',
-      },
-    ],
-    name: 'finalizeTransaction',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getAgentFee',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
         name: '_paginationCount',
         type: 'uint256',
       },
@@ -799,22 +703,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -842,23 +731,15 @@ export const NashEscrowAbi = [
             name: 'exchangeToken',
             type: 'address',
           },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
+          },
         ],
         internalType: 'struct NashEscrow.NashTransaction[]',
         name: '',
         type: 'tuple[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getNashFee',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -916,22 +797,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -958,6 +824,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         internalType: 'struct NashEscrow.NashTransaction',
@@ -1007,22 +878,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -1049,6 +905,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         internalType: 'struct NashEscrow.NashTransaction',
@@ -1108,22 +969,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -1151,6 +997,11 @@ export const NashEscrowAbi = [
             name: 'exchangeToken',
             type: 'address',
           },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
+          },
         ],
         internalType: 'struct NashEscrow.NashTransaction[]',
         name: '',
@@ -1161,23 +1012,7 @@ export const NashEscrowAbi = [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_nashTreasuryAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_nashFees',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_agentFees',
-        type: 'uint256',
-      },
-    ],
+    inputs: [],
     name: 'initialize',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -1194,6 +1029,11 @@ export const NashEscrowAbi = [
         internalType: 'address',
         name: '_exchangeToken',
         type: 'address',
+      },
+      {
+        internalType: 'string',
+        name: '_exchangeTokenLable',
+        type: 'string',
       },
     ],
     name: 'initializeDepositTransaction',
@@ -1212,6 +1052,11 @@ export const NashEscrowAbi = [
         internalType: 'address',
         name: '_exchangeToken',
         type: 'address',
+      },
+      {
+        internalType: 'string',
+        name: '_exchangeTokenLable',
+        type: 'string',
       },
     ],
     name: 'initializeWithdrawalTransaction',
@@ -1250,22 +1095,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'uint256',
-            name: 'netAmount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'agentFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'nashFee',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'grossAmount',
+            name: 'amount',
             type: 'uint256',
           },
           {
@@ -1292,6 +1122,11 @@ export const NashEscrowAbi = [
             internalType: 'address',
             name: 'exchangeToken',
             type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'exchangeTokenLable',
+            type: 'string',
           },
         ],
         internalType: 'struct NashEscrow.NashTransaction',
@@ -1339,50 +1174,11 @@ export const NashEscrowAbi = [
     inputs: [
       {
         internalType: 'address',
-        name: '_newTreasuryAddress',
-        type: 'address',
-      },
-    ],
-    name: 'setNashTreasury',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: 'newOwner',
         type: 'address',
       },
     ],
     name: 'transferOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_agentFees',
-        type: 'uint256',
-      },
-    ],
-    name: 'updateAgentFees',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_nashFees',
-        type: 'uint256',
-      },
-    ],
-    name: 'updateNashFees',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

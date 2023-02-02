@@ -31,7 +31,7 @@ const coins = [
 ];
 
 const EnterAmountComponent: React.FC<Props> = (props: Props) => {
-  const [amount, setAmount] = useState('0');
+  const [amount, setAmount] = useState('');
   const [balance, setBalance] = useState('0');
   const [coin, setCoin] = useState(StableToken.cUSD);
 

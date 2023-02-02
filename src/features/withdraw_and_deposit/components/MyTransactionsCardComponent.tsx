@@ -59,7 +59,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           setSymbol(coin.symbol);
         }
       }
-      let fiatValue = transaction.netAmount / rate;
+      let fiatValue = transaction.amount / rate;
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
 
@@ -129,7 +129,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
               transaction.agentAddress +
               transaction.id +
               transaction.clientAddress +
-              transaction.netAmount +
+              transaction.amount +
               Date.now().toString()
             }
             style={{marginTop: hp('0.9%')}}
@@ -143,8 +143,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
               Request
             </Text>
             <Text h2>
-              {symbol}{' '}
-              {Number(transaction.netAmount.toFixed(2)).toLocaleString()}
+              {symbol} {Number(transaction.amount.toFixed(2)).toLocaleString()}
             </Text>
             <Text body3>Ksh {fiatNetValue}</Text>
             <Text body3 style={style.statusText}>

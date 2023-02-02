@@ -50,6 +50,7 @@ import {CeloTxObject} from '@celo/connect';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
+import {consoleLogger} from '@celo/base';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -159,6 +160,7 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
       amount.toString(),
       _action.transactionType,
       tokenContract.address,
+      _action.coin,
     );
     // TODO: Figure out what to do with the boolean result
     yield call(stableTokenApproveAmount, _action.coin, _action.amount, address);
@@ -188,19 +190,27 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
  * Generates the transaction object to be sent.
  * @param amount the amount involved in the transaction.
  * @param transactionType the transaction type.
+ * @param coinAddress the smart contract address.
+ * @param coin the coin lable.
  * @returns the composed transaction type.
  */
 async function generateInitTransactionObject(
   amount: string,
   transactionType: TransactionType,
   coinAddress: String,
+  coin: String,
 ) {
   if (transactionType === TransactionType.DEPOSIT) {
-    return nashEscrow.methods.initializeDepositTransaction(amount, coinAddress);
+    return nashEscrow.methods.initializeDepositTransaction(
+      amount,
+      coinAddress,
+      coin,
+    );
   } else {
     return nashEscrow.methods.initializeWithdrawalTransaction(
       amount,
       coinAddress,
+      coin,
     );
   }
 }
@@ -234,7 +244,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
     yield call(
       stableTokenApproveAmount,
       stableToken,
-      transaction.grossAmount,
+      transaction.amount,
       address,
     );
     const paymentInfoCypherText: string = yield call(
@@ -278,7 +288,6 @@ function generateAgentFulfillRequestTransactionObject(
   paymentInfoCypherText: string,
 ) {
   const transactionType = transaction.txType;
-
   if (transactionType === TransactionType.DEPOSIT) {
     return nashEscrow.methods.agentAcceptDepositTransaction(
       transaction.id,

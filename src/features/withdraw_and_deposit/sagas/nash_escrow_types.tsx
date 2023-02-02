@@ -30,13 +30,12 @@ export enum Status {
  * @property { Status } status - the status of the transaction.
  * @property { number } amount - the amount of money being sent in the transaction.
  * @property { string } agentAddress - the agents address.
- * @property { number } nashFee - the amount of money retained by nash DAO.
- * @property { number } grossAmount - the summation of all the money/crypto involved in the transaction.
- * @property { number } agentFee - the amount of money/crypto levied by the agent.
  * @property { boolean } agentApproval - true on agents approval.
  * @property { boolean } clientApproval - true on clients approval.
  * @property { string } clientPaymentDetails - the client`s phone number.
  * @property { string } agentPaymentDetails - the agent`s phone number.
+ * @property { string } enxchangeToken the echange token address.
+ * @property { string } exchangeTokenLable the exchange token lable.
  */
 export type NashEscrowTransaction = {
   id: number;
@@ -44,15 +43,13 @@ export type NashEscrowTransaction = {
   clientAddress: string;
   agentAddress: string;
   status: number;
-  netAmount: number;
-  agentFee: number;
-  nashFee: number;
-  grossAmount: number;
+  amount: number;
   agentApproval: string;
   clientApproval: string;
   agentPaymentDetails: string;
   clientPaymentDetails: string;
   enxchangeToken: string;
+  exchangeTokenLable: string;
 };
 
 /**

@@ -237,15 +237,13 @@ export default class ReadContractDataKit {
       clientAddress: tx[2],
       agentAddress: tx[3],
       status: parseInt(tx[4], 10),
-      netAmount: Number(this.kit?.web3.utils.fromWei(tx[5], 'ether')),
-      agentFee: Number(this.kit?.web3.utils.fromWei(tx[6], 'ether')),
-      nashFee: Number(this.kit?.web3.utils.fromWei(tx[7], 'ether')),
-      grossAmount: Number(this.kit?.web3.utils.fromWei(tx[8], 'ether')),
-      agentApproval: tx[9],
-      clientApproval: tx[10],
-      agentPaymentDetails: tx[11],
-      clientPaymentDetails: tx[12],
-      enxchangeToken: tx[13],
+      amount: Number(this.kit?.web3.utils.fromWei(tx[5], 'ether')),
+      agentApproval: tx[6],
+      clientApproval: tx[7],
+      agentPaymentDetails: tx[8],
+      clientPaymentDetails: tx[9],
+      enxchangeToken: tx[10],
+      exchangeTokenLable: tx[11],
     };
     return nashTx;
   }

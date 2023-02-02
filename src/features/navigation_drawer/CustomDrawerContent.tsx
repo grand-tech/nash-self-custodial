@@ -157,7 +157,7 @@ export default connector(CustomDrawerContent);
 const styles = StyleSheet.create({
   balance: {
     marginRight: wp('2%'),
-    height: 101,
+    height: hp('15%'),
     marginLeft: wp('2%'),
     marginTop: hp('3%'),
     marginBottom: hp('2%'),
