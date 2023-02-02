@@ -56,13 +56,13 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const [transaction, setTransaction] = useState(tx);
 
   const refetchTransaction = () => {
-    props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
+    props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3], 'ui');
   };
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       if (props.transactions === null || props.transactions.length === 0) {
-        props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
+        props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3], 'ui');
       }
     });
   }, []);
@@ -82,9 +82,9 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
 
   const fetchMoreTransactions = () => {
     if (props.transactions?.length > 10) {
-      props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3]);
+      props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3], 'ui');
     } else {
-      props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3]);
+      props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3], 'ui');
     }
   };
 
@@ -126,29 +126,24 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
 
   return (
     <Screen style={style.screenContainer}>
-      {props.transactions?.length === 0 ? (
-        // <FeedLoaderComponent visible={false}/>
-        <FeedEmptyListComponent visible={true} />
-      ) : (
-        <FlatList
-          data={props.transactions}
-          renderItem={({item}) => (
-            <MyTransactionsCardComponent
-              transaction={item}
-              performNextUserAction={performNextUserAction}
-              navigation={props.navigation}
-            />
-          )}
-          keyExtractor={(item: NashEscrowTransaction) => {
-            return item.id.toString();
-          }}
-          onRefresh={refetchTransaction}
-          onEndReached={fetchMoreTransactions}
-          refreshing={props.transactions?.length === 0}
-          progressViewOffset={250}
-          ListEmptyComponent={<Text>Loading...</Text>}
-        />
-      )}
+      <FlatList
+        data={props.transactions}
+        renderItem={({item}) => (
+          <MyTransactionsCardComponent
+            transaction={item}
+            performNextUserAction={performNextUserAction}
+            navigation={props.navigation}
+          />
+        )}
+        keyExtractor={(item: NashEscrowTransaction) => {
+          return item.id.toString();
+        }}
+        onRefresh={refetchTransaction}
+        onEndReached={fetchMoreTransactions}
+        refreshing={props.flats_list_state === 'loading'}
+        progressViewOffset={250}
+        ListEmptyComponent={<FeedEmptyListComponent visible={true} />}
+      />
 
       <EnterPinModal
         target="privateKey"
@@ -183,13 +178,16 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
 
 const style = StyleSheet.create({
   screenContainer: {
-    paddingTop: hp('5.2%'),
+    paddingTop: hp('5.3%'),
+    flex: 1,
+    paddingBottom: hp('2.5%'),
   },
 });
 
 const mapStateToProps = (state: RootState) => ({
   transactions: state.ramp.my_transactions,
   ui_state: state.ui_state.status,
+  flats_list_state: state.ui_state.flat_list_status,
 });
 
 const mapDispatchToProps = {

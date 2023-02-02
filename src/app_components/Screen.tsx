@@ -26,7 +26,7 @@ type ScreenComponentProps = PropsWithChildren<{
 
 const Screen: React.FC<ScreenComponentProps> = props => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.screen}>
       {Platform.OS === 'android' ? (
         <StatusBar
           backgroundColor={props.statusBarColor ?? AppColors.gray}
@@ -39,7 +39,9 @@ const Screen: React.FC<ScreenComponentProps> = props => {
 };
 
 const styles = StyleSheet.create({
-  screen: {},
+  screen: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: AppColors.gray,

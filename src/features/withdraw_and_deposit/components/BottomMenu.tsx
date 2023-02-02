@@ -55,7 +55,7 @@ const style = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: hp('2%'),
+    paddingTop: hp('0.5%'),
   },
 });
 

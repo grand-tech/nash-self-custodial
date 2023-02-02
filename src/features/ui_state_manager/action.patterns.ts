@@ -26,4 +26,9 @@ export enum Actions {
    * Process was successful.
    */
   SET_SUCCESS = 'UI_STATE/SET_SUCCESS',
+
+  /**
+   * Updates the flatlist status.
+   */
+  SET_FLATLIST_STATUS = 'UI_STATE/SET_FLATLIST_STATUS',
 }

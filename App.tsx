@@ -52,10 +52,10 @@ const App: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     if (props.publicAddress !== '') {
       ContractEventsListenerKit.createInstance();
-      props.dispatchFetchPendingTransactions('refetch');
+      props.dispatchFetchPendingTransactions('refetch', 'background');
       props.dispatchActionQueryStableCoinInfo();
 
-      props.dispatchFetchMyTransactions('refetch', [0, 1, 2]);
+      props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'background');
     }
   }, [props, props.publicAddress]);
 

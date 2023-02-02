@@ -5,13 +5,13 @@ import {RootState} from '../../app-redux-store/store';
  * @param state the applications redux state.
  * @returns the value stored in the error state.
  */
-export const selectError = (state: RootState) => state.uiStateReducer.error;
+export const selectError = (state: RootState) => state.ui_state.error;
 
-export const selectTitle = (state: RootState) => state.uiStateReducer.title;
+export const selectTitle = (state: RootState) => state.ui_state.title;
 
-export const selectMessage = (state: RootState) => state.uiStateReducer.message;
+export const selectMessage = (state: RootState) => state.ui_state.message;
 
 export const selectLastUpdatedTime = (state: RootState) =>
-  state.uiStateReducer.last_updated;
+  state.ui_state.last_updated;
 
-export const selectStatus = (state: RootState) => state.uiStateReducer.status;
+export const selectStatus = (state: RootState) => state.ui_state.status;

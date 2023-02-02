@@ -29,7 +29,7 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   // props.dispatchFetchPendingTxs();
 
   const refetchTransaction = () => {
-    props.dispatchFetchPendingTxs('refetch');
+    props.dispatchFetchPendingTxs('refetch', 'ui');
   };
 
   useEffect(() => {
@@ -67,9 +67,9 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
 
   const fetchMoreTransactions = () => {
     if (props.pendingTransactions?.length > 10) {
-      props.dispatchFetchPendingTxs('fetch-more');
+      props.dispatchFetchPendingTxs('fetch-more', 'ui');
     } else {
-      props.dispatchFetchPendingTxs('refetch');
+      props.dispatchFetchPendingTxs('refetch', 'ui');
     }
   };
 
@@ -81,28 +81,24 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
 
   return (
     <Screen style={style.screenContainer}>
-      {props.pendingTransactions?.length === 0 ? (
-        // <FeedLoaderComponent visible={false}/>
-        <FeedEmptyListComponent visible={true} />
-      ) : (
-        <FlatList
-          data={props.pendingTransactions}
-          renderItem={({item}) => (
-            <RequestCardComponent
-              transaction={item}
-              onFulFillRequest={onFulFillRequest}
-            />
-          )}
-          keyExtractor={(item: NashEscrowTransaction) => {
-            return item.id.toString();
-          }}
-          onRefresh={refetchTransaction}
-          onEndReached={fetchMoreTransactions}
-          refreshing={props.pendingTransactions?.length === 0}
-          progressViewOffset={250}
-          ListEmptyComponent={<Text>Loading...</Text>}
-        />
-      )}
+      <FlatList
+        data={props.pendingTransactions}
+        renderItem={({item}) => (
+          <RequestCardComponent
+            transaction={item}
+            onFulFillRequest={onFulFillRequest}
+          />
+        )}
+        keyExtractor={(item: NashEscrowTransaction) => {
+          return item.id.toString();
+        }}
+        onRefresh={refetchTransaction}
+        onEndReached={fetchMoreTransactions}
+        refreshing={props.flats_list_state === 'loading'}
+        ListEmptyComponent={<FeedEmptyListComponent visible={true} />}
+        // style={{marginBottom: hp('1%')}}
+      />
+
       <BottomMenu navigation={props.navigation} />
     </Screen>
   );
@@ -110,13 +106,16 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
 
 const style = StyleSheet.create({
   screenContainer: {
-    paddingTop: hp('7%'),
+    paddingTop: hp('5.3%'),
+    flex: 1,
+    paddingBottom: hp('2.5%'),
   },
 });
 
 const mapStateToProps = (state: RootState) => ({
   pendingTransactions: state.ramp.pending_transactions,
   ui_state: state.ui_state.status,
+  flats_list_state: state.ui_state.flat_list_status,
 });
 
 const mapDispatchToProps = {

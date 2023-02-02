@@ -10,15 +10,19 @@ export type ListUpdateActions = 'update' | 'remove' | 'add';
 
 export type QueryTransactionsUserActions = 'refetch' | 'fetch-more';
 
+export type DataQueryTriggers = 'ui' | 'background';
+
 export interface ActionQueryPendingTransactions {
   type: Actions.QUERY_PENDING_TRANSACTION_REQUESTS;
   userAction: QueryTransactionsUserActions;
+  trigger: DataQueryTriggers;
 }
 
 export interface ActionQueryMyTransactions {
   type: Actions.QUERY_MY_TRANSACTION_REQUESTS;
   userAction: QueryTransactionsUserActions;
   statuses: number[];
+  trigger: DataQueryTriggers;
 }
 
 export interface ActionSetPendingTransactions {

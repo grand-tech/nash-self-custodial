@@ -1,11 +1,12 @@
 import {Actions} from './action.patterns';
-import {ActionSuccess} from './actions';
+import {ActionSetFlatsListStatus, ActionSuccess} from './actions';
 import {
   ActionSetError,
   ActionSetLoading,
   ActionSetNormal,
   ActionEnterPIN,
 } from './actions';
+import {UI_STATUSES} from './enums';
 
 /**
  * Generates an instance of set loader action.
@@ -52,6 +53,19 @@ export function generateActionSetSuccess(title: string): ActionSuccess {
   return {
     type: Actions.SET_SUCCESS,
     title,
+  };
+}
+
+/**
+ * Generate an instance of set success (displays a success message to the user.).
+ * @returns an instance of set success action.
+ */
+export function generateActionSetFlatListStatus(
+  status: UI_STATUSES,
+): ActionSetFlatsListStatus {
+  return {
+    type: Actions.SET_FLATLIST_STATUS,
+    status,
   };
 }
 
