@@ -5,12 +5,11 @@ import {
   TransactionType,
 } from '../sagas/nash_escrow_types';
 import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
-
-export type ListUpdateActions = 'update' | 'remove' | 'add';
-
-export type QueryTransactionsUserActions = 'refetch' | 'fetch-more';
-
-export type DataQueryTriggers = 'ui' | 'background';
+import {
+  DataQueryTriggers,
+  ListUpdateActions,
+  QueryTransactionsUserActions,
+} from './enums';
 
 export interface ActionQueryPendingTransactions {
   type: Actions.QUERY_PENDING_TRANSACTION_REQUESTS;

@@ -16,7 +16,6 @@ import {
   NashEscrowTransaction,
   TransactionType,
 } from './sagas/nash_escrow_types';
-import {Text} from 'react-native-ui-lib';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import MyTransactionsCardComponent from './components/MyTransactionsCardComponent';
 import {

@@ -22,7 +22,6 @@ import {generateRampActionUpdateFiatPaymentMethods} from '../../ramp_payment_inf
 import {generateActionCompletedOnboarding} from '../../onboarding/redux_store/action.generators';
 import {selectOnboardingStatus} from '../../onboarding/redux_store/selectors';
 import {OnboardingStatusNames} from '../../onboarding/redux_store/reducers';
-import {OnboardingNavigationStackParamsList} from '../../onboarding/navigation/navigation.params.type';
 import {SettingsNavigationStackParamsList} from '../../settings/navigation/navigation.params.type';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 

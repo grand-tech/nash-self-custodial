@@ -1,4 +1,3 @@
-import {type} from 'os';
 import {GlobalActions} from './action.patterns';
 import {ReduxCoin} from './reducers';
 

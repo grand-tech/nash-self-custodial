@@ -35,7 +35,6 @@ import {
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
-import {ListUpdateActions} from '../redux_store/actions';
 import {nashEscrow} from '../../account_balance/contract.kit.utils';
 import {
   selectRampMyTransactions,
@@ -51,6 +50,7 @@ import {CeloTxObject} from '@celo/connect';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
+import {ListUpdateActions} from '../redux_store/enums';
 
 /**
  * Query the list of pending transactions in the smart contract.
