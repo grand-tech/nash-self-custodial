@@ -34,6 +34,7 @@ import {
   nashDecryptComment,
 } from '../comment_encryption/sagas/comment.encryption.utils';
 import {NextUserAction} from './transaction.user.actions.enum';
+
 const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
   const transaction = props.route.params.transaction;

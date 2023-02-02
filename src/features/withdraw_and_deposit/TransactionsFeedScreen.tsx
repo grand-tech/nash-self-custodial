@@ -19,7 +19,6 @@ import BottomMenu from './components/BottomMenu';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
 import {NashEscrowTransaction} from './sagas/nash_escrow_types';
-import {Text} from 'react-native-ui-lib';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
