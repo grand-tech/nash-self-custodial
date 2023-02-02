@@ -1,5 +1,6 @@
 import {ActionLogOut} from '../../app-redux-store/global_redux_actions/actions';
 import {Actions} from './action.patterns';
+import {UI_STATUSES} from './enums';
 
 /**
  * Set current screen to loading state action.
@@ -40,7 +41,7 @@ export interface ActionSetNormal {
 /**
  * Sets the current screen on idle state. i.e normal screen operations without loaders or errors.
  * @typedef { object } ActionEnterPIN action.
- * @property { Actions }
+ * @property { ActionEnterPIN }
  */
 export interface ActionEnterPIN {
   type: Actions.SET_ENTER_PIN;
@@ -49,11 +50,21 @@ export interface ActionEnterPIN {
 /**
  * Sets the current screen success state. i.e the process was successful.
  * @typedef { object } ActionSuccess action.
- * @property { Actions }
+ * @property { ActionSuccess }
  */
 export interface ActionSuccess {
   type: Actions.SET_SUCCESS;
   title: string;
+}
+
+/**
+ * Sets the current screen success state. i.e the process was successful.
+ * @typedef { object } ActionSetFlatsListStatus action.
+ * @property { ActionSetFlatsListStatus }
+ */
+export interface ActionSetFlatsListStatus {
+  type: Actions.SET_FLATLIST_STATUS;
+  status: UI_STATUSES;
 }
 
 /**
@@ -65,4 +76,5 @@ export type ActionTypes =
   | ActionSetError
   | ActionSetNormal
   | ActionEnterPIN
-  | ActionSuccess;
+  | ActionSuccess
+  | ActionSetFlatsListStatus;

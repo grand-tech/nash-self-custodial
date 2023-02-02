@@ -1,6 +1,7 @@
 import {GlobalActions} from '../../app-redux-store/global_redux_actions/action.patterns';
 import {Actions} from './action.patterns';
 import {ActionTypes} from './actions';
+import {UI_STATUSES} from './enums';
 
 /**
  * Onboarding state object.
@@ -12,11 +13,12 @@ import {ActionTypes} from './actions';
  * @property { number } last_updated the last time the status changed.
  */
 interface UIScreenState {
-  status: 'loading' | 'error' | 'normal' | 'enter_pin' | 'success';
+  status: UI_STATUSES;
   error: string | null;
   message: string | null;
   title: string | null;
   last_updated: number;
+  flat_list_status: UI_STATUSES;
 }
 
 /**
@@ -28,6 +30,7 @@ const initialState: UIScreenState = {
   message: null,
   title: null,
   last_updated: new Date().getTime(),
+  flat_list_status: 'normal',
 };
 
 export const uiStateReducer = (
@@ -78,6 +81,12 @@ export const uiStateReducer = (
         error: null,
         title: null,
         message: null,
+        last_updated: new Date().getTime(),
+      };
+    case Actions.SET_FLATLIST_STATUS:
+      return {
+        ...state,
+        flat_list_status: action.status,
         last_updated: new Date().getTime(),
       };
     case GlobalActions.LOG_OUT: // should be the second last case in all reducers

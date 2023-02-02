@@ -17,14 +17,17 @@ import {
   ActionSetPendingTransactions,
   QueryTransactionsUserActions,
   ListUpdateActions,
+  DataQueryTriggers,
 } from './actions';
 
 export function generateActionQueryPendingTransactions(
   userAction: QueryTransactionsUserActions,
+  trigger: DataQueryTriggers,
 ): ActionQueryPendingTransactions {
   return {
     type: Actions.QUERY_PENDING_TRANSACTION_REQUESTS,
     userAction,
+    trigger,
   };
 }
 
@@ -40,11 +43,13 @@ export function generateActionSetPendingTransactions(
 export function generateActionQueryMyTransactions(
   userAction: QueryTransactionsUserActions,
   statuses: number[],
+  trigger: DataQueryTriggers,
 ): ActionQueryMyTransactions {
   return {
     type: Actions.QUERY_MY_TRANSACTION_REQUESTS,
     userAction,
     statuses,
+    trigger,
   };
 }
 

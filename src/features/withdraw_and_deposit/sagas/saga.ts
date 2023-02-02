@@ -30,6 +30,7 @@ import {
 import {
   generateActionSetSuccess,
   generateActionSetError,
+  generateActionSetFlatListStatus,
 } from '../../ui_state_manager/action.generators';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
@@ -50,7 +51,6 @@ import {CeloTxObject} from '@celo/connect';
 import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
-import {consoleLogger} from '@celo/base';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -59,6 +59,10 @@ import {consoleLogger} from '@celo/base';
 export function* queryPendingTransactionsSaga(
   _action: ActionQueryPendingTransactions,
 ) {
+  if (_action.trigger === 'ui') {
+    yield put(generateActionSetFlatListStatus('loading'));
+  }
+
   const kit = ReadContractDataKit.getInstance();
 
   if (_action.userAction === 'refetch') {
@@ -80,6 +84,10 @@ export function* queryPendingTransactionsSaga(
       yield put(generateActionSetPendingTransactions(transactions.concat(txs)));
     }
   }
+
+  if (_action.trigger === 'ui') {
+    yield put(generateActionSetFlatListStatus('normal'));
+  }
 }
 
 /**
@@ -99,6 +107,10 @@ export function* watchQueryPendingTransactionsSaga() {
  */
 export function* queryMyTransactionsSaga(_action: ActionQueryMyTransactions) {
   const kit = ReadContractDataKit.getInstance();
+
+  if (_action.trigger === 'ui') {
+    yield put(generateActionSetFlatListStatus('loading'));
+  }
 
   if (_action.userAction === 'refetch') {
     NashCache.setMyTransactionsRampPaginator(
@@ -123,6 +135,10 @@ export function* queryMyTransactionsSaga(_action: ActionQueryMyTransactions) {
 
       yield put(generateActionSetMyTransactions(transactions.concat(txs)));
     }
+  }
+
+  if (_action.trigger === 'ui') {
+    yield put(generateActionSetFlatListStatus('normal'));
   }
 }
 
@@ -363,7 +379,9 @@ export function* approveTransactionSaga(_action: ActionCancelTransaction) {
     yield put(generateActionSetSuccess('Approved transaction.'));
 
     yield put(generateActionQueryBalance());
-    yield put(generateActionQueryMyTransactions('refetch', [0, 1, 2]));
+    yield put(
+      generateActionQueryMyTransactions('refetch', [0, 1, 2], 'background'),
+    );
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
     console.log('Error', error);
