@@ -53,7 +53,7 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
               onPress={() => {
                 props.navigation.navigate('MyTransactionsFeedScreen');
               }}>
-              <Icon name="arrow-right" size={24} color={AppColors.black} />
+              <Icon name="arrow-right" size={20} color={AppColors.black} />
             </Pressable>
           );
         },

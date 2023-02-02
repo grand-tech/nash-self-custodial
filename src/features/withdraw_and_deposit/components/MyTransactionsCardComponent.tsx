@@ -38,27 +38,23 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   const [fiatNetValue, setFiatNetValue] = useState('-');
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
-  const [symbol, setSymbol] = useState('cUSD');
 
   useEffect(() => {
     if (rates?.KESUSD) {
       let rate = rates?.KESUSD;
-      for (const coin of props.stable_coins) {
-        if (coin.address === props.transaction.enxchangeToken) {
-          if (coin.symbol === 'cUSD') {
-            rate = rates.KESUSD;
-          }
 
-          if (coin.symbol === 'cEUR') {
-            rate = rates.KESEUR;
-          }
-
-          if (coin.symbol === 'cREAL') {
-            rate = rates.KESBRL;
-          }
-          setSymbol(coin.symbol);
-        }
+      if (props.transaction.exchangeTokenLable === 'cUSD') {
+        rate = rates.KESUSD;
       }
+
+      if (props.transaction.exchangeTokenLable === 'cEUR') {
+        rate = rates.KESEUR;
+      }
+
+      if (props.transaction.exchangeTokenLable === 'cREAL') {
+        rate = rates.KESBRL;
+      }
+
       let fiatValue = transaction.amount / rate;
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
@@ -143,7 +139,8 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
               Request
             </Text>
             <Text h2>
-              {symbol} {Number(transaction.amount.toFixed(2)).toLocaleString()}
+              {props.transaction.exchangeTokenLable}{' '}
+              {Number(transaction.amount.toFixed(2)).toLocaleString()}
             </Text>
             <Text body3>Ksh {fiatNetValue}</Text>
             <Text body3 style={style.statusText}>
