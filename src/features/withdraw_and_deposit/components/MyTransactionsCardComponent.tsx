@@ -113,7 +113,9 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   };
 
   const onCardPress = () => {
-    props.navigation.navigate('ViewRequestScreen', {transaction});
+    if (props.ui_status !== 'loading') {
+      props.navigation.navigate('ViewRequestScreen', {transaction});
+    }
   };
 
   return (

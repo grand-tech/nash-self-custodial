@@ -24,9 +24,11 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
           ...FONTS.h4,
         }}
         onPress={() => {
-          props.navigation.navigate('EnterAmountScreen', {
-            transactionType: TransactionType.WITHDRAWAL,
-          });
+          if (props.ui_status !== 'loading') {
+            props.navigation.navigate('EnterAmountScreen', {
+              transactionType: TransactionType.WITHDRAWAL,
+            });
+          }
         }}
       />
       <Button
@@ -39,9 +41,11 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
           ...FONTS.h4,
         }}
         onPress={() => {
-          props.navigation.navigate('EnterAmountScreen', {
-            transactionType: TransactionType.DEPOSIT,
-          });
+          if (props.ui_status !== 'loading') {
+            props.navigation.navigate('EnterAmountScreen', {
+              transactionType: TransactionType.DEPOSIT,
+            });
+          }
         }}
       />
     </View>
@@ -59,7 +63,9 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (_state: RootState) => ({});
+const mapStateToProps = (_state: RootState) => ({
+  ui_status: _state.ui_state.status,
+});
 
 const mapDispatchToProps = {};
 
