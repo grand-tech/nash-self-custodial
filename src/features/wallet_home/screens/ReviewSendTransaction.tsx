@@ -64,7 +64,9 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
   };
 
   const onPressOkay = () => {
-    props.navigation.navigate('WalletHomeScreen');
+    if (props.ui_state !== 'loading') {
+      props.navigation.navigate('WalletHomeScreen');
+    }
   };
 
   return (

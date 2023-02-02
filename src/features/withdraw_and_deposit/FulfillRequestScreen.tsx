@@ -100,7 +100,9 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onPressOkay = () => {
-    props.navigation.goBack();
+    if (props.ui_status !== 'loading') {
+      props.navigation.goBack();
+    }
   };
 
   return (

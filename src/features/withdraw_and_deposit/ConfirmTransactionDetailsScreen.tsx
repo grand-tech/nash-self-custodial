@@ -96,7 +96,9 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onPressOkay = () => {
-    props.navigation.navigate('TransactionsFeedScreen');
+    if (props.ui_status !== 'loading') {
+      props.navigation.navigate('TransactionsFeedScreen');
+    }
   };
 
   return (

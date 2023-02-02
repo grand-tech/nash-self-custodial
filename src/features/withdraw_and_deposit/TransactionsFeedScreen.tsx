@@ -73,9 +73,11 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onFulFillRequest = (item: NashEscrowTransaction) => {
-    props.navigation.navigate('FulfillRequestScreen', {
-      transaction: item,
-    });
+    if (props.ui_state !== 'loading') {
+      props.navigation.navigate('FulfillRequestScreen', {
+        transaction: item,
+      });
+    }
   };
 
   return (
