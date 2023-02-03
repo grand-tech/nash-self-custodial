@@ -19,13 +19,18 @@ import BottomMenu from './components/BottomMenu';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from './navigation/navigation.params.type';
 import {NashEscrowTransaction} from './sagas/nash_escrow_types';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
 import {AppColors} from '../../ui_lib_configs/colors';
+import ErrorModalComponent from '../../app_components/ErrorModalComponent';
+import {
+  generateActionSetError,
+  generateActionSetNormal,
+} from '../ui_state_manager/action.generators';
 
 const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
-  // props.dispatchFetchPendingTxs();
+  const isFocused = useIsFocused();
 
   const refetchTransaction = () => {
     props.dispatchFetchPendingTxs('refetch', 'ui');
@@ -74,9 +79,16 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
 
   const onFulFillRequest = (item: NashEscrowTransaction) => {
     if (props.ui_state !== 'loading') {
-      props.navigation.navigate('FulfillRequestScreen', {
-        transaction: item,
-      });
+      if (props.myAddress === item.clientAddress) {
+        props.disptachUIError(
+          'Transaction Error',
+          'Client can not act as an agent!!',
+        );
+      } else {
+        props.navigation.navigate('FulfillRequestScreen', {
+          transaction: item,
+        });
+      }
     }
   };
 
@@ -101,6 +113,13 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
       />
 
       <BottomMenu navigation={props.navigation} />
+
+      <ErrorModalComponent
+        visible={props.ui_state === 'error' && isFocused}
+        onRetry={() => {
+          props.disptachUINormal();
+        }}
+      />
     </Screen>
   );
 };
@@ -117,10 +136,13 @@ const mapStateToProps = (state: RootState) => ({
   pendingTransactions: state.ramp.pending_transactions,
   ui_state: state.ui_state.status,
   flats_list_state: state.ui_state.flat_list_status,
+  myAddress: state.onboarding.publicAddress,
 });
 
 const mapDispatchToProps = {
   dispatchFetchPendingTxs: generateActionQueryPendingTransactions,
+  disptachUIError: generateActionSetError,
+  disptachUINormal: generateActionSetNormal,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

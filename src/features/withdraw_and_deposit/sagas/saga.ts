@@ -64,6 +64,7 @@ export function* queryPendingTransactionsSaga(
   }
 
   const kit = ReadContractDataKit.getInstance();
+  const myPublicAddress: string = yield select(selectPublicAddress);
 
   if (_action.userAction === 'refetch') {
     NashCache.setRampPaginator(NashCache.DEFAULT_RAMP_PAGINATOR_VALUE);
@@ -72,6 +73,7 @@ export function* queryPendingTransactionsSaga(
   if (typeof kit !== 'undefined') {
     const transactions: NashEscrowTransaction[] = yield call(
       kit.fetchTransactions,
+      myPublicAddress,
     );
 
     if (_action.userAction === 'refetch') {

@@ -90,7 +90,7 @@ export default class ReadContractDataKit {
   /**
    * Fetches the transactions from the smart contract.
    */
-  async fetchTransactions() {
+  async fetchTransactions(myPublicAddress: string) {
     const thisInst = ReadContractDataKit.readDataContractKit;
 
     let nashTxsArray: Array<NashEscrowTransaction> = [];
@@ -103,7 +103,9 @@ export default class ReadContractDataKit {
         (await thisInst?.getNextTxIndex()) ??
         NashCache.DEFAULT_RAMP_PAGINATOR_VALUE;
       NashCache.setRampPaginator(l - 1);
-      nashTxsArray = (await thisInst?.queryGetNextUnpairedTransactions()) ?? [];
+      nashTxsArray =
+        (await thisInst?.queryGetNextUnpairedTransactions(myPublicAddress)) ??
+        [];
     }
 
     return nashTxsArray;
@@ -160,7 +162,9 @@ export default class ReadContractDataKit {
   /**
    * Get transaction by index.
    */
-  async queryGetNextUnpairedTransactions(): Promise<NashEscrowTransaction[]> {
+  async queryGetNextUnpairedTransactions(
+    myPublicAddress: string,
+  ): Promise<NashEscrowTransaction[]> {
     const tx = await this.nashEscrowContract?.methods
       .getTransactions(15, NashCache.getRampPaginator(), 0)
       .call();
@@ -177,8 +181,10 @@ export default class ReadContractDataKit {
         NashCache.setRampPaginator(nashTx.id - 1);
       }
 
-      // update the list of transactions.
-      txs.push(nashTx);
+      if (nashTx.clientAddress !== myPublicAddress) {
+        // update the list of transactions.
+        txs.push(nashTx);
+      }
     }
 
     return txs;
