@@ -107,7 +107,7 @@ const TransactionsFeedHomeScreen: React.FC<Props> = (props: Props) => {
         }}
         onRefresh={refetchTransaction}
         onEndReached={fetchMoreTransactions}
-        refreshing={props.flats_list_state === 'loading'}
+        refreshing={props.flats_list_state === 'loading' && isFocused}
         ListEmptyComponent={<FeedEmptyListComponent visible={true} />}
         // style={{marginBottom: hp('1%')}}
       />

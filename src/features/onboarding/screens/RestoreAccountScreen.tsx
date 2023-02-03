@@ -174,12 +174,13 @@ const RestoreAccountScreen = (props: Props) => {
                 setInputSeedPhrase(initInputSeedPhrase);
                 setErrorDialogVisibility(false);
               }}
-              visible={errorDialogVisible}
+              visible={errorDialogVisible && isFocused}
             />
 
             <LoadingModalComponent
+              TAG="ReastoreAccountScreen"
               onShowModal={onShowModal}
-              visible={props.ui_status === 'loading'}
+              visible={props.ui_status === 'loading' && isFocused}
             />
           </View>
         </TouchableWithoutFeedback>

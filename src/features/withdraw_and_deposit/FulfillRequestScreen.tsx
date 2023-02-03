@@ -140,6 +140,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
       />
 
       <LoadingModalComponent
+        TAG="FullfilRequestScreen"
         onShowModal={onShowLoadingModal}
         visible={props.ui_status === 'loading' && isFocused}
       />

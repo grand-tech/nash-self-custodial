@@ -40,21 +40,21 @@ const EnterAmountComponent: React.FC<Props> = (props: Props) => {
       case 'cEUR':
         if (typeof props.cEuroBalance === 'number' && props.cEuroBalance > 0) {
           let maxAmount = 0;
-          maxAmount = props.cEuroBalance - 0.01;
+          maxAmount = props.cEuroBalance - 0.09;
           setAmount(Number(maxAmount.toFixed(2)).toLocaleString());
         }
         break;
       case 'cUSD':
         if (typeof props.cUSDBalance === 'number' && props.cUSDBalance > 0) {
           let maxAmount = 0;
-          maxAmount = props.cUSDBalance - 0.01;
+          maxAmount = props.cUSDBalance - 0.09;
           setAmount(Number(maxAmount.toFixed(2)).toLocaleString());
         }
         break;
       case 'cREAL':
         if (typeof props.cRealBalance === 'number' && props.cRealBalance > 0) {
           let maxAmount = 0;
-          maxAmount = props.cRealBalance - 0.01;
+          maxAmount = props.cRealBalance - 0.09;
           setAmount(Number(maxAmount.toFixed(2)).toLocaleString());
         }
         break;

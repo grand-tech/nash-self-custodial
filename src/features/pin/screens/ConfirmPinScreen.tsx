@@ -135,7 +135,8 @@ const ConfirmPinScreen: React.FC<Props> = (props: Props) => {
       </View>
 
       <LoadingModalComponent
-        visible={props.ui_screen_status === 'loading'}
+        TAG="ConfirmOinScreen"
+        visible={props.ui_screen_status === 'loading' && isFocused}
         onShowModal={onShowModal}
       />
     </Screen>

@@ -71,7 +71,6 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           ) {
             status = 'Awaiting Client Approval';
             setNextUserAction(NextUserAction.NONE);
-            setLoaderMessage('Approving transaction ...');
           } else if (
             transaction.clientApproval &&
             transaction.clientAddress === myAddress
@@ -79,17 +78,19 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             status = 'Awaiting Agent Approval';
             setNextUserAction(NextUserAction.NONE);
           } else {
-            status = 'Awaiting Your Approval';
+            status = 'Awaiting Your Confirmation';
             if (transaction.agentAddress === myAddress) {
               setNextUserAction(NextUserAction.APPROVE);
             } else if (transaction.clientAddress === myAddress) {
               setNextUserAction(NextUserAction.APPROVE);
             }
-            setLoaderMessage('Approving transaction ...');
           }
           break;
-        case 3:
+        case 2:
           status = 'Confirmed';
+          break;
+        case 3:
+          status = 'Canceled';
           break;
         default:
           status = 'Completed';
@@ -300,6 +301,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       />
 
       <LoadingModalComponent
+        TAG="ViewRequestScreen"
         onShowModal={onShowLoadingModal}
         visible={props.ui_status === 'loading' && isFocused}
       />

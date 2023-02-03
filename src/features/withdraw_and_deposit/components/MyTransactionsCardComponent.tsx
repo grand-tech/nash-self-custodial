@@ -87,8 +87,11 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           }
         }
         break;
-      case 3:
+      case 2:
         status = 'Confirmed';
+        break;
+      case 3:
+        status = 'Canceled';
         break;
       default:
         status = 'Completed';
@@ -102,7 +105,8 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
     if (
       transaction.clientAddress === publicAddress &&
       transaction.clientPaymentDetails === '' &&
-      transaction.status !== 0
+      transaction.status !== 0 &&
+      transaction.status !== 3
     ) {
       props.generateActionAddClientPaymentInfo(transaction);
     }

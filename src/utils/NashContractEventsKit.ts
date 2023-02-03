@@ -80,6 +80,11 @@ export class ContractEventsListenerKit {
       this.transactionEventHandler,
     );
 
+    this.addContractEventListener(
+      'TransactionCanceledEvent',
+      this.transactionEventHandler,
+    );
+
     this.setFilteredEventListener('ClientConfirmationEvent');
     this.setFilteredEventListener('AgentConfirmationEvent');
     this.setFilteredEventListener('ConfirmationCompletedEvent');
@@ -156,6 +161,16 @@ export class ContractEventsListenerKit {
         case 'TransactionCompletionEvent':
           store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
           this.fetchBalance(tx);
+          break;
+        case 'TransactionCanceledEvent':
+          if (tx.clientAddress === publicAddress) {
+            store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
+            this.fetchBalance(tx);
+          } else {
+            store.dispatch(
+              generateActionUpdatePendingTransactions(tx, 'remove'),
+            );
+          }
           break;
         default:
           // TODO: register this to crash-litics.

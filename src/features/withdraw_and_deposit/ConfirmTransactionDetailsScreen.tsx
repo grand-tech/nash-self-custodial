@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Screen from '../../app_components/Screen';
 import {StyleSheet, View} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps} from 'react-redux';
 import {Button, Text} from 'react-native-ui-lib';
 import {
@@ -28,6 +28,7 @@ import {generateActionMakeRampExchangeRequest} from './redux_store/action.genera
 import ErrorModalComponent from '../../app_components/ErrorModalComponent';
 
 const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
+  const isFocused = useIsFocused();
   const rates = props.rates;
   const coin = props.route.params.coin;
   const amount = props.route.params.amount;
@@ -130,21 +131,22 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
       <EnterPinModal
         target="privateKey"
         onPinMatched={onPinMatched}
-        visible={props.ui_status === 'enter_pin'}
+        visible={props.ui_status === 'enter_pin' && isFocused}
       />
 
       <LoadingModalComponent
+        TAG="ConfirmTransactionDetailsScreen"
         onShowModal={onShowLoadingModal}
-        visible={props.ui_status === 'loading'}
+        visible={props.ui_status === 'loading' && isFocused}
       />
 
       <SuccessModalComponent
-        visible={props.ui_status === 'success'}
+        visible={props.ui_status === 'success' && isFocused}
         onPressOkay={onPressOkay}
       />
 
       <ErrorModalComponent
-        visible={props.ui_status === 'error'}
+        visible={props.ui_status === 'error' && isFocused}
         onRetry={sendRequest}
       />
     </Screen>
