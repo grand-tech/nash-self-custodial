@@ -31,6 +31,7 @@ import {
   generateActionSetSuccess,
   generateActionSetError,
   generateActionSetFlatListStatus,
+  generateActionSetLoading,
 } from '../../ui_state_manager/action.generators';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
@@ -323,14 +324,36 @@ export function* watchAgentFullfilRequestSaga() {
   yield takeLatest(Actions.AGENT_FULFILL_REQUEST, agentFullfilRequestSaga);
 }
 
+export function* watchCancelRequestSaga() {
+  yield takeLatest(Actions.CANCEL_TRANSACTION, cancelRequestSaga);
+}
+
+/**
+ * Cancels a transaction on the escrow.
+ * @param _action contains all the details needed to cancel a transaction.
+ */
 export function* cancelRequestSaga(_action: ActionCancelTransaction) {
   try {
-    yield put(generateActionSetSuccess('Accepted transaction.'));
+    yield put(generateActionSetLoading('Canceling transaction...', ''));
+    const privateKey: string = NashCache.getPrivateKey();
+    contractKit.addAccount(privateKey);
+
+    const txObj = nashEscrow.methods.cancelTransaction(_action.transaction.id);
+
+    yield call(
+      sendTransactionObject,
+      txObj,
+      _action.transaction.clientAddress,
+      _action.transaction.enxchangeToken,
+    );
 
     yield put(generateActionQueryBalance());
+    yield put(
+      generateActionSetSuccess('Transaction has been canceled succesfully.'),
+    );
   } catch (error: any) {
     // TODO: Perform all possible error handling activities.
-    console.log('Error', error);
+    console.log('Error [cancelRequestSaga]: ', error);
     crashlytics().recordError(
       new Error(error),
       '[SAGA] cancelRequestSaga: ' + error.name,
@@ -344,7 +367,7 @@ export function* cancelRequestSaga(_action: ActionCancelTransaction) {
  * @param transaction the transaction type.
  * @returns the composed transaction type.
  */
-function generateCancelRequestTransaction(
+function generateApproveRequestTransaction(
   transaction: NashEscrowTransaction,
   publicAddress: string,
 ) {
@@ -355,10 +378,6 @@ function generateCancelRequestTransaction(
   }
 }
 
-export function* watchCancelRequestSaga() {
-  yield takeLatest(Actions.CANCEL_TRANSACTION, cancelRequestSaga);
-}
-
 export function* approveTransactionSaga(_action: ActionCancelTransaction) {
   try {
     const privateKey: string = NashCache.getPrivateKey();
@@ -366,7 +385,7 @@ export function* approveTransactionSaga(_action: ActionCancelTransaction) {
 
     const address: string = yield select(selectPublicAddress);
 
-    const tsxObj = generateCancelRequestTransaction(
+    const tsxObj = generateApproveRequestTransaction(
       _action.transaction,
       address,
     );
@@ -493,4 +512,5 @@ export function* onRampOffRampSagas() {
   yield spawn(watchApproveTransactionSaga);
   yield spawn(watchUpdateMyTransactionsListSaga);
   yield spawn(watchUpdatePendingTransactionsListSaga);
+  yield spawn(watchCancelRequestSaga);
 }

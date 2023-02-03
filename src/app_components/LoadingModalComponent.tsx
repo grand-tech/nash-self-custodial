@@ -11,6 +11,9 @@ import {connect, ConnectedProps} from 'react-redux';
 
 const LoadingModalComponent: React.FC<Props> = (props: Props) => {
   const onShow = () => {
+    // if (props.TAG) {
+    //   console.log('Screen ===>', props.TAG);
+    // }
     props.onShowModal();
   };
 
@@ -91,6 +94,7 @@ type ReduxProps = ConnectedProps<typeof connector>;
 interface Props extends ReduxProps {
   visible: boolean;
   onShowModal: any;
+  TAG?: string;
 }
 
 export default connector(LoadingModalComponent);

@@ -10,7 +10,7 @@ import {
 import {Button, Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {generateActionSendFunds} from '../redux_store/action.generators';
@@ -27,6 +27,8 @@ import {NashCache} from '../../../utils/cache';
  * Contains the screen to enter user name.
  */
 const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
+  const isFocused = useIsFocused();
+
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       // manipulate the header section after all animations are done
@@ -92,18 +94,19 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
       />
 
       <EnterPinModal
-        visible={props.ui_state === 'enter_pin'}
+        visible={props.ui_state === 'enter_pin' && isFocused}
         onPinMatched={onPinMatched}
         target={'privateKey'}
       />
 
       <LoadingModalComponent
+        TAG="ReviewSendTransaction"
         onShowModal={onShowModal}
-        visible={props.ui_state === 'loading'}
+        visible={props.ui_state === 'loading' && isFocused}
       />
 
       <SuccessModalComponent
-        visible={props.ui_state === 'success'}
+        visible={props.ui_state === 'success' && isFocused}
         onPressOkay={onPressOkay}
       />
     </Screen>

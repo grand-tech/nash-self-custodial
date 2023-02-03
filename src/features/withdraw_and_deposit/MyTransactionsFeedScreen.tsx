@@ -55,13 +55,13 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const [transaction, setTransaction] = useState(tx);
 
   const refetchTransaction = () => {
-    props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3], 'ui');
+    props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'ui');
   };
 
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       if (props.transactions === null || props.transactions.length === 0) {
-        props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3], 'ui');
+        props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'ui');
       }
     });
   }, []);
@@ -81,14 +81,18 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
 
   const fetchMoreTransactions = () => {
     if (props.transactions?.length > 10) {
-      props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2, 3], 'ui');
+      props.dispatchFetchMyTransactions('fetch-more', [0, 1, 2], 'ui');
     } else {
-      props.dispatchFetchMyTransactions('refetch', [0, 1, 2, 3], 'ui');
+      props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'ui');
     }
   };
 
   const onPinMatched = (_p: string) => {
-    props.dispatchActionSetLoading('Accepting request ...', '');
+    if (nextUserAction === NextUserAction.CANCEL) {
+      props.dispatchActionSetLoading('Canceling Transaction ...', '');
+    } else {
+      props.dispatchActionSetLoading('Approving ...', '');
+    }
   };
 
   const onShowLoadingModal = () => {
@@ -109,14 +113,16 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   ) => {
     setNextUserAction(_nextUserAction);
     setTransaction(_transaction);
-    if (_nextUserAction === NextUserAction.CANCEL) {
-      setComingSoonModalVisible(true);
-    } else if (_transaction.id >= 0 && nextUserAction !== NextUserAction.NONE) {
+    if (_transaction.id >= 0 && _nextUserAction !== NextUserAction.NONE) {
       if (
         NashCache.getPinCache() !== null &&
         NashCache.getPinCache()?.trim() !== ''
       ) {
-        props.dispatchActionSetLoading('Approving ...', '');
+        if (_nextUserAction === NextUserAction.CANCEL) {
+          props.dispatchActionSetLoading('Canceling Transaction ...', '');
+        } else {
+          props.dispatchActionSetLoading('Approving ...', '');
+        }
       } else {
         props.promptForPIN();
       }
@@ -151,7 +157,10 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
       />
 
       <LoadingModalComponent
-        onShowModal={onShowLoadingModal}
+        TAG="MyTransactionFeedScreen"
+        onShowModal={() => {
+          onShowLoadingModal();
+        }}
         visible={props.ui_state === 'loading' && isFocused}
       />
 

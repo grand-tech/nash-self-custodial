@@ -15,10 +15,12 @@ import {
   ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
-  QueryTransactionsUserActions,
-  ListUpdateActions,
-  DataQueryTriggers,
 } from './actions';
+import {
+  DataQueryTriggers,
+  ListUpdateActions,
+  QueryTransactionsUserActions,
+} from './enums';
 
 export function generateActionQueryPendingTransactions(
   userAction: QueryTransactionsUserActions,
