@@ -35,10 +35,12 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   const [fiat, setFiat] = useState('-');
   const [pin, setPin] = useState('');
   const [title, setTitle] = useState('Withdraw Request');
+  const [txAction, setTxAction] = useState('withdraw');
 
   useFocusEffect(() => {
     if (props.route.params.transactionType === TransactionType.DEPOSIT) {
       setTitle('Deposit Request');
+      setTxAction('deposit');
     }
     props.navigation.getParent()?.setOptions({headerShown: false});
     props.navigation.setOptions({
@@ -105,9 +107,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       <View style={style.contentContainer}>
-        <Text style={style.explanition}>
-          I want to {props.route.params.transactionType.toLowerCase()}:
-        </Text>
+        <Text style={style.explanition}>I want to {txAction}:</Text>
         <View>
           <View style={style.div}>
             <Text style={style.amountLable}>Amount</Text>
