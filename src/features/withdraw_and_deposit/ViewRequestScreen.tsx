@@ -275,31 +275,32 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           <HR weight={1} additionalContainerStyling={style.hrSpacing} />
 
           {/* The payment details section */}
-          {transaction.clientPaymentDetails !== '' && (
-            <>
-              <Text style={style.paymentDetailsTitle}>Payment Details</Text>
-              <View style={style.div}>
-                <Text style={style.paymentDetailLable}>Name: </Text>
+          {transaction.clientPaymentDetails !== '' &&
+            transaction.agentPaymentDetails !== '' && (
+              <>
+                <Text style={style.paymentDetailsTitle}>Payment Details</Text>
+                <View style={style.div}>
+                  <Text style={style.paymentDetailLable}>Name: </Text>
 
-                <Text style={style.paymentDetail}>
-                  {paymentDetails.paymentName}
-                </Text>
-              </View>
-              <View style={style.div}>
-                <Text style={style.paymentDetailLable}>Payment Mode: </Text>
+                  <Text style={style.paymentDetail}>
+                    {paymentDetails.paymentName}
+                  </Text>
+                </View>
+                <View style={style.div}>
+                  <Text style={style.paymentDetailLable}>Payment Mode: </Text>
 
-                <Text style={style.paymentDetail}>M-PESA</Text>
-              </View>
-              <View style={style.div}>
-                <Text style={style.paymentDetailLable}>Phone Number:</Text>
+                  <Text style={style.paymentDetail}>M-PESA</Text>
+                </View>
+                <View style={style.div}>
+                  <Text style={style.paymentDetailLable}>Phone Number:</Text>
 
-                <Text style={style.paymentDetail}>
-                  {paymentDetails.mpesaNumber}
-                </Text>
-              </View>
-              <HR weight={3} additionalContainerStyling={style.hrSpacing} />
-            </>
-          )}
+                  <Text style={style.paymentDetail}>
+                    {paymentDetails.mpesaNumber}
+                  </Text>
+                </View>
+                <HR weight={3} additionalContainerStyling={style.hrSpacing} />
+              </>
+            )}
 
           <View style={[style.div]}>
             <Text style={[style.paymentDetailLable, style.greenText]}>
@@ -381,12 +382,15 @@ const style = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: hp('1%'),
     fontWeight: 'bold',
+    color: AppColors.black,
   },
   paymentDetailLable: {
     ...FONTS.body1,
+    color: AppColors.black,
   },
   paymentDetail: {
     ...FONTS.body1,
+    color: AppColors.black,
   },
   explanition: {
     ...FONTS.body1,
