@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Screen from '../../app_components/Screen';
-import {InteractionManager, StyleSheet, View} from 'react-native';
+import {InteractionManager, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps, useSelector} from 'react-redux';
-import {Button, Text} from 'react-native-ui-lib';
+import {Button} from 'react-native-ui-lib';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -68,7 +68,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         case 0:
           status = 'Awaiting Agent';
           setNextUserAction(NextUserAction.CANCEL);
-          setButtonLable('Cancel Transaction');
+          setButtonLable('Waiting for someone to fulfill your transaction.');
           break;
         case 1:
           if (
@@ -316,9 +316,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         <Text style={style.nextActionDescription}>{buttonLable}</Text>
       </View>
 
-      {nextUserAction === NextUserAction.NONE ||
-      nextUserAction === NextUserAction.CANCEL ? (
-        <Text body3></Text>
+      {nextUserAction === NextUserAction.NONE ? (
+        <Text></Text>
       ) : (
         <Button
           label={nextUserAction}
