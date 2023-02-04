@@ -1,4 +1,5 @@
-import {StyleSheet, Text, View, ViewStyle} from 'react-native';
+import React from 'react';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 import {AppColors} from '../ui_lib_configs/colors';
 
 interface Props {
@@ -16,8 +17,11 @@ export const HR = ({
     <View style={[style.hrContainer, additionalContainerStyling]}>
       {Array(weight)
         .fill(1)
-        .map(el => (
-          <View style={[style.hr, {backgroundColor: hrColor}]} />
+        .map((el, index) => (
+          <View
+            style={[style.hr, {backgroundColor: hrColor}]}
+            id={index.toString()}
+          />
         ))}
     </View>
   );

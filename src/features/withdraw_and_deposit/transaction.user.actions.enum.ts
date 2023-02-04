@@ -1,7 +1,7 @@
 export enum NextUserAction {
   CANCEL = 'Cancel',
 
-  APPROVE = 'Approve',
+  APPROVE = 'Confirm',
 
   NONE = '',
 }

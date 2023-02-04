@@ -98,7 +98,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
                   fiatAmount +
                   ' ksh from an account with the above details.',
               );
-            } else if (transaction.clientAddress === myAddress) {
+            } else {
               setButtonLable(
                 'Confirm that you have sent ' +
                   fiatAmount +
@@ -171,7 +171,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
    */
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      if (transaction.agentAddress !== '' && transaction.clientAddress !== '') {
+      if (
+        transaction.clientPaymentDetails === '' ||
+        transaction.agentPaymentDetails === ''
+      ) {
         // TODO: Error handling for missing comment.
         console.log('Error: Missing comments await comment');
       } else if (privateKey === '') {
@@ -222,7 +225,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       NashCache.getPinCache() !== null &&
       NashCache.getPinCache()?.trim() !== ''
     ) {
-      props.dispatchActionSetLoading('', '', 'Send request...');
+      props.dispatchActionSetLoading('', 'Send request...');
     } else {
       props.promptForPIN();
     }
@@ -269,7 +272,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             <Text style={style.amountFiatValue}>{amountFiat} Ksh</Text>
           </View>
 
-          <HR weight={3} additionalContainerStyling={style.hrSpacing} />
+          <HR weight={1} additionalContainerStyling={style.hrSpacing} />
 
           {/* The payment details section */}
           {transaction.clientPaymentDetails !== '' && (
@@ -299,8 +302,12 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           )}
 
           <View style={[style.div]}>
-            <Text style={style.paymentDetailLable}>Status:</Text>
-            <Text style={style.paymentDetail}>{transactionStatus}</Text>
+            <Text style={[style.paymentDetailLable, style.greenText]}>
+              Status:
+            </Text>
+            <Text style={[style.paymentDetail, style.greenText]}>
+              {transactionStatus}
+            </Text>
           </View>
         </View>
       </View>
@@ -398,6 +405,9 @@ const style = StyleSheet.create({
   amountFiatValue: {
     ...FONTS.body1,
     color: AppColors.brown,
+  },
+  greenText: {
+    color: AppColors.green,
   },
   nextActionDescription: {
     ...FONTS.body1,
