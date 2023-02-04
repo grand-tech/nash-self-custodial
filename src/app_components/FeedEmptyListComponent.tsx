@@ -1,10 +1,14 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import Lottie from 'lottie-react-native';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 import {Text} from 'react-native-ui-lib';
 import {RootState} from '../app-redux-store/store';
 import {connect, ConnectedProps} from 'react-redux';
+import {AppColors} from '../ui_lib_configs/colors';
 
 const FeedEmptyListComponent: React.FC<Props> = (_props: Props) => {
   return (
@@ -15,8 +19,8 @@ const FeedEmptyListComponent: React.FC<Props> = (_props: Props) => {
         loop={false}
         style={styles.animation}
       />
-      <Text style={styles.dialogText} h3>
-        There are not transactions in this category at the moment.
+      <Text style={styles.dialogText} body1>
+        There are no transactions in this category at the moment.
       </Text>
     </View>
   );
@@ -29,6 +33,8 @@ const styles = StyleSheet.create({
   },
   dialogText: {
     textAlign: 'center',
+    width: wp('70%'),
+    color: AppColors.brown,
   },
   centeredView: {
     flex: 1,

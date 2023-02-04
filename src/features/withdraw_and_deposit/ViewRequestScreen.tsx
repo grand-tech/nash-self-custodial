@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Screen from '../../app_components/Screen';
-import {InteractionManager, StyleSheet, View} from 'react-native';
+import {InteractionManager, StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps, useSelector} from 'react-redux';
-import {Button, Text} from 'react-native-ui-lib';
+import {Button} from 'react-native-ui-lib';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -34,6 +34,9 @@ import {
   nashDecryptComment,
 } from '../comment_encryption/sagas/comment.encryption.utils';
 import {NextUserAction} from './transaction.user.actions.enum';
+import {HR} from '../../app_components/HRComponent';
+import {TransactionType} from './sagas/nash_escrow_types';
+import {EncryptionStatus} from '@celo/cryptographic-utils';
 
 const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
@@ -48,10 +51,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     paymentName: '',
   };
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
+  const [buttonLable, setButtonLable] = useState('');
   const [paymentDetails, setPaymentDetails] = useState(paymentInfo);
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
-  const [loaderMessage, setLoaderMessage] = useState('');
 
   /**
    * Process transaction status.
@@ -59,30 +62,48 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       let status = '';
+      const fiatAmount = computerFiatAmount();
+      setAmountFiat(fiatAmount);
       switch (transaction.status) {
         case 0:
           status = 'Awaiting Agent';
           setNextUserAction(NextUserAction.CANCEL);
+          setButtonLable('Waiting for someone to fulfill your transaction.');
           break;
         case 1:
           if (
             transaction.agentApproval &&
             transaction.agentAddress === myAddress
           ) {
-            status = 'Awaiting Client Approval';
+            status = 'Awaiting Client`s Confirmation';
             setNextUserAction(NextUserAction.NONE);
           } else if (
             transaction.clientApproval &&
             transaction.clientAddress === myAddress
           ) {
-            status = 'Awaiting Agent Approval';
+            status = 'Awaiting Agent Confirmation';
             setNextUserAction(NextUserAction.NONE);
           } else {
             status = 'Awaiting Your Confirmation';
-            if (transaction.agentAddress === myAddress) {
-              setNextUserAction(NextUserAction.APPROVE);
-            } else if (transaction.clientAddress === myAddress) {
-              setNextUserAction(NextUserAction.APPROVE);
+            setNextUserAction(NextUserAction.APPROVE);
+            const isRecevingEnd =
+              (transaction.agentAddress === myAddress &&
+                transaction.txType === TransactionType.DEPOSIT) ||
+              (transaction.clientAddress === myAddress &&
+                transaction.txType === TransactionType.WITHDRAWAL);
+
+            if (isRecevingEnd) {
+              setButtonLable(
+                'Confirm that you have received ' +
+                  fiatAmount +
+                  ' ksh from an account with the above details.',
+              );
+            } else {
+              setButtonLable(
+                'Confirm that you have sent ' +
+                  fiatAmount +
+                  ' ksh to the above details.',
+              );
             }
           }
           break;
@@ -121,70 +142,78 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   /**
    * Handle currency coversion.
    */
-  useFocusEffect(() => {
-    InteractionManager.runAfterInteractions(() => {
-      if (rates) {
-        let amount = 0;
+  const computerFiatAmount = () => {
+    if (rates) {
+      let amount = 0;
 
-        let rate = rates?.KESUSD;
-        if (transaction.exchangeTokenLable === 'cUSD') {
-          rate = rates.KESUSD;
-        }
-
-        if (transaction.exchangeTokenLable === 'cEUR') {
-          rate = rates.KESEUR;
-        }
-
-        if (transaction.exchangeTokenLable === 'cREAL') {
-          rate = rates.KESBRL;
-        }
-
-        amount = transaction.amount / rate;
-
-        setAmountFiat(Number(amount.toFixed(2)).toLocaleString());
+      let rate = rates?.KESUSD;
+      if (transaction.exchangeTokenLable === 'cUSD') {
+        rate = rates.KESUSD;
       }
-    });
-  });
+
+      if (transaction.exchangeTokenLable === 'cEUR') {
+        rate = rates.KESEUR;
+      }
+
+      if (transaction.exchangeTokenLable === 'cREAL') {
+        rate = rates.KESBRL;
+      }
+
+      amount = transaction.amount / rate;
+      return Number(amount.toFixed(2)).toLocaleString();
+    } else {
+      return '-';
+    }
+  };
 
   /**
    * Handle comment decryption.
    */
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      let comment = '';
-
-      if (privateKey === '') {
+      if (
+        transaction.clientPaymentDetails === '' ||
+        transaction.agentPaymentDetails === ''
+      ) {
+        // TODO: Error handling for missing comment.
+        console.log('Error: Missing comments await comment');
+      } else if (privateKey === '') {
         // Retrieve and decrypt the private
         //  key for comment decryption.
         props.promptForPIN();
-      }
+      } else {
+        let comment = '';
+        let plainText: EncryptionStatus = {
+          success: false,
+          comment: '',
+        };
 
-      if (myAddress === transaction.agentAddress) {
-        // TODO: Figure out where and how to get the private key.
-        const plainText = nashDecryptComment(
-          transaction.clientPaymentDetails,
-          privateKey,
-          false,
-        );
+        if (myAddress === transaction.agentAddress) {
+          // TODO: Figure out where and how to get the private key.
+          plainText = nashDecryptComment(
+            transaction.clientPaymentDetails,
+            privateKey,
+            false,
+          );
+
+          if (plainText.success) {
+            comment = plainText.comment;
+          }
+        } else if (myAddress === transaction.clientAddress) {
+          plainText = nashDecryptComment(
+            transaction.agentPaymentDetails,
+            privateKey,
+            true,
+          );
+        }
 
         if (plainText.success) {
           comment = plainText.comment;
         }
+
+        // TODO: Decryption Error handling
+        setPaymentDetails(constructEscrowCommentObject(comment));
       }
-
-      if (myAddress === transaction.clientAddress) {
-        const plainText = nashDecryptComment(
-          transaction.agentPaymentDetails,
-          privateKey,
-          true,
-        );
-
-        if (plainText.success) {
-          comment = plainText.comment;
-        }
-      }
-
-      setPaymentDetails(constructEscrowCommentObject(comment));
     });
   }, [transaction, privateKey]);
 
@@ -196,7 +225,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       NashCache.getPinCache() !== null &&
       NashCache.getPinCache()?.trim() !== ''
     ) {
-      props.dispatchActionSetLoading(loaderMessage, '', 'Send Request');
+      props.dispatchActionSetLoading('', 'Send request...');
     } else {
       props.promptForPIN();
     }
@@ -230,57 +259,65 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       <View style={style.contentContainer}>
-        <View>
+        <View style={style.paymentDetails}>
           <View style={style.div}>
-            <Text h2>Amount</Text>
-
-            <Text h2>
+            <Text style={style.amountLable}>Amount</Text>
+            <Text style={style.amountValue}>
               {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
               {transaction.exchangeTokenLable}
             </Text>
           </View>
           <View style={style.div}>
-            <Text h2 />
-            <Text h2>{amountFiat} Ksh</Text>
-          </View>
-        </View>
-
-        <View style={style.paymentDetails}>
-          <Text
-            h2
-            style={{
-              alignSelf: 'center',
-              marginBottom: hp('1%'),
-            }}>
-            Payment Details
-          </Text>
-          <View style={style.div}>
-            <Text body1>Payment Mode: </Text>
-
-            <Text h4>M-PESA</Text>
+            <Text />
+            <Text style={style.amountFiatValue}>{amountFiat} Ksh</Text>
           </View>
 
-          <View style={style.div}>
-            <Text body1>Name: </Text>
+          <HR weight={1} additionalContainerStyling={style.hrSpacing} />
 
-            <Text h4>{paymentDetails.paymentName}</Text>
-          </View>
+          {/* The payment details section */}
+          {transaction.clientPaymentDetails !== '' && (
+            <>
+              <Text style={style.paymentDetailsTitle}>Payment Details</Text>
+              <View style={style.div}>
+                <Text style={style.paymentDetailLable}>Name: </Text>
 
-          <View style={style.div}>
-            <Text body1>Phone Number:</Text>
+                <Text style={style.paymentDetail}>
+                  {paymentDetails.paymentName}
+                </Text>
+              </View>
+              <View style={style.div}>
+                <Text style={style.paymentDetailLable}>Payment Mode: </Text>
 
-            <Text h4>{paymentDetails.mpesaNumber}</Text>
+                <Text style={style.paymentDetail}>M-PESA</Text>
+              </View>
+              <View style={style.div}>
+                <Text style={style.paymentDetailLable}>Phone Number:</Text>
+
+                <Text style={style.paymentDetail}>
+                  {paymentDetails.mpesaNumber}
+                </Text>
+              </View>
+              <HR weight={3} additionalContainerStyling={style.hrSpacing} />
+            </>
+          )}
+
+          <View style={[style.div]}>
+            <Text style={[style.paymentDetailLable, style.greenText]}>
+              Status:
+            </Text>
+            <Text style={[style.paymentDetail, style.greenText]}>
+              {transactionStatus}
+            </Text>
           </View>
         </View>
       </View>
 
       <View style={style.div}>
-        <Text h3>{transactionStatus}</Text>
+        <Text style={style.nextActionDescription}>{buttonLable}</Text>
       </View>
 
-      {nextUserAction === NextUserAction.NONE ||
-      nextUserAction === NextUserAction.CANCEL ? (
-        <Text body3></Text>
+      {nextUserAction === NextUserAction.NONE ? (
+        <Text></Text>
       ) : (
         <Button
           label={nextUserAction}
@@ -328,7 +365,7 @@ const style = StyleSheet.create({
   },
   contentContainer: {
     height: hp('30%'),
-    width: wp('80%'),
+    width: wp('95%'),
     paddingHorizontal: wp('5%'),
   },
   div: {flexDirection: 'row', justifyContent: 'space-between'},
@@ -338,6 +375,47 @@ const style = StyleSheet.create({
     paddingVertical: wp('2%'),
     borderRadius: wp('3%'),
     marginVertical: hp('3%'),
+  },
+  paymentDetailsTitle: {
+    ...FONTS.body1,
+    alignSelf: 'center',
+    marginBottom: hp('1%'),
+    fontWeight: 'bold',
+  },
+  paymentDetailLable: {
+    ...FONTS.body1,
+  },
+  paymentDetail: {
+    ...FONTS.body1,
+  },
+  explanition: {
+    ...FONTS.body1,
+    color: AppColors.green,
+    fontWeight: 'bold',
+  },
+  amountLable: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountValue: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountFiatValue: {
+    ...FONTS.body1,
+    color: AppColors.brown,
+  },
+  greenText: {
+    color: AppColors.green,
+  },
+  nextActionDescription: {
+    ...FONTS.body1,
+    color: AppColors.brown,
+    width: wp('78%'),
+    textAlign: 'center',
+  },
+  hrSpacing: {
+    marginVertical: hp('2%'),
   },
 });
 

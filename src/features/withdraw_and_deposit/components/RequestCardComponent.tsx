@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Identicon from 'react-native-identicon';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
@@ -12,7 +12,6 @@ import {
   NashEscrowTransaction,
   TransactionType,
 } from '../sagas/nash_escrow_types';
-import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 
 interface Props extends ReduxProps {
@@ -25,26 +24,21 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
   const rates = props.currency_conversion_rates;
 
   const [fiatNetValue, setFiatNetValue] = useState('-');
-  const [symbol, setSymbol] = useState('cUSD');
 
   useEffect(() => {
     if (rates) {
       let rate = rates?.KESUSD;
-      for (const coin of props.stable_coins) {
-        if (coin.address === transaction.enxchangeToken) {
-          if (coin.symbol === 'cUSD') {
-            rate = rates.KESUSD;
-          }
 
-          if (coin.symbol === 'cEUR') {
-            rate = rates.KESEUR;
-          }
+      if (transaction.exchangeTokenLable === 'cUSD') {
+        rate = rates.KESUSD;
+      }
 
-          if (coin.symbol === 'cREAL') {
-            rate = rates.KESBRL;
-          }
-          setSymbol(coin.symbol);
-        }
+      if (transaction.exchangeTokenLable === 'cEUR') {
+        rate = rates.KESEUR;
+      }
+
+      if (transaction.exchangeTokenLable === 'cREAL') {
+        rate = rates.KESBRL;
       }
 
       const fiatValue = transaction.amount / rate;
@@ -66,26 +60,25 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
           transaction.amount +
           Date.now().toString()
         }
-        style={{marginTop: hp('0.9%')}}
+        style={style.identicon}
         size={29}
       />
       <View>
-        <Text style={{...FONTS.h1, fontSize: hp('2.7%')}}>
+        <Text style={style.cardTitle}>
           {transaction.txType === TransactionType.DEPOSIT
             ? 'Deposit'
-            : 'Withdrawal'}{' '}
-          Request
+            : 'Withdraw'}{' '}
+          request
         </Text>
-        <Text h2>
-          {symbol} {Number(transaction.amount.toFixed(2)).toLocaleString()}
+        <Text style={style.cryptoAmount}>
+          {transaction.exchangeTokenLable}{' '}
+          {Number(transaction.amount.toFixed(2)).toLocaleString()}
         </Text>
-        <Text body1>Ksh {fiatNetValue}</Text>
+        <Text style={style.fiatAmount}>Ksh {fiatNetValue}</Text>
       </View>
 
       <TouchableOpacity style={style.button} onPress={fulFillRequest}>
-        <Text style={style.buttonText} body3>
-          Fulfill Request
-        </Text>
+        <Text style={style.buttonText}>Fulfill</Text>
       </TouchableOpacity>
     </View>
   );
@@ -104,8 +97,7 @@ const style = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    // height: hp('4%'),
-    width: wp('24%'),
+    width: wp('19%'),
     borderRadius: wp('1%'),
     borderColor: AppColors.light_green,
     borderWidth: 1,
@@ -118,6 +110,24 @@ const style = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     color: AppColors.light_green,
+    ...FONTS.body3,
+  },
+  cardTitle: {
+    ...FONTS.body1,
+    fontSize: hp('2.7%'),
+    color: AppColors.black,
+  },
+  fiatAmount: {
+    ...FONTS.body1,
+    color: AppColors.brown,
+  },
+  cryptoAmount: {
+    ...FONTS.body1,
+    fontWeight: '900',
+    color: AppColors.black,
+  },
+  identicon: {
+    alignSelf: 'center',
   },
 });
 
