@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import Screen from '../../app_components/Screen';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps} from 'react-redux';
-import {Button, Text} from 'react-native-ui-lib';
+import {Button} from 'react-native-ui-lib';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -105,15 +105,20 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       <View style={style.contentContainer}>
-        <View style={style.div}>
-          <Text h2>Amount</Text>
-          <Text h2>
-            {amount} {props.route.params.coin}
-          </Text>
-        </View>
-        <View style={style.div}>
-          <Text h2 />
-          <Text h2>{fiat} Ksh</Text>
+        <Text style={style.explanition}>
+          I want to {props.route.params.transactionType.toLowerCase()}:
+        </Text>
+        <View>
+          <View style={style.div}>
+            <Text style={style.amountLable}>Amount</Text>
+            <Text style={style.amountValue}>
+              {amount} {props.route.params.coin}
+            </Text>
+          </View>
+          <View style={style.div}>
+            <Text />
+            <Text style={style.amountValue}>{fiat} Ksh</Text>
+          </View>
         </View>
       </View>
 
@@ -161,9 +166,26 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    height: hp('30%'),
-    width: wp('80%'),
+    height: hp('15%'),
+    width: wp('70%'),
     paddingHorizontal: wp('5%'),
+    paddingVertical: wp('3%'),
+    backgroundColor: '#ffff',
+    justifyContent: 'space-between',
+    borderRadius: wp('5%'),
+  },
+  explanition: {
+    ...FONTS.body1,
+    color: AppColors.green,
+    fontWeight: 'bold',
+  },
+  amountLable: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountValue: {
+    ...FONTS.body1,
+    color: AppColors.black,
   },
   div: {flexDirection: 'row', justifyContent: 'space-between'},
 });
