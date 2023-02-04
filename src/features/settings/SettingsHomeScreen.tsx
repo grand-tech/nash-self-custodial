@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import Screen from '../../app_components/Screen';
 import {Text} from 'react-native-ui-lib';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -14,6 +13,7 @@ import {FONTS} from '../../ui_lib_configs/fonts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SettingsNavigationStackParamsList} from './navigation/navigation.params.type';
 import analytics from '@react-native-firebase/analytics';
+import {HR} from '../../app_components/HRComponent';
 
 type NavigationProps = NativeStackScreenProps<
   SettingsNavigationStackParamsList,
@@ -85,11 +85,6 @@ const style = StyleSheet.create({
     paddingHorizontal: wp('4%'),
     alignItems: 'flex-start',
   },
-  hr: {flex: 1, height: 0.5, backgroundColor: AppColors.brown},
-  hrContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   buttonLabelStyle: {
     ...FONTS.h3,
     alignContent: 'flex-start',
@@ -102,11 +97,3 @@ const style = StyleSheet.create({
 });
 
 export default SettingsHomeScreen;
-
-const HR = () => {
-  return (
-    <View style={style.hrContainer}>
-      <View style={style.hr} />
-    </View>
-  );
-};
