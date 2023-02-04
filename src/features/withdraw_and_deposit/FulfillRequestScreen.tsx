@@ -108,20 +108,23 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       <View style={style.contentContainer}>
-        <View style={style.div}>
-          <Text h2>Amount</Text>
-
-          <Text h2>
-            {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
-            {transaction.exchangeTokenLable}
-          </Text>
-        </View>
-        <View style={style.div}>
-          <Text h2 />
-          <Text h2>{amountFiat} Ksh</Text>
+        <Text style={style.explanition}>
+          I want to fulfill {title.toLocaleLowerCase()}:
+        </Text>
+        <View>
+          <View style={style.div}>
+            <Text style={style.amountLable}>Amount</Text>
+            <Text style={style.amountValue}>
+              {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
+              {transaction.exchangeTokenLable}
+            </Text>
+          </View>
+          <View style={style.div}>
+            <Text />
+            <Text style={style.amountFiatValue}>{amountFiat} Ksh</Text>
+          </View>
         </View>
       </View>
-
       <Button
         label={'Fulfill Request'}
         labelStyle={{
@@ -166,9 +169,30 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    height: hp('30%'),
+    height: hp('15%'),
     width: wp('80%'),
     paddingHorizontal: wp('5%'),
+    paddingVertical: wp('3%'),
+    backgroundColor: '#ffff',
+    justifyContent: 'space-between',
+    borderRadius: wp('5%'),
+  },
+  explanition: {
+    ...FONTS.body1,
+    color: AppColors.green,
+    fontWeight: 'bold',
+  },
+  amountLable: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountValue: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountFiatValue: {
+    ...FONTS.body1,
+    color: AppColors.brown,
   },
   div: {flexDirection: 'row', justifyContent: 'space-between'},
 });
