@@ -97,7 +97,6 @@ const style = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    // height: hp('4%'),
     width: wp('19%'),
     borderRadius: wp('1%'),
     borderColor: AppColors.light_green,

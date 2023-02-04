@@ -20,7 +20,7 @@ const FeedEmptyListComponent: React.FC<Props> = (_props: Props) => {
         style={styles.animation}
       />
       <Text style={styles.dialogText} body1>
-        There are not transactions in this category at the moment.
+        There are no transactions in this category at the moment.
       </Text>
     </View>
   );

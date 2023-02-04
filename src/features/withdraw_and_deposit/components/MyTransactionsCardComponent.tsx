@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, Text} from 'react-native';
 import Identicon from 'react-native-identicon';
 import {connect, ConnectedProps, useSelector} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
@@ -12,7 +12,6 @@ import {
   NashEscrowTransaction,
   TransactionType,
 } from '../sagas/nash_escrow_types';
-import {Text} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -34,7 +33,6 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
   const transaction = props.transaction;
   const rates = props.currency_conversion_rates;
   const publicAddress = useSelector(selectPublicAddress);
-
   const [fiatNetValue, setFiatNetValue] = useState('-');
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
@@ -70,7 +68,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           transaction.agentApproval &&
           transaction.agentAddress === publicAddress
         ) {
-          status = 'Awaiting Client Approval';
+          status = 'Awaiting Client`s Approval';
           setNextUserAction(NextUserAction.NONE);
         } else if (
           transaction.clientApproval &&
@@ -79,7 +77,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           status = 'Awaiting Agent Approval';
           setNextUserAction(NextUserAction.NONE);
         } else {
-          status = 'Awaiting Your Confirmation';
+          status = 'Awaiting Your Approval';
           if (transaction.agentAddress === publicAddress) {
             setNextUserAction(NextUserAction.APPROVE);
           } else if (transaction.clientAddress === publicAddress) {
@@ -134,39 +132,32 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
               transaction.amount +
               Date.now().toString()
             }
-            style={{marginTop: hp('0.9%')}}
+            style={style.identicon}
             size={29}
           />
           <View>
-            <Text style={{...FONTS.body2, fontSize: hp('2.7%')}}>
+            <Text style={style.cardTitle}>
               {transaction.txType === TransactionType.DEPOSIT
                 ? 'Deposit'
-                : 'Withdrawal'}{' '}
-              Request
+                : 'Withdraw'}{' '}
+              request
             </Text>
-            <Text h2>
-              {props.transaction.exchangeTokenLable}{' '}
+            <Text style={style.cryptoAmount}>
+              {transaction.exchangeTokenLable}{' '}
               {Number(transaction.amount.toFixed(2)).toLocaleString()}
             </Text>
-            <Text body3>Ksh {fiatNetValue}</Text>
-            <Text body3 style={style.statusText}>
-              {transactionStatus}
-            </Text>
+            <Text style={style.fiatAmount}>Ksh {fiatNetValue}</Text>
           </View>
 
           <View>
-            <Text s5>{transaction.id}</Text>
+            <Text style={style.statusText}>{transactionStatus}</Text>
             {nextUserAction !== NextUserAction.NONE ? (
               <TouchableOpacity style={style.button} onPress={onPress}>
-                <Text style={style.buttonText} body3>
-                  {nextUserAction.valueOf()}
-                </Text>
+                <Text style={style.buttonText}>{nextUserAction.valueOf()}</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity style={style.invisibleButton} disabled={true}>
-                <Text style={style.buttonText} body3>
-                  {nextUserAction.valueOf()}
-                </Text>
+                <Text style={style.buttonText}>{nextUserAction.valueOf()}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -199,7 +190,7 @@ const style = StyleSheet.create({
     paddingVertical: hp('0.2%'),
     backgroundColor: '#fff',
     alignSelf: 'center',
-    marginTop: hp('2%'),
+    marginTop: hp('1.5%'),
   },
   invisibleButton: {
     flexDirection: 'row',
@@ -213,11 +204,30 @@ const style = StyleSheet.create({
   statusText: {
     fontWeight: 'bold',
     color: AppColors.green,
+    maxWidth: wp('25%'),
+    textAlign: 'center',
   },
   buttonText: {
     flex: 1,
     textAlign: 'center',
     color: AppColors.light_green,
+  },
+  identicon: {
+    alignSelf: 'center',
+  },
+  cardTitle: {
+    ...FONTS.body1,
+    fontSize: hp('2.7%'),
+    color: AppColors.black,
+  },
+  fiatAmount: {
+    ...FONTS.body1,
+    color: AppColors.brown,
+  },
+  cryptoAmount: {
+    ...FONTS.body1,
+    fontWeight: '900',
+    color: AppColors.black,
   },
 });
 

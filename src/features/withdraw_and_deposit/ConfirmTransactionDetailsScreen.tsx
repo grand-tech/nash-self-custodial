@@ -117,7 +117,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
           </View>
           <View style={style.div}>
             <Text />
-            <Text style={style.amountValue}>{fiat} Ksh</Text>
+            <Text style={style.amountFiatValue}>{fiat} Ksh</Text>
           </View>
         </View>
       </View>
@@ -186,6 +186,10 @@ const style = StyleSheet.create({
   amountValue: {
     ...FONTS.body1,
     color: AppColors.black,
+  },
+  amountFiatValue: {
+    ...FONTS.body1,
+    color: AppColors.brown,
   },
   div: {flexDirection: 'row', justifyContent: 'space-between'},
 });

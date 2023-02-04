@@ -69,7 +69,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             transaction.agentApproval &&
             transaction.agentAddress === myAddress
           ) {
-            status = 'Awaiting Client Approval';
+            status = 'Awaiting Client`s Approval';
             setNextUserAction(NextUserAction.NONE);
           } else if (
             transaction.clientApproval &&
@@ -78,7 +78,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             status = 'Awaiting Agent Approval';
             setNextUserAction(NextUserAction.NONE);
           } else {
-            status = 'Awaiting Your Confirmation';
+            status = 'Awaiting Your Approval';
             if (transaction.agentAddress === myAddress) {
               setNextUserAction(NextUserAction.APPROVE);
             } else if (transaction.clientAddress === myAddress) {
