@@ -108,7 +108,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
   return (
     <Screen style={style.screenContainer}>
       <View style={style.contentContainer}>
-        <Text style={style.explanition}>
+        <Text style={style.explanation}>
           I want to fulfill {title.toLocaleLowerCase()}:
         </Text>
         <View>
@@ -177,7 +177,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: wp('5%'),
   },
-  explanition: {
+  explanation: {
     ...FONTS.body1,
     color: AppColors.green,
     fontWeight: 'bold',

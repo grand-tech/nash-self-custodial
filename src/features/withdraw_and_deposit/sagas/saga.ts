@@ -210,7 +210,7 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
  * @param amount the amount involved in the transaction.
  * @param transactionType the transaction type.
  * @param coinAddress the smart contract address.
- * @param coin the coin lable.
+ * @param coin the coin label.
  * @returns the composed transaction type.
  */
 async function generateInitTransactionObject(

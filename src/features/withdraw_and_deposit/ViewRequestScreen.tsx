@@ -392,7 +392,7 @@ const style = StyleSheet.create({
     ...FONTS.body1,
     color: AppColors.black,
   },
-  explanition: {
+  explanation: {
     ...FONTS.body1,
     color: AppColors.green,
     fontWeight: 'bold',

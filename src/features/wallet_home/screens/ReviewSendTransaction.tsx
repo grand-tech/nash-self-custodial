@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {InteractionManager, StyleSheet, View} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
@@ -28,6 +28,9 @@ import {NashCache} from '../../../utils/cache';
  */
 const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
+  const coinLabel = props.route.params.coin;
+  const amount = props.route.params.amount;
+  const [fiatAmount, setFiatAmount] = useState('-');
 
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
@@ -41,6 +44,25 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
     return () => {
       props.navigation.getParent()?.setOptions({headerShown: true});
     };
+  });
+
+  useEffect(() => {
+    if (props.rates) {
+      let rate = props.rates?.KESUSD;
+      if (coinLabel === 'cUSD') {
+        rate = props.rates.KESUSD;
+      }
+
+      if (coinLabel === 'cEUR') {
+        rate = props.rates.KESEUR;
+      }
+
+      if (coinLabel === 'cREAL') {
+        rate = props.rates.KESBRL;
+      }
+
+      setFiatAmount(Number((amount / rate).toFixed(2)).toLocaleString());
+    }
   });
 
   const [pin, setPin] = useState('');
@@ -78,7 +100,7 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
         <Text h2>
           {props.route.params.amount} {props.route.params.coin}
         </Text>
-        <Text body1>100 ksh </Text>
+        <Text body1>{fiatAmount} ksh </Text>
         <Text h1>To</Text>
         <Text body1>{props.route.params.address}</Text>
       </View>
@@ -120,6 +142,7 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
  */
 const mapStateToProps = (state: RootState) => ({
   ui_state: state.ui_state.status,
+  rates: state.currency_conversion_rates.rates,
 });
 
 const mapDispatchToProps = {
