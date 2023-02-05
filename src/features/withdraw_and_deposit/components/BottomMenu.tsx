@@ -21,7 +21,7 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
         label={'Withdraw'}
         warning
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         onPress={() => {
           if (props.ui_status !== 'loading') {
@@ -38,7 +38,7 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
         label={'Deposit'}
         secondary
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         onPress={() => {
           if (props.ui_status !== 'loading') {

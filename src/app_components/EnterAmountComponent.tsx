@@ -135,12 +135,9 @@ const EnterAmountComponent: React.FC<Props> = (props: Props) => {
         <PinKeyPad onChange={handleChange} onDelete={handleDelete} />
       </View>
       <Button
-        style={style.reviewButton}
         label={props.submitButtonLabel}
         backgroundColor={AppColors.light_green}
-        labelStyle={{
-          ...FONTS.h5,
-        }}
+        labelStyle={style.makeRequestBtnLable}
         disabled={Number(amount) <= 0}
         onPress={() => {
           props.onSubmit(amount, coin);
@@ -175,7 +172,10 @@ const style = StyleSheet.create({
     paddingHorizontal: wp('1%'),
     backgroundColor: '#fff',
   },
-  reviewButton: {},
+  makeRequestBtnLable: {
+    ...FONTS.body1,
+    fontWeight: '700',
+  },
   buttonText: {
     flex: 1,
     textAlign: 'center',

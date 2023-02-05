@@ -24,7 +24,7 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
         label={'Send'}
         warning
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         onPress={() => {
           navigation.navigate('EnterAddressScreen');
@@ -37,7 +37,7 @@ const BottomMenu: React.FC<Props> = (props: Props) => {
         label={'Request'}
         secondary
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         onPress={async () => {
           setComingSoonModalVisible(true);

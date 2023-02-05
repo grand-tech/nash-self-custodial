@@ -124,9 +124,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
 
       <Button
         label={'Make Request'}
-        labelStyle={{
-          ...FONTS.h4,
-        }}
+        labelStyle={style.buttonLable}
         secondary
         onPress={sendRequest}
         outline={true}
@@ -190,6 +188,10 @@ const style = StyleSheet.create({
   amountFiatValue: {
     ...FONTS.body1,
     color: AppColors.brown,
+  },
+  buttonLable: {
+    ...FONTS.body1,
+    fontWeight: '700',
   },
   div: {flexDirection: 'row', justifyContent: 'space-between'},
 });
