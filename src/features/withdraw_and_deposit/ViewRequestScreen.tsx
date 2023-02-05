@@ -51,7 +51,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     paymentName: '',
   };
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
-  const [buttonLable, setButtonLable] = useState('');
+  const [buttonLabel, setButtonLabel] = useState('');
   const [paymentDetails, setPaymentDetails] = useState(paymentInfo);
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
@@ -68,7 +68,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         case 0:
           status = 'Awaiting Agent';
           setNextUserAction(NextUserAction.CANCEL);
-          setButtonLable('Waiting for someone to fulfill your transaction.');
+          setButtonLabel('Waiting for someone to fulfill your transaction.');
           break;
         case 1:
           if (
@@ -93,13 +93,13 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
                 transaction.txType === TransactionType.WITHDRAWAL);
 
             if (isRecevingEnd) {
-              setButtonLable(
+              setButtonLabel(
                 'Confirm that you have received ' +
                   fiatAmount +
                   ' ksh from an account with the above details.',
               );
             } else {
-              setButtonLable(
+              setButtonLabel(
                 'Confirm that you have sent ' +
                   fiatAmount +
                   ' ksh to the above details.',
@@ -147,15 +147,15 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       let amount = 0;
 
       let rate = rates?.KESUSD;
-      if (transaction.exchangeTokenLable === 'cUSD') {
+      if (transaction.exchangeTokenLabel === 'cUSD') {
         rate = rates.KESUSD;
       }
 
-      if (transaction.exchangeTokenLable === 'cEUR') {
+      if (transaction.exchangeTokenLabel === 'cEUR') {
         rate = rates.KESEUR;
       }
 
-      if (transaction.exchangeTokenLable === 'cREAL') {
+      if (transaction.exchangeTokenLabel === 'cREAL') {
         rate = rates.KESBRL;
       }
 
@@ -261,10 +261,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       <View style={style.contentContainer}>
         <View style={style.paymentDetails}>
           <View style={style.div}>
-            <Text style={style.amountLable}>Amount</Text>
+            <Text style={style.amountLabel}>Amount</Text>
             <Text style={style.amountValue}>
               {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
-              {transaction.exchangeTokenLable}
+              {transaction.exchangeTokenLabel}
             </Text>
           </View>
           <View style={style.div}>
@@ -280,19 +280,19 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
               <>
                 <Text style={style.paymentDetailsTitle}>Payment Details</Text>
                 <View style={style.div}>
-                  <Text style={style.paymentDetailLable}>Name: </Text>
+                  <Text style={style.paymentDetailLabel}>Name: </Text>
 
                   <Text style={style.paymentDetail}>
                     {paymentDetails.paymentName}
                   </Text>
                 </View>
                 <View style={style.div}>
-                  <Text style={style.paymentDetailLable}>Payment Mode: </Text>
+                  <Text style={style.paymentDetailLabel}>Payment Mode: </Text>
 
                   <Text style={style.paymentDetail}>M-PESA</Text>
                 </View>
                 <View style={style.div}>
-                  <Text style={style.paymentDetailLable}>Phone Number:</Text>
+                  <Text style={style.paymentDetailLabel}>Phone Number:</Text>
 
                   <Text style={style.paymentDetail}>
                     {paymentDetails.mpesaNumber}
@@ -303,7 +303,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             )}
 
           <View style={[style.div]}>
-            <Text style={[style.paymentDetailLable, style.greenText]}>
+            <Text style={[style.paymentDetailLabel, style.greenText]}>
               Status:
             </Text>
             <Text style={[style.paymentDetail, style.greenText]}>
@@ -314,7 +314,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       </View>
 
       <View style={style.div}>
-        <Text style={style.nextActionDescription}>{buttonLable}</Text>
+        <Text style={style.nextActionDescription}>{buttonLabel}</Text>
       </View>
 
       {nextUserAction === NextUserAction.NONE ? (
@@ -384,7 +384,7 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
     color: AppColors.black,
   },
-  paymentDetailLable: {
+  paymentDetailLabel: {
     ...FONTS.body1,
     color: AppColors.black,
   },
@@ -397,7 +397,7 @@ const style = StyleSheet.create({
     color: AppColors.green,
     fontWeight: 'bold',
   },
-  amountLable: {
+  amountLabel: {
     ...FONTS.body1,
     color: AppColors.black,
   },

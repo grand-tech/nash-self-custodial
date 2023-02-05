@@ -48,7 +48,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     clientPaymentDetails: '',
     agentPaymentDetails: '',
     enxchangeToken: '',
-    exchangeTokenLable: '',
+    exchangeTokenLabel: '',
   };
 
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);

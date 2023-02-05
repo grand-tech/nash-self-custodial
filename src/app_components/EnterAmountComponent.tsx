@@ -137,7 +137,7 @@ const EnterAmountComponent: React.FC<Props> = (props: Props) => {
       <Button
         label={props.submitButtonLabel}
         backgroundColor={AppColors.light_green}
-        labelStyle={style.makeRequestBtnLable}
+        labelStyle={style.makeRequestBtnLabel}
         disabled={Number(amount) <= 0}
         onPress={() => {
           props.onSubmit(amount, coin);
@@ -172,7 +172,7 @@ const style = StyleSheet.create({
     paddingHorizontal: wp('1%'),
     backgroundColor: '#fff',
   },
-  makeRequestBtnLable: {
+  makeRequestBtnLabel: {
     ...FONTS.body1,
     fontWeight: '700',
   },

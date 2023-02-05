@@ -35,7 +35,7 @@ export enum Status {
  * @property { string } clientPaymentDetails - the client`s phone number.
  * @property { string } agentPaymentDetails - the agent`s phone number.
  * @property { string } enxchangeToken the echange token address.
- * @property { string } exchangeTokenLable the exchange token lable.
+ * @property { string } exchangeTokenLabel the exchange token lable.
  */
 export type NashEscrowTransaction = {
   id: number;
@@ -49,7 +49,7 @@ export type NashEscrowTransaction = {
   agentPaymentDetails: string;
   clientPaymentDetails: string;
   enxchangeToken: string;
-  exchangeTokenLable: string;
+  exchangeTokenLabel: string;
 };
 
 /**

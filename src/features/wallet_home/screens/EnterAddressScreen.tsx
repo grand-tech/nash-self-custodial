@@ -15,10 +15,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Button, Text, TextField} from 'react-native-ui-lib';
+import {Button, TextField} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {web3} from '../../account_balance/contract.kit.utils';
 
 /**
  * Contains the screen to enter user name.
@@ -59,18 +60,18 @@ const EnterAddressScreen = () => {
                 alignContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text color={AppColors.light_green} displayBold>
-                Which address do you intend to send funds to?
-              </Text>
+              {/* <Text color={AppColors.light_green} body1>
+                Enter recipient address.
+              </Text> */}
 
               {/* Body text group section. */}
               <View style={style.textGroup}>
                 <TextField
-                  body4
+                  body1
                   color={AppColors.black}
                   containerStyle={{marginBottom: hp('1.00%')}}
                   floatingPlaceholder
-                  placeholder="Enter Recipient Address"
+                  placeholder="Enter recipient address"
                   maxLength={200}
                   editable={true}
                   disabledColor={AppColors.brown}
@@ -78,20 +79,19 @@ const EnterAddressScreen = () => {
                   migrate
                   onChangeText={(text: string) => {
                     setAddress(text);
+                    web3.utils.isAddress(address);
                   }}
                 />
               </View>
 
               <Button
                 style={style.button}
-                outline={true}
-                outlineColor={AppColors.yellow}
                 label={'Continue'}
-                warning
+                backgroundColor={AppColors.light_green}
                 labelStyle={{
-                  ...FONTS.h4,
+                  ...FONTS.body1,
                 }}
-                disabled={address.length < 10}
+                disabled={!web3.utils.isAddress(address)}
                 onPress={() => {
                   submitAddress();
                 }}
@@ -125,7 +125,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: wp('80.0%'),
     marginTop: hp('30%'),
   },
   buttonGroup: {

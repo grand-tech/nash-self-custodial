@@ -29,15 +29,15 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
     if (rates) {
       let rate = rates?.KESUSD;
 
-      if (transaction.exchangeTokenLable === 'cUSD') {
+      if (transaction.exchangeTokenLabel === 'cUSD') {
         rate = rates.KESUSD;
       }
 
-      if (transaction.exchangeTokenLable === 'cEUR') {
+      if (transaction.exchangeTokenLabel === 'cEUR') {
         rate = rates.KESEUR;
       }
 
-      if (transaction.exchangeTokenLable === 'cREAL') {
+      if (transaction.exchangeTokenLabel === 'cREAL') {
         rate = rates.KESBRL;
       }
 
@@ -71,7 +71,7 @@ const RequestCardComponent: React.FC<Props> = (props: Props) => {
           request
         </Text>
         <Text style={style.cryptoAmount}>
-          {transaction.exchangeTokenLable}{' '}
+          {transaction.exchangeTokenLabel}{' '}
           {Number(transaction.amount.toFixed(2)).toLocaleString()}
         </Text>
         <Text style={style.fiatAmount}>Ksh {fiatNetValue}</Text>
