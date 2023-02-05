@@ -61,7 +61,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -136,7 +136,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -211,7 +211,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -286,7 +286,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -393,7 +393,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -468,7 +468,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -543,7 +543,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -618,7 +618,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -821,7 +821,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -915,7 +915,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -996,7 +996,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -1087,7 +1087,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],
@@ -1120,7 +1120,7 @@ export const NashEscrowAbi = [
       },
       {
         internalType: 'string',
-        name: '_exchangeTokenLable',
+        name: '_exchangeTokenLabel',
         type: 'string',
       },
     ],
@@ -1143,7 +1143,7 @@ export const NashEscrowAbi = [
       },
       {
         internalType: 'string',
-        name: '_exchangeTokenLable',
+        name: '_exchangeTokenLabel',
         type: 'string',
       },
     ],
@@ -1213,7 +1213,7 @@ export const NashEscrowAbi = [
           },
           {
             internalType: 'string',
-            name: 'exchangeTokenLable',
+            name: 'exchangeTokenLabel',
             type: 'string',
           },
         ],

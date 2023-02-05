@@ -53,15 +53,15 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
     if (rates) {
       let rate = rates?.KESUSD;
 
-      if (transaction.exchangeTokenLable === 'cUSD') {
+      if (transaction.exchangeTokenLabel === 'cUSD') {
         rate = rates.KESUSD;
       }
 
-      if (transaction.exchangeTokenLable === 'cEUR') {
+      if (transaction.exchangeTokenLabel === 'cEUR') {
         rate = rates.KESEUR;
       }
 
-      if (transaction.exchangeTokenLable === 'cREAL') {
+      if (transaction.exchangeTokenLabel === 'cREAL') {
         rate = rates.KESBRL;
       }
 
@@ -113,10 +113,10 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
         </Text>
         <View>
           <View style={style.div}>
-            <Text style={style.amountLable}>Amount</Text>
+            <Text style={style.amountLabel}>Amount</Text>
             <Text style={style.amountValue}>
               {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
-              {transaction.exchangeTokenLable}
+              {transaction.exchangeTokenLabel}
             </Text>
           </View>
           <View style={style.div}>
@@ -182,7 +182,7 @@ const style = StyleSheet.create({
     color: AppColors.green,
     fontWeight: 'bold',
   },
-  amountLable: {
+  amountLabel: {
     ...FONTS.body1,
     color: AppColors.black,
   },

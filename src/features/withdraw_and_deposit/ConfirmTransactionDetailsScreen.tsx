@@ -110,7 +110,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
         <Text style={style.explanition}>I want to {txAction}:</Text>
         <View>
           <View style={style.div}>
-            <Text style={style.amountLable}>Amount</Text>
+            <Text style={style.amountLabel}>Amount</Text>
             <Text style={style.amountValue}>
               {amount} {props.route.params.coin}
             </Text>
@@ -124,7 +124,7 @@ const ConfirmTransactionDetailsScreen: React.FC<Props> = (props: Props) => {
 
       <Button
         label={'Make Request'}
-        labelStyle={style.buttonLable}
+        labelStyle={style.buttonLabel}
         secondary
         onPress={sendRequest}
         outline={true}
@@ -177,7 +177,7 @@ const style = StyleSheet.create({
     color: AppColors.green,
     fontWeight: 'bold',
   },
-  amountLable: {
+  amountLabel: {
     ...FONTS.body1,
     color: AppColors.black,
   },
@@ -189,7 +189,7 @@ const style = StyleSheet.create({
     ...FONTS.body1,
     color: AppColors.brown,
   },
-  buttonLable: {
+  buttonLabel: {
     ...FONTS.body1,
     fontWeight: '700',
   },
