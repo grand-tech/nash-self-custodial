@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {connect} from 'react-redux';
+import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -20,30 +20,31 @@ import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {web3} from '../../account_balance/contract.kit.utils';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';
 
 /**
  * Contains the screen to enter user name.
  */
-const EnterAddressScreen = () => {
-  const navigation = useNavigation();
+const EnterAddressScreen = (props: Props) => {
   const [address, setAddress] = useState('');
 
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      navigation.getParent()?.setOptions({headerShown: false});
-      navigation.setOptions({
+      props.navigation.getParent()?.setOptions({headerShown: false});
+      props.navigation.setOptions({
         title: 'Send Funds',
         headerTransparent: true,
       });
 
       return () => {
-        navigation.getParent()?.setOptions({headerShown: true});
+        props.navigation.getParent()?.setOptions({headerShown: true});
       };
     });
   });
 
   const submitAddress = () => {
-    navigation.navigate('SendMoney', {address: address});
+    props.navigation.navigate('SendMoney', {address: address});
   };
 
   return (
@@ -87,6 +88,8 @@ const EnterAddressScreen = () => {
               <Button
                 style={style.button}
                 label={'Continue'}
+                outline={true}
+                outlineColor={AppColors.light_green}
                 backgroundColor={AppColors.light_green}
                 labelStyle={{
                   ...FONTS.body1,
@@ -115,7 +118,18 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnterAddressScreen);
+type StackProps = NativeStackScreenProps<
+  WalletHomeNavigationStackParamsList,
+  'EnterAddressScreen'
+>;
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
+
+type Props = StackProps & ReduxProps;
+
+export default connector(EnterAddressScreen);
 
 const style = StyleSheet.create({
   container: {
