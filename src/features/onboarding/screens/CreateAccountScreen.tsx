@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {connect} from 'react-redux';
+import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
 import {AppColors} from '../../../ui_lib_configs/colors';
 import {
@@ -10,29 +10,31 @@ import {
 import {Button, Text} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {useNavigation} from '@react-navigation/native';
-import {useAppDispatch} from '../../../hooks';
 import {
   chooseCreateNewAccount,
   chooseRestoreExistingAccount,
 } from '../redux_store/action.generators';
 import analytics from '@react-native-firebase/analytics';
-
-// /**
-//  * Create account screen props.
-//  * @typedef {Object} CreateAccountScreenProps properties expected by the create account component.
-//  * @property { string} onboarding_status the components to be rendered on the constructed screen.
-//  */
-// interface CreateAccountScreenProps {
-//   onboarding_status: string;
-// }
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+import {useFocusEffect} from '@react-navigation/native';
 
 /**
  * Contains the onboarding UI.
  */
-const CreateAccountScreen = () => {
-  const navigation = useNavigation();
-  const dispatch = useAppDispatch();
+const CreateAccountScreen = (props: Props) => {
+  useFocusEffect(() => {
+    props.navigation.setOptions({
+      title: '',
+      headerShown: true,
+      headerTransparent: true,
+    });
+    return () => {
+      props.navigation.setOptions({
+        title: '',
+      });
+    };
+  });
 
   return (
     <Screen style={style.rootComponent}>
@@ -62,13 +64,14 @@ const CreateAccountScreen = () => {
             outline={true}
             outlineColor={AppColors.light_green}
             label={'Create Account'}
+            size={'small'}
             secondary
             labelStyle={{
-              ...FONTS.h4,
+              ...FONTS.body1,
             }}
             onPress={async () => {
-              dispatch(chooseCreateNewAccount());
-              navigation.navigate('TermsAndConditions');
+              props.dispatchCreateAccount();
+              props.navigation.navigate('TermsAndConditions');
               await analytics().logEvent('coming_soon', {
                 feature: '[onboarding] select create account',
                 timestamp: new Date().getMilliseconds(),
@@ -81,13 +84,13 @@ const CreateAccountScreen = () => {
             outlineColor={AppColors.yellow}
             label={'Restore Account'}
             warning
-            size={'large'}
+            size={'small'}
             labelStyle={{
-              ...FONTS.h4,
+              ...FONTS.body1,
             }}
             onPress={async () => {
-              dispatch(chooseRestoreExistingAccount());
-              navigation.navigate('TermsAndConditions');
+              props.dispatchRestoreAccount();
+              props.navigation.navigate('TermsAndConditions');
               await analytics().logEvent('coming_soon', {
                 feature: '[onboarding] select restore account',
                 timestamp: new Date().getMilliseconds(),
@@ -100,21 +103,25 @@ const CreateAccountScreen = () => {
   );
 };
 
-/**
- *
- * @param state the applications state.
- * @returns the props intended to be passed to the component from state variables.
- */
+type StackProps = NativeStackScreenProps<
+  OnboardingNavigationStackParamsList,
+  'SelectCreateOrRestoreAccount'
+>;
+
 const mapStateToProps = (state: RootState) => ({
-  onboarding_status: state.onboarding.status,
+  onboarded: state.onboarding.status,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  dispatchRestoreAccount: chooseRestoreExistingAccount,
+  dispatchCreateAccount: chooseCreateNewAccount,
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(CreateAccountScreen);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type Props = ConnectedProps<typeof connector> & StackProps;
+
+export default connector(CreateAccountScreen);
 
 const style = StyleSheet.create({
   container: {
@@ -128,7 +135,7 @@ const style = StyleSheet.create({
     marginBottom: hp('4%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('60.0%'),
   },
   rootComponent: {
     justifyContent: 'flex-end',

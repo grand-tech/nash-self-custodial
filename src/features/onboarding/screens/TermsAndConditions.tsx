@@ -12,18 +12,28 @@ import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+import {useFocusEffect} from '@react-navigation/native';
 
 /**
  * Contains the onboarding UI.
  */
 const TermsAndConditions = (props: Props) => {
+  useFocusEffect(() => {
+    props.navigation.setOptions({
+      title: 'Terms & Conditions',
+      headerShown: true,
+      headerTransparent: true,
+    });
+    return () => {
+      props.navigation.setOptions({
+        title: '',
+      });
+    };
+  });
+
   return (
     <Screen style={style.rootComponent}>
       <View style={style.container}>
-        {/* Tittle section */}
-        <Text color={AppColors.light_green} displayBold>
-          Terms &amp; Conditions
-        </Text>
         <ScrollView style={style.scrollView}>
           <Text color={AppColors.black} body3>
             In order to use our services, please read and accept our User
@@ -48,7 +58,7 @@ const TermsAndConditions = (props: Props) => {
 
           <View style={style.textGroup}>
             <Text color={AppColors.light_green} h2>
-              Celo Dollar and Nash Account
+              Celo and Nash Account
             </Text>
             <Text color={AppColors.black} body3>
               By joining this network, you give us permission to collect
@@ -68,6 +78,7 @@ const TermsAndConditions = (props: Props) => {
             style={style.button}
             outline={true}
             outlineColor={AppColors.yellow}
+            size={'small'}
             label={'Accept'}
             warning
             labelStyle={{
@@ -110,17 +121,16 @@ export default connector(TermsAndConditions);
 const style = StyleSheet.create({
   container: {
     backgroundColor: AppColors.gray,
-    maxHeight: hp('90.0%'),
+    maxHeight: hp('95.0%'),
     justifyContent: 'space-around',
     flex: 1,
     alignContent: 'center',
     alignItems: 'center',
     paddingHorizontal: hp('4.5%'),
-    marginBottom: hp('4%'),
     paddingTop: hp('2%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('60.0%'),
   },
   rootComponent: {
     justifyContent: 'flex-end',
@@ -134,5 +144,5 @@ const style = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop: hp('4%'),
   },
-  scrollView: {maxHeight: hp('75%')},
+  scrollView: {maxHeight: hp('85%')},
 });

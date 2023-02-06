@@ -5,9 +5,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {AppColors} from '../../../ui_lib_configs/colors';
+import {AppColors} from '../ui_lib_configs/colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {FONTS} from '../../../ui_lib_configs/fonts';
+import {FONTS} from '../ui_lib_configs/fonts';
 
 /**
  * Screen component properties.
