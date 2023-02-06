@@ -43,6 +43,7 @@
     "react-native-animated-loader": "^1.0.0",
     "react-native-bip39": "^2.3.0",
     "react-native-config": "^1.5.0",
+    "react-native-device-info": "^10.3.0",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-identicon": "^1.0.14",
