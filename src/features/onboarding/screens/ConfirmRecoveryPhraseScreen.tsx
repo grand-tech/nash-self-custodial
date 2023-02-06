@@ -68,7 +68,7 @@ const ConfirmRecoveryPhraseScreen = (props: Props) => {
   const confirmSeedPhraseBtnHandler = () => {
     const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
     if (seedPhrase === seedPhraseStr) {
-      props.navigation.navigate('EnterMpesaPaymentInfoScreen');
+      props.navigation.navigate('EnterFiatPaymentInformationScreen');
     } else {
       setErrorDialogVisibility(true);
     }

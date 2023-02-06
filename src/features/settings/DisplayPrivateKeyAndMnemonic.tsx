@@ -120,7 +120,7 @@ const DisplayPrivateKeyAndMnemonic: React.FC<Props> = (props: Props) => {
       <Button
         label={'Done'}
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         secondary
         onPress={() => {

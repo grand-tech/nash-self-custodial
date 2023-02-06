@@ -14,7 +14,7 @@ import RestoreAccountScreen from '../screens/RestoreAccountScreen';
 import {RootStack} from '../../../navigation/root.navigation.stack';
 import React from 'react';
 import {BackButton, DeleteButton} from '../../../navigation/navigation.utils';
-import EnterMpesaPaymentInfoScreen from '../../ramp_payment_information/screens/EnterMpesaPaymentInfoScreen';
+import EnterPaymentInformationScreen from '../../ramp_payment_information/screens/EnterPaymentInformationScreen';
 
 /**
  * Hides the header.
@@ -133,8 +133,8 @@ export const onboardingNavigationStack = (
     />
     <RootStack.Screen name="RestoreAccount" component={RestoreAccountScreen} />
     <RootStack.Screen
-      name="EnterMpesaPaymentInfoScreen"
-      component={EnterMpesaPaymentInfoScreen}
+      name="EnterFiatPaymentInformationScreen"
+      component={EnterPaymentInformationScreen}
     />
   </>
 );

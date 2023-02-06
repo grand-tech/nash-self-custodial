@@ -33,7 +33,9 @@ const SettingsHomeScreen = (props: NavigationProps) => {
         <Text style={style.buttonLabelStyle}>Private Key & Mnemonic</Text>
       </TouchableOpacity>
 
-      <HR />
+      <>
+        <HR />
+      </>
 
       <TouchableOpacity
         style={style.buttonStyle}
@@ -47,7 +49,9 @@ const SettingsHomeScreen = (props: NavigationProps) => {
         <Text style={style.buttonLabelStyle}>Change Pin</Text>
       </TouchableOpacity>
 
-      <HR />
+      <>
+        <HR />
+      </>
 
       <TouchableOpacity
         style={style.buttonStyle}
@@ -57,14 +61,14 @@ const SettingsHomeScreen = (props: NavigationProps) => {
         <Text style={style.buttonLabelStyle}>Account Address</Text>
       </TouchableOpacity>
 
-      <HR />
-      <HR />
-      <HR />
+      <>
+        <HR />
+      </>
 
       <TouchableOpacity
         style={style.buttonStyle}
         onPress={() => {
-          props.navigation.navigate('EnterMpesaPaymentInfoScreen');
+          props.navigation.navigate('EnterPaymentInformationScreen');
         }}>
         <Text style={style.buttonLabelStyle}>Fiat Payment</Text>
       </TouchableOpacity>
@@ -86,7 +90,7 @@ const style = StyleSheet.create({
     alignItems: 'flex-start',
   },
   buttonLabelStyle: {
-    ...FONTS.h3,
+    ...FONTS.body1,
     alignContent: 'flex-start',
     color: AppColors.link,
   },

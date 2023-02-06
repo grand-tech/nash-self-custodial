@@ -83,7 +83,7 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
     );
     yield put(generateActionSetNormal());
     //TODO: figure out what to do with this after adding attestation and comment encryption.
-    navigate('EnterMpesaPaymentInfoScreen');
+    navigate('EnterFiatPaymentInformationScreen');
   } catch (error: any) {
     crashlytics().recordError(
       new Error(error),
