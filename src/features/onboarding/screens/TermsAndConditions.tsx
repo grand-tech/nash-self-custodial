@@ -82,7 +82,7 @@ const TermsAndConditions = (props: Props) => {
             label={'Accept'}
             warning
             labelStyle={{
-              ...FONTS.h4,
+              ...FONTS.body1,
             }}
             onPress={() => {
               props.navigation.navigate('EnterUserName');

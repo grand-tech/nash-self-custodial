@@ -80,13 +80,13 @@ const CreatePinScreen: React.FC<Props> = (props: Props) => {
       <EnterPinModal
         target="privateKey"
         onPinMatched={onConfirmNewPin}
-        visible={newPin !== ''}
+        visible={newPin !== '' && isFocused}
         confirmingNewPin={true}
         validatorPin={newPin}
       />
 
       <LoadingModalComponent
-        TAG="ConfirmOinScreen"
+        TAG="ConfirmPinScreen"
         visible={props.ui_screen_status === 'loading' && isFocused}
         onShowModal={onShowModal}
       />
