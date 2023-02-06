@@ -1,6 +1,6 @@
 export type OnboardingNavigationStackParamsList = {
   Start: undefined;
-  SelectGenerateOrRestoreAccount: undefined;
+  SelectCreateOrRestoreAccount: undefined;
   TermsAndConditions: undefined;
   EnterUserName: undefined;
   CreatePin: undefined;

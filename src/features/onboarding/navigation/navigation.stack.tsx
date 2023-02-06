@@ -55,22 +55,12 @@ export const onboardingNavigationStack = (
       options={RootStackScreenHideHeader}
     />
     <RootStack.Screen
-      name="SelectGenerateOrRestoreAccount"
+      name="SelectCreateOrRestoreAccount"
       component={CreateAccountScreen}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
     />
     <RootStack.Screen
       name="TermsAndConditions"
       component={TermsAndConditions}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
     />
     <RootStack.Screen
       name="EnterUserName"
