@@ -95,24 +95,32 @@ const ReviewSendTransaction: React.FC<Props> = (props: Props) => {
 
   return (
     <Screen style={style.screenContainer}>
-      <View style={style.transactionDetailsCard}>
-        <Text h1>Send</Text>
-        <Text h2>
-          {props.route.params.amount} {props.route.params.coin}
-        </Text>
-        <Text body1>{fiatAmount} ksh </Text>
-        <Text h1>To</Text>
-        <Text body1>{props.route.params.address}</Text>
+      <View style={style.contentContainer}>
+        <Text style={style.explanation}>I want to send:</Text>
+        <View>
+          <View style={style.div}>
+            <Text style={style.amountLabel}>Amount</Text>
+            <Text style={style.amountValue}>
+              {props.route.params.amount} {props.route.params.coin}
+            </Text>
+          </View>
+          <View style={style.div}>
+            <Text />
+            <Text style={style.amountFiatValue}>{fiatAmount} Ksh</Text>
+          </View>
+          <Text style={style.explanation}>To address:</Text>
+
+          <Text style={style.amountValue}>{props.route.params.address}</Text>
+        </View>
       </View>
 
       <Button
-        style={style.reviewButton}
         label={'Send'}
-        backgroundColor={AppColors.light_green}
-        labelStyle={{
-          ...FONTS.h5,
-        }}
+        labelStyle={style.buttonLabel}
+        secondary
         onPress={onSend}
+        outline={true}
+        outlineColor={AppColors.light_green}
       />
 
       <EnterPinModal
@@ -174,14 +182,40 @@ const style = StyleSheet.create({
     width: wp('80.0%'),
     marginTop: hp('30%'),
   },
-  transactionDetailsCard: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: wp('4%'),
+  contentContainer: {
+    height: hp('22%'),
     width: wp('70%'),
-    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('5%'),
+    paddingVertical: wp('3%'),
+    backgroundColor: '#ffff',
+    justifyContent: 'space-between',
+    borderRadius: wp('5%'),
   },
-  screenContainer: {paddingTop: hp('10%'), alignItems: 'center'},
+  explanation: {
+    ...FONTS.body1,
+    color: AppColors.green,
+    fontWeight: 'bold',
+  },
+  amountLabel: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountValue: {
+    ...FONTS.body1,
+    color: AppColors.black,
+  },
+  amountFiatValue: {
+    ...FONTS.body1,
+    color: AppColors.brown,
+  },
+  buttonLabel: {
+    ...FONTS.body1,
+    fontWeight: '700',
+  },
+  div: {flexDirection: 'row', justifyContent: 'space-between'},
+  screenContainer: {
+    paddingTop: hp('10%'),
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
 });
