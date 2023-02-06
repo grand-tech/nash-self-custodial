@@ -68,7 +68,7 @@ const DisplayAccountAddress = () => {
       <Button
         label={'Done'}
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         secondary
         onPress={() => {
@@ -99,6 +99,7 @@ const style = StyleSheet.create({
   publicAddress: {
     textAlign: 'center',
     color: AppColors.green,
+    maxWidth: wp('80%'),
   },
   copyIcon: {
     paddingRight: wp('3%'),
