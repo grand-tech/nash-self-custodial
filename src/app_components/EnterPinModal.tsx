@@ -101,7 +101,7 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
               props.dispatchActionSetNormal();
               navigation.goBack();
             }}>
-            <Icon light name="window-close" size={34} color={AppColors.black} />
+            <Icon light={true} name="times" size={30} color={AppColors.black} />
           </Pressable>
         </View>
 
@@ -146,7 +146,7 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
 
         <View style={styles.keyPad}>
           {/* onChange={handleChange} onDelete={onDelete} */}
-          <PinKeyPad onChange={onChange} onDelete={onDelete} />
+          <PinKeyPad onChange={onChange} onDelete={onDelete} isPin={true} />
         </View>
       </Screen>
     </Modal>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pinText: {
-    ...FONTS.displayBold,
+    ...FONTS.h5,
     color: AppColors.light_green,
   },
   pinIcons: {

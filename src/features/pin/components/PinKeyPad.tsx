@@ -18,6 +18,7 @@ import {FONTS} from '../../../ui_lib_configs/fonts';
 export interface PinKeyPadProps {
   onChange: any;
   onDelete: any;
+  isPin?: boolean;
 }
 
 /**
@@ -26,8 +27,6 @@ export interface PinKeyPadProps {
  * @returns
  */
 const PinKeyPad: React.FC<PinKeyPadProps> = props => {
-  const route = useRoute();
-
   const handleChange = (text: string) => {
     props.onChange(text);
   };
@@ -115,12 +114,14 @@ const PinKeyPad: React.FC<PinKeyPadProps> = props => {
           underlayColor={AppColors.perfumeHaze}
           delayPressOut={100}
           style={styles.key}
-          disabled={route.name.includes('Pin')}
-          onPress={() => handleChange('.')}>
+          disabled={props.isPin}
+          onPress={() => {
+            if (!props.isPin) {
+              handleChange('.');
+            }
+          }}>
           {/* Dummy key to make PinKeyPad first line position consistent */}
-          <Text style={styles.number}>
-            {route.name.includes('Pin') ? '' : '.'}
-          </Text>
+          <Text style={styles.number}>{props.isPin ? '' : '.'}</Text>
         </TouchableHighlight>
         <TouchableHighlight
           onPress={() => handleChange('0')}
