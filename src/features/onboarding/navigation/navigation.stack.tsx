@@ -3,11 +3,9 @@ import CreateAccountScreen from '../screens/CreateAccountScreen';
 import StartScreen from '../screens/StartScreen';
 import TermsAndConditions from '../screens/TermsAndConditions';
 import EnterUserNameScreen from '../screens/EnterUserNameScreen';
-import CreatePinScreen from '../../pin/screens/CreatePinScreen';
-import ConfirmPinScreen from '../../pin/screens/ConfirmPinScreen';
+import CreatePinScreen from '../screens/CreatePinScreen';
 import SetUpRecoveryPhrase from '../screens/SetUpRecoveryPhrase';
 import SetUpSeedPhraseInstructions from '../screens/SetUpSeedPhraseInstructions';
-import EnterPinScreen from '../../pin/screens/EnterPinScreen';
 import WriteDownRecoveryPhraseScreen from '../screens/WriteDownRecoveryPhraseScreen';
 import ConfirmRecoveryPhraseScreen from '../screens/ConfirmRecoveryPhraseScreen';
 import RestoreAccountScreen from '../screens/RestoreAccountScreen';
@@ -62,33 +60,8 @@ export const onboardingNavigationStack = (
       name="TermsAndConditions"
       component={TermsAndConditions}
     />
-    <RootStack.Screen
-      name="EnterUserName"
-      component={EnterUserNameScreen}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
-    />
-    <RootStack.Screen
-      name="CreatePin"
-      component={CreatePinScreen}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
-    />
-    <RootStack.Screen
-      name="ConfirmPin"
-      component={ConfirmPinScreen}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
-    />
+    <RootStack.Screen name="EnterUserName" component={EnterUserNameScreen} />
+    <RootStack.Screen name="CreatePin" component={CreatePinScreen} />
     <RootStack.Screen
       name="SetUpRecoveryPhrase"
       component={SetUpRecoveryPhrase}
@@ -100,22 +73,8 @@ export const onboardingNavigationStack = (
       options={RootStackScreenHideHeader}
     />
     <RootStack.Screen
-      name="EnterPinScreen"
-      component={EnterPinScreen}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
-    />
-    <RootStack.Screen
       name="WriteDownRecoveryPhraseScreen"
       component={WriteDownRecoveryPhraseScreen}
-      options={({navigation, route}) =>
-        RootStackScreenHideHeaderTitle(() => {
-          navigation.goBack();
-        })
-      }
     />
     <RootStack.Screen
       name="ConfirmRecoveryPhraseScreen"

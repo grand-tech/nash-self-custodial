@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Modal, Pressable} from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -7,9 +7,8 @@ import {
 import {Chip, Text} from 'react-native-ui-lib';
 import {RootState} from '../app-redux-store/store';
 import {connect, ConnectedProps} from 'react-redux';
-import PinKeyPad from '../features/pin/components/PinKeyPad';
+import PinKeyPad from './PinKeyPad';
 import Screen from './Screen';
-import {addPinChar, deletePinChar} from '../features/pin/utils';
 import {
   getStoredMnemonic,
   getStoredPrivateKey,
@@ -20,16 +19,24 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/native';
 import {generateActionSetNormal} from '../features/ui_state_manager/action.generators';
 import {NashCache} from '../utils/cache';
+import {addPinChar, deletePinChar} from '../utils/pin.number.utils';
 
 const EnterPinModal: React.FC<Props> = (props: Props) => {
   const navigation = useNavigation();
   const target: string = props.target ?? 'privateKey';
-
   const [pinError, setPinError] = React.useState('');
-
   const [pinCharArray, setPinTextArray] = useState(['', '', '', '', '', '']);
   const [hidePin, setHidePin] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [modalTitle, setModalTitle] = useState('Enter PIN');
+
+  useEffect(() => {
+    if (props.creatingPin) {
+      setModalTitle('Enter new Pin');
+    } else if (props.confirmingNewPin) {
+      setModalTitle('Confirm new Pin');
+    }
+  });
 
   const onDelete = () => {
     const updates = deletePinChar(currentIndex, pinCharArray);
@@ -57,32 +64,53 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
    */
   const handlePinValidation = async (pin: string) => {
     let retrievedItem: string | null;
-    try {
-      if (target === 'mnemonic') {
-        retrievedItem = await getStoredMnemonic(pin);
+    if (props.creatingPin) {
+      // Handle the logic used to create a PIN.
+      props.onPinMatched(pin);
+    } else if (props.confirmingNewPin) {
+      // Handles the logic used to confirm a new pin.
+      if (props.validatorPin === pin) {
+        props.onPinMatched(pin);
       } else {
-        retrievedItem = await getStoredPrivateKey(pin);
-      }
-
-      if (retrievedItem === null || retrievedItem.trim() === '') {
-        setPinError('Invalid PIN!!!');
+        setPinError('Pin did not match!!!');
         setCurrentIndex(0);
         setPinTextArray(['', '', '', '', '', '']);
-      } else {
-        NashCache.setPinCache(pin);
-        props.onPinMatched(pin);
       }
-    } catch (error) {
-      setPinError('Invalid PIN!!!');
-      reset();
+    } else {
+      // Validates an existing and working pin..
+      try {
+        if (target === 'mnemonic') {
+          retrievedItem = await getStoredMnemonic(pin);
+        } else {
+          retrievedItem = await getStoredPrivateKey(pin);
+        }
+
+        if (retrievedItem === null || retrievedItem.trim() === '') {
+          setPinError('Invalid PIN!!!');
+          setCurrentIndex(0);
+          setPinTextArray(['', '', '', '', '', '']);
+        } else {
+          NashCache.setPinCache(pin);
+          props.onPinMatched(pin);
+        }
+      } catch (error) {
+        setPinError('Invalid PIN!!!');
+        reset();
+      }
     }
   };
 
+  /**
+   * Resets the pin number to zero.
+   */
   const reset = () => {
     setPinTextArray(['', '', '', '', '', '']);
     setCurrentIndex(0);
   };
 
+  /**
+   * What happens when the modal is rendered on the screen
+   */
   const onShow = () => {
     reset();
     setHidePin(true);
@@ -107,7 +135,7 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
 
         <View style={styles.screenTitle}>
           <View style={styles.enterPin}>
-            <Text style={styles.pinText}>Enter PIN</Text>
+            <Text style={styles.pinText}>{modalTitle}</Text>
           </View>
 
           <View style={styles.errorDisplay}>
@@ -233,6 +261,9 @@ interface Props extends ReduxProps {
   visible: boolean;
   onPinMatched: any;
   target: string;
+  creatingPin?: boolean;
+  confirmingNewPin?: boolean;
+  validatorPin?: string;
 }
 
 export default connector(EnterPinModal);

@@ -10,7 +10,7 @@ import {StableToken} from '@celo/contractkit';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../app-redux-store/store';
 import {AppColors} from '../ui_lib_configs/colors';
-import PinKeyPad from '../features/pin/components/PinKeyPad';
+import PinKeyPad from './PinKeyPad';
 import DropDown from '../features/wallet_home/components/DropDown';
 import {FONTS} from '../ui_lib_configs/fonts';
 import {Button} from 'react-native-ui-lib';
