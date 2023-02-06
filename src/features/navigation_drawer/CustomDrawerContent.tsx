@@ -19,13 +19,13 @@ import {FONTS} from '../../ui_lib_configs/fonts';
 import Identicon from 'react-native-identicon';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import DeviceInfo from 'react-native-device-info';
 
 const CustomDrawerContent = (props: Props) => {
   const [totalBalanceFiat, setTotalBalanceFiat] = useState('-');
   const [totalBalanceUSD, setTotalBalanceUSD] = useState('-');
-  // const [cUSDFiatBalance, setCUSDFiatBalance] = useState('-');
-  // const [cEURFiatBalance, setCEURFiatBalance] = useState('-');
-  // const [cREALFiatBalance, setCREALFiatBalance] = useState('-');
+
+  const version = DeviceInfo.getVersion();
 
   useEffect(() => {
     const rates = props.currencyConversionRates;
@@ -100,6 +100,7 @@ const CustomDrawerContent = (props: Props) => {
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
 
+      <Text style={styles.publicAddressLabel}>Your public address</Text>
       <Pressable
         onPress={() => {
           Clipboard.setString(props.publicAddress);
@@ -116,13 +117,13 @@ const CustomDrawerContent = (props: Props) => {
             size={20}
             style={styles.copyIcon}
           />
-          <Text body4 style={styles.publicAddress} numberOfLines={1}>
+          <Text body5 style={styles.publicAddress} numberOfLines={1}>
             {props.publicAddress}
           </Text>
         </View>
       </Pressable>
 
-      <Text style={styles.versionNumber}>Version 0.0.1-dev</Text>
+      <Text style={styles.versionNumber}>Version {version}</Text>
     </View>
   );
 };
@@ -220,6 +221,11 @@ const styles = StyleSheet.create({
   publicAddress: {
     textAlign: 'center',
     color: AppColors.green,
+    width: wp('45%'),
+  },
+  publicAddressLabel: {
+    marginHorizontal: wp('2%'),
+    ...FONTS.body5,
   },
   copyIcon: {
     paddingRight: wp('3%'),
