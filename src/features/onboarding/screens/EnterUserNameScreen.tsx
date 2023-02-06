@@ -84,7 +84,7 @@ const EnterUserNameScreen = (props: Props) => {
               label={'Continue'}
               size={'small'}
               labelStyle={{
-                ...FONTS.h4,
+                ...FONTS.body1,
               }}
               disabled={name.length < 2}
               onPress={() => {

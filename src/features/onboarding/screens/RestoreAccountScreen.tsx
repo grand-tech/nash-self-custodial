@@ -23,7 +23,6 @@ import {
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {headerWithDeleteButton} from '../navigation/navigation.stack';
 import {
   constructSeedPhraseFromChipInputs,
   validateSeedPhraseInput,
@@ -57,18 +56,10 @@ const RestoreAccountScreen = (props: Props) => {
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
 
   useEffect(() => {
-    props.navigation.setOptions(
-      headerWithDeleteButton(
-        () => {
-          // props.navigation back
-          props.navigation.goBack();
-        },
-        () => {
-          // clear entered seed phrase
-          setInputSeedPhrase(initInputSeedPhrase);
-        },
-      ),
-    );
+    props.navigation.setOptions({
+      title: 'Restore Account',
+      headerTransparent: true,
+    });
   }, []);
 
   /**
@@ -111,23 +102,15 @@ const RestoreAccountScreen = (props: Props) => {
         style={{flex: 1}}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={style.container}>
-            {/* Tittle section */}
-            <View>
-              <Text
-                style={[style.title]}
-                color={AppColors.light_green}
-                displayBold>
-                Restore Your Account
-              </Text>
-              <Text
-                center={true}
-                color={AppColors.black}
-                style={[style.counter]}
-                body1>
-                To restore your account, enter your 24-word recovery (seed)
-                phrase.
-              </Text>
-            </View>
+            <Text
+              center={true}
+              color={AppColors.black}
+              style={[style.counter]}
+              body1>
+              To restore your account, enter your 24-word recovery (seed)
+              phrase.
+            </Text>
+
             {/* Body text group section. */}
             <View style={style.chipInputGroup}>
               <Text color={AppColors.yellow} style={style.counter} body1>
@@ -137,12 +120,12 @@ const RestoreAccountScreen = (props: Props) => {
                 placeholder="Next word..."
                 floatingPlaceholder={inputSeedPhrase.length < 24}
                 floatingPlaceholderStyle={{
-                  ...FONTS.body3,
+                  ...FONTS.body1,
                   color: AppColors.brown,
                 }}
                 chips={inputSeedPhrase}
                 defaultChipProps={{
-                  labelStyle: {...FONTS.body1},
+                  labelStyle: {...FONTS.body2},
                 }}
                 onChange={newChips => onChipsChangeHandler(newChips)}
                 maxChips={24}
@@ -156,12 +139,26 @@ const RestoreAccountScreen = (props: Props) => {
               <Button
                 style={style.button}
                 outline={true}
+                outlineColor={AppColors.yellow}
+                label={'Clear'}
+                size={'small'}
+                enabled={initInputSeedPhrase.length > 0}
+                labelStyle={{
+                  ...FONTS.body1,
+                }}
+                onPress={() => {
+                  setInputSeedPhrase(initInputSeedPhrase);
+                }}
+              />
+              <Button
+                style={style.button}
+                outline={true}
                 outlineColor={AppColors.light_green}
                 label={'Confirm'}
-                secondary
+                size={'small'}
                 enabled={initInputSeedPhrase.length === 24}
                 labelStyle={{
-                  ...FONTS.h4,
+                  ...FONTS.body1,
                 }}
                 onPress={() => {
                   confirmSeedPhraseBtnHandler();
@@ -216,17 +213,16 @@ const style = StyleSheet.create({
   container: {
     justifyContent: 'space-around',
     flex: 1,
-    alignContent: 'center',
-    alignItems: 'center',
+    paddingVertical: wp('5%'),
     paddingHorizontal: wp('5%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('30.0%'),
     marginBottom: hp('1%'),
   },
   buttonGroup: {
-    flex: 0.23,
-    justifyContent: 'space-between',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   chipInputGroup: {
     justifyContent: 'center',

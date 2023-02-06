@@ -109,6 +109,7 @@ const EnterPaymentInformationScreen: React.FC<Props> = (props: Props) => {
               outline={true}
               outlineColor={AppColors.light_green}
               label={'Save'}
+              size={'small'}
               labelStyle={{
                 ...FONTS.body1,
               }}
@@ -163,7 +164,7 @@ const style = StyleSheet.create({
     color: AppColors.green,
   },
   button: {
-    width: wp('50.0%'),
+    width: wp('25.0%'),
     marginTop: hp('10%'),
   },
   textGroup: {
