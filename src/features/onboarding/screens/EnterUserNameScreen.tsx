@@ -14,10 +14,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Button, Text, TextField} from 'react-native-ui-lib';
+import {Button, TextField} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import {useAppDispatch} from '../../../hooks/index';
 import {setUserName} from '../redux_store/action.generators';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';

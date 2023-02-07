@@ -1,14 +1,12 @@
 import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import Screen from '../../../app_components/Screen';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import {AppColors} from '../../../ui_lib_configs/colors';
-
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {connect, ConnectedProps} from 'react-redux';

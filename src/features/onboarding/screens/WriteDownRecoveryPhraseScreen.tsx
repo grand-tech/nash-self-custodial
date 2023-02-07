@@ -31,7 +31,6 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
       title: 'Recovery Phrase',
       headerTransparent: true,
     });
-
     return () => {
       navigation.getParent()?.setOptions({headerShown: true});
     };
@@ -40,7 +39,7 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
   const copySeedPhraseToClipBoard = () => {
     Clipboard.setString(mnemonic);
     ToastAndroid.showWithGravity(
-      'Copied seedphrase.',
+      'Copied seed phrase.',
       ToastAndroid.SHORT,
       ToastAndroid.TOP,
     );
@@ -52,7 +51,7 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
         {/* Tittle section */}
         <View>
           <Text color={AppColors.light_green} displayBold>
-            Write down your recovery phrase
+            Write down your recovery phrase.
           </Text>
           <Text color={AppColors.black} body2>
             Here is your recovery phrase. Write it down and store in safe place.
@@ -70,9 +69,7 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
             multiline
             numberOfLines={4}
             value={mnemonic}
-            style={{
-              ...FONTS.body1,
-            }}
+            style={style.textInput}
             selectable={true}
           />
         </View>
@@ -172,5 +169,9 @@ const style = StyleSheet.create({
   switchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  textInput: {
+    ...FONTS.body1,
+    color: AppColors.black,
   },
 });
