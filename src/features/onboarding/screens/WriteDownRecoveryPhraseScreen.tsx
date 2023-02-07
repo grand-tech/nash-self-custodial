@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, TextInput, ToastAndroid, View} from 'react-native';
 import {connect} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
@@ -26,6 +26,17 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
   const mnemonic = route?.params?.mnemonic;
   const [writtenDownSeedPhrase, setWrittenDownSeedPhrase] = useState(false);
 
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'Recovery Phrase',
+      headerTransparent: true,
+    });
+
+    return () => {
+      navigation.getParent()?.setOptions({headerShown: true});
+    };
+  });
+
   const copySeedPhraseToClipBoard = () => {
     Clipboard.setString(mnemonic);
     ToastAndroid.showWithGravity(
@@ -41,7 +52,7 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
         {/* Tittle section */}
         <View>
           <Text color={AppColors.light_green} displayBold>
-            Write down recovery phrase
+            Write down your recovery phrase
           </Text>
           <Text color={AppColors.black} body2>
             Here is your recovery phrase. Write it down and store in safe place.
@@ -59,7 +70,6 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
             multiline
             numberOfLines={4}
             value={mnemonic}
-            color={AppColors.black}
             style={{
               ...FONTS.body1,
             }}
@@ -96,8 +106,9 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
             label={'Continue'}
             warning
             labelStyle={{
-              ...FONTS.h4,
+              ...FONTS.body1,
             }}
+            size={'small'}
             onPress={() => {
               navigation.navigate('ConfirmRecoveryPhraseScreen', {
                 mnemonic: mnemonic,
@@ -140,7 +151,7 @@ const style = StyleSheet.create({
     paddingTop: hp('2%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('30.0%'),
   },
   rootComponent: {
     justifyContent: 'flex-end',

@@ -21,28 +21,24 @@ import crashlytics from '@react-native-firebase/crashlytics';
 
 /**
  * Creates a new account and saves its details.
- * @param action action to create new account.
+ * @param _action action to create new account.
  */
-function* createAccount(action: ActionCreateNewAccount) {
+function* createAccount(_action: ActionCreateNewAccount) {
   // let isNewAccount = false;
-
   try {
     // while (!isNewAccount)
     const mnemonic: string = yield call(generateNewMnemonic);
-
     yield put(
       generateActionSetLoading('Generating keys', '', 'generating keys'),
     );
-
     const newAccount: AccountInformation = yield call(
       getAccountFromMnemonic,
       mnemonic,
     );
-
-    NashCache.setPinCache(action.pin);
+    const pin = NashCache.getPinCache() ?? '';
     yield put(generateActionSetLoading('Saving account ...', ''));
-    yield call(storeEncryptedMnemonic, mnemonic, action.pin);
-    yield call(storeEncryptedPrivateKey, newAccount.privateKey, action.pin);
+    yield call(storeEncryptedMnemonic, mnemonic, pin);
+    yield call(storeEncryptedPrivateKey, newAccount.privateKey, pin);
     yield put(
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );

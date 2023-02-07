@@ -178,8 +178,8 @@ const style = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
   },
-  reviewButton: {
-    width: wp('80.0%'),
+  reviewbutton: {
+    width: wp('30.0%'),
     marginTop: hp('30%'),
   },
   contentContainer: {

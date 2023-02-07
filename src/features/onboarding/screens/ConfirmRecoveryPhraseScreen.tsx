@@ -22,7 +22,6 @@ import {
 } from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
 import {FONTS} from '../../../ui_lib_configs/fonts';
-import {headerWithDeleteButton} from '../navigation/navigation.stack';
 import {
   constructSeedPhraseFromChipInputs,
   validateSeedPhraseInput,
@@ -47,19 +46,10 @@ const ConfirmRecoveryPhraseScreen = (props: Props) => {
   const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
 
   useEffect(() => {
-    props.navigation.setOptions(
-      headerWithDeleteButton(
-        () => {
-          // navigation back
-          props.navigation.goBack();
-        },
-        () => {
-          // clear entered seed phrase
-          setInputSeedPhrase(initInputSeedPhrase);
-        },
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    props.navigation.setOptions({
+      title: 'Confirm Recovery Phrase',
+      headerTransparent: true,
+    });
   }, []);
 
   /**
@@ -98,12 +88,6 @@ const ConfirmRecoveryPhraseScreen = (props: Props) => {
           <View style={style.container}>
             {/* Tittle section */}
             <View>
-              <Text
-                color={AppColors.light_green}
-                displayBold
-                style={[style.title]}>
-                Confirm Recovery Phrase
-              </Text>
               <Text
                 center={true}
                 color={AppColors.black}
@@ -197,7 +181,7 @@ const style = StyleSheet.create({
     paddingHorizontal: wp('5%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('30.0%'),
   },
   buttonGroup: {
     flex: 0.23,
