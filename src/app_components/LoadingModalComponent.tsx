@@ -11,9 +11,6 @@ import {connect, ConnectedProps} from 'react-redux';
 
 const LoadingModalComponent: React.FC<Props> = (props: Props) => {
   const onShow = () => {
-    // if (props.TAG) {
-    //   console.log('Screen ===>', props.TAG);
-    // }
     props.onShowModal();
   };
 
@@ -31,7 +28,7 @@ const LoadingModalComponent: React.FC<Props> = (props: Props) => {
             loop={true}
             style={styles.animation}
           />
-          <Text style={styles.dialogText} h2>
+          <Text style={styles.dialogText} body1>
             {props.title}
           </Text>
         </View>
@@ -45,7 +42,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   animation: {
-    height: hp('8%'),
+    height: hp('5%'),
     alignSelf: 'center',
   },
   dialogText: {
@@ -68,7 +65,7 @@ const styles = StyleSheet.create({
     padding: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.75,
+    opacity: 0.9,
     height: hp('100%'),
     width: wp('100%'),
   },

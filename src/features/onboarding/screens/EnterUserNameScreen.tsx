@@ -132,7 +132,7 @@ const style = StyleSheet.create({
     paddingVertical: hp('0%'),
   },
   button: {
-    width: wp('60.0%'),
+    width: wp('40.0%'),
   },
   buttonGroup: {
     flex: 0.23,

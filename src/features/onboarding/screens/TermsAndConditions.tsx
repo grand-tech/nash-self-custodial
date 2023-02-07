@@ -130,7 +130,7 @@ const style = StyleSheet.create({
     paddingTop: hp('2%'),
   },
   button: {
-    width: wp('60.0%'),
+    width: wp('40.0%'),
   },
   rootComponent: {
     justifyContent: 'flex-end',
