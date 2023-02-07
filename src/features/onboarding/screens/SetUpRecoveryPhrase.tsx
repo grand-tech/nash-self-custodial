@@ -86,7 +86,7 @@ const style = StyleSheet.create({
     paddingHorizontal: hp('4.5%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('30.0%'),
   },
   rootComponent: {
     justifyContent: 'space-around',

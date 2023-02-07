@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   header: {
     paddingLeft: 20,
     textAlign: 'center',
-    ...FONTS.h4,
+    ...FONTS.body1,
     fontWeight: 'bold',
     color: AppColors.light_green,
   },
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     color: AppColors.black,
     ...FONTS.body2,
     textAlign: 'center',
+    marginTop: hp('5%'),
   },
 });
 

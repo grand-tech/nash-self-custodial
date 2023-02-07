@@ -9,7 +9,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
 import Screen from '../../../app_components/Screen';
 import {startScreenData} from '../data';
 import {FONTS} from '../../../ui_lib_configs/fonts';

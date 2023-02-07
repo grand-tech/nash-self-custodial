@@ -16,12 +16,15 @@ const animationHeight: number = hp('30%');
 const CarouselCardItem = (props: CarouselRenderItemInfo<CarouselItem>) => {
   return (
     <View style={styles.container} key={props.index}>
-      <Lottie
-        source={props.item.lottieAnimation ?? ''}
-        style={styles.lottieAnimation}
-        autoPlay={true}
-        loop={true}
-      />
+      {props.item.lottieAnimation !== undefined && (
+        <Lottie
+          source={props.item.lottieAnimation}
+          style={styles.lottieAnimation}
+          autoPlay={true}
+          loop={true}
+        />
+      )}
+
       <Text style={styles.header}>{props.item.title}</Text>
       <Text style={styles.body}>{props.item.body}</Text>
     </View>

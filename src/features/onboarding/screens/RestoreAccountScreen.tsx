@@ -1,42 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {StyleSheet} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
-import {AppColors} from '../../../ui_lib_configs/colors';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import {
-  Button,
-  ChipsInputChipProps,
-  Incubator,
-  Text,
-} from 'react-native-ui-lib';
+
 import Screen from '../../../app_components/Screen';
-import {FONTS} from '../../../ui_lib_configs/fonts';
-import {
-  constructSeedPhraseFromChipInputs,
-  validateSeedPhraseInput,
-} from '../../../utils/seed.phrase.validation.utils';
 import {generateActionRestoreExistingAccount} from '../redux_store/action.generators';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {
   generateActionSetLoading,
   generateActionSetError,
+  generateActionSetNormal,
 } from '../../ui_state_manager/action.generators';
 import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
 import LoadingModalComponent from '../../../app_components/LoadingModalComponent';
 import {useIsFocused} from '@react-navigation/native';
+import SeedPhraseInputComponent, {
+  ErrorModalRetry,
+} from '../../../app_components/SeedPhraseInputComponent';
 
 /**
  * Navigation props. TODO move to centralized file.
@@ -51,9 +33,8 @@ type NavigationProps = NativeStackScreenProps<
  */
 const RestoreAccountScreen = (props: Props) => {
   const isFocused = useIsFocused();
-  const initInputSeedPhrase: ChipsInputChipProps[] = [];
-  const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
-  const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
+  const [seedPhrase, setSeedPhrase] = useState('');
+  const seedPhraseInputRef = useRef<ErrorModalRetry>(null);
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -62,126 +43,45 @@ const RestoreAccountScreen = (props: Props) => {
     });
   }, []);
 
-  /**
-   * Updates the chips after an new word has been entered or deleted.
-   * @param newChips list of new chips.
-   */
-  const onChipsChangeHandler = (newChips: Incubator.ChipsInputChipProps[]) => {
-    const validatedChips = validateSeedPhraseInput(
-      initInputSeedPhrase,
-      newChips,
-    );
-
-    if (validatedChips.length > 0) {
-      setInputSeedPhrase(validatedChips);
-    }
+  const onInvalidMnemonic = () => {
+    props.dispatchSetError('', 'Invalid mnemonic!!');
   };
 
-  /**
-   * Confirm seed phrase button handler logic.
-   */
-  const confirmSeedPhraseBtnHandler = async () => {
-    if (inputSeedPhrase.length === 24) {
-      props.dispatchSetLoading('Restoring account ...', '');
-    } else {
-      props.dispatchSetError('Invalid mnemonic', '');
-    }
+  const onValidMnemonic = (_mnemonic: string) => {
+    setSeedPhrase(_mnemonic);
+    props.dispatchSetLoading('Restoring account ...', '');
   };
 
   const onShowModal = () => {
     if (isFocused) {
-      const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-      props.dispatchRestoreAccount(props.route.params.pin, seedPhraseStr);
+      props.dispatchRestoreAccount(props.route.params.pin, seedPhrase);
     }
   };
 
   return (
-    <Screen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1}}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={style.container}>
-            <Text
-              center={true}
-              color={AppColors.black}
-              style={[style.counter]}
-              body1>
-              To restore your account, enter your 24-word recovery (seed)
-              phrase.
-            </Text>
+    <Screen style={styles.screen}>
+      <SeedPhraseInputComponent
+        onValidMnemonic={onValidMnemonic}
+        onInvalidMnemonic={onInvalidMnemonic}
+        isFocused={false}
+        ref={seedPhraseInputRef}
+        instructions="To restore your account, enter your 24-word recovery (seed)
+        phrase."
+      />
 
-            {/* Body text group section. */}
-            <View style={style.chipInputGroup}>
-              <Text color={AppColors.yellow} style={style.counter} body1>
-                Word {inputSeedPhrase.length} of 24
-              </Text>
-              <Incubator.ChipsInput
-                placeholder="Next word..."
-                floatingPlaceholder={inputSeedPhrase.length < 24}
-                floatingPlaceholderStyle={{
-                  ...FONTS.body1,
-                  color: AppColors.brown,
-                }}
-                chips={inputSeedPhrase}
-                defaultChipProps={{
-                  labelStyle: {...FONTS.body2},
-                }}
-                onChange={newChips => onChipsChangeHandler(newChips)}
-                maxChips={24}
-                autoFocus={true}
-                autoCapitalize={'none'}
-              />
-            </View>
+      <LoadingModalComponent
+        TAG="RestoreAccountScreen"
+        onShowModal={onShowModal}
+        visible={props.ui_status === 'loading' && isFocused}
+      />
 
-            {/* Button group section. */}
-            <View style={style.buttonGroup}>
-              <Button
-                style={style.button}
-                outline={true}
-                outlineColor={AppColors.yellow}
-                label={'Clear'}
-                size={'small'}
-                enabled={initInputSeedPhrase.length > 0}
-                labelStyle={{
-                  ...FONTS.body1,
-                }}
-                onPress={() => {
-                  setInputSeedPhrase(initInputSeedPhrase);
-                }}
-              />
-              <Button
-                style={style.button}
-                outline={true}
-                outlineColor={AppColors.light_green}
-                label={'Confirm'}
-                size={'small'}
-                enabled={initInputSeedPhrase.length === 24}
-                labelStyle={{
-                  ...FONTS.body1,
-                }}
-                onPress={() => {
-                  confirmSeedPhraseBtnHandler();
-                }}
-              />
-            </View>
-
-            <ErrorModalComponent
-              onRetry={() => {
-                setInputSeedPhrase(initInputSeedPhrase);
-                setErrorDialogVisibility(false);
-              }}
-              visible={errorDialogVisible && isFocused}
-            />
-
-            <LoadingModalComponent
-              TAG="ReastoreAccountScreen"
-              onShowModal={onShowModal}
-              visible={props.ui_status === 'loading' && isFocused}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      <ErrorModalComponent
+        onRetry={() => {
+          seedPhraseInputRef.current?.retry();
+          props.dispatchSetNormal();
+        }}
+        visible={props.ui_status === 'error' && isFocused}
+      />
     </Screen>
   );
 };
@@ -199,6 +99,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   dispatchRestoreAccount: generateActionRestoreExistingAccount,
   dispatchSetLoading: generateActionSetLoading,
+  dispatchSetNormal: generateActionSetNormal,
   dispatchSetError: generateActionSetError,
 };
 
@@ -209,34 +110,6 @@ type ReduxProps = ConnectedProps<typeof connector>;
 
 export default connector(RestoreAccountScreen);
 
-const style = StyleSheet.create({
-  container: {
-    justifyContent: 'space-around',
-    flex: 1,
-    paddingVertical: wp('5%'),
-    paddingHorizontal: wp('5%'),
-  },
-  button: {
-    width: wp('30.0%'),
-    marginBottom: hp('1%'),
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  chipInputGroup: {
-    justifyContent: 'center',
-    paddingHorizontal: wp('2.5%'),
-    paddingVertical: hp('1%'),
-    paddingBottom: hp('2%'),
-    backgroundColor: '#ffff',
-    borderRadius: wp('5%'),
-    minWidth: wp('80%'),
-  },
-  counter: {
-    textAlign: 'center',
-  },
-  title: {
-    textAlign: 'center',
-  },
+const styles = StyleSheet.create({
+  screen: {},
 });

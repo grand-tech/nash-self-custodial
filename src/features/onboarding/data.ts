@@ -3,11 +3,11 @@ import {CarouselItem} from './components/Interfaces';
 export const seedPhraseInstructions: Array<CarouselItem> = [
   {
     title: 'Your Recovery Phrase is a special kind of password',
-    body: 'Your Recovery Phrase is the one and only way to access your account',
+    body: 'Your Recovery Phrase is the one and only way to access your account.',
   },
   {
     title: 'Without your Recovery Phrase, you can lose access forever',
-    body: 'If you lose your phone, you must have your Recovery Phrase to get your account back. Nobody, not evenNash, will be able to recover your funds without it',
+    body: 'If you lose your phone, you must have your Recovery Phrase to get your account back. Nobody, not even Nash, will be able to recover your funds without it.',
   },
   {
     title: 'Write it down',

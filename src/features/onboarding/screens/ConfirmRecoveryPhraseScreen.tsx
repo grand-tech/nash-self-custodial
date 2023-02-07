@@ -1,35 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {StyleSheet} from 'react-native';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../../app-redux-store/store';
-import {AppColors} from '../../../ui_lib_configs/colors';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {
-  Button,
-  ChipsInputChipProps,
-  Incubator,
-  Text,
-} from 'react-native-ui-lib';
 import Screen from '../../../app_components/Screen';
-import {FONTS} from '../../../ui_lib_configs/fonts';
-import {headerWithDeleteButton} from '../navigation/navigation.stack';
-import {
-  constructSeedPhraseFromChipInputs,
-  validateSeedPhraseInput,
-} from '../../../utils/seed.phrase.validation.utils';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {OnboardingNavigationStackParamsList} from '../navigation/navigation.params.type';
+import SeedPhraseInputComponent, {
+  ErrorModalRetry,
+} from '../../../app_components/SeedPhraseInputComponent';
 import ErrorModalComponent from '../../../app_components/ErrorModalComponent';
+import {
+  generateActionSetError,
+  generateActionSetNormal,
+} from '../../ui_state_manager/action.generators';
+import {useIsFocused} from '@react-navigation/native';
 
 type NavigationProps = NativeStackScreenProps<
   OnboardingNavigationStackParamsList,
@@ -40,130 +28,47 @@ type NavigationProps = NativeStackScreenProps<
  * Contains the onboarding UI.
  */
 const ConfirmRecoveryPhraseScreen = (props: Props) => {
+  const isFocused = useIsFocused();
   const seedPhrase = props.route.params.mnemonic;
-
-  const initInputSeedPhrase: ChipsInputChipProps[] = [];
-  const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
-  const [errorDialogVisible, setErrorDialogVisibility] = useState(false);
+  const seedPhraseInputRef = useRef<ErrorModalRetry>(null);
 
   useEffect(() => {
-    props.navigation.setOptions(
-      headerWithDeleteButton(
-        () => {
-          // navigation back
-          props.navigation.goBack();
-        },
-        () => {
-          // clear entered seed phrase
-          setInputSeedPhrase(initInputSeedPhrase);
-        },
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    props.navigation.setOptions({
+      title: 'Confirm Recovery Phrase',
+      headerTransparent: true,
+    });
   }, []);
 
   /**
    * Confirm seed phrase button handler logic.
    */
-  const confirmSeedPhraseBtnHandler = () => {
-    const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-    if (seedPhrase === seedPhraseStr) {
+  const confirmSeedPhraseBtnHandler = (mnemonic: string) => {
+    if (seedPhrase === mnemonic) {
       props.navigation.navigate('EnterFiatPaymentInformationScreen');
     } else {
-      setErrorDialogVisibility(true);
-    }
-  };
-
-  /**
-   * Validates updated chips before committing the changes to the component state.
-   * @param newChips list of new chips after input.
-   */
-  const processInput = (newChips: ChipsInputChipProps[]) => {
-    const validatedChips = validateSeedPhraseInput(
-      initInputSeedPhrase,
-      newChips,
-    );
-
-    if (validatedChips.length > 0) {
-      setInputSeedPhrase(validatedChips);
+      props.dispatchSetError('', 'Seed phrase did not match!!');
     }
   };
 
   return (
     <Screen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1}}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={style.container}>
-            {/* Tittle section */}
-            <View>
-              <Text
-                color={AppColors.light_green}
-                displayBold
-                style={[style.title]}>
-                Confirm Recovery Phrase
-              </Text>
-              <Text
-                center={true}
-                color={AppColors.black}
-                style={[style.counter]}
-                body1>
-                Please enter your recovery phrase
-              </Text>
-            </View>
-            {/* Body text group section. */}
-            <View style={style.chipInputGroup}>
-              <Text color={AppColors.yellow} style={style.counter} body1>
-                Word {inputSeedPhrase.length} of 24
-              </Text>
-              <Incubator.ChipsInput
-                placeholder="Next word..."
-                floatingPlaceholder={inputSeedPhrase.length < 24}
-                floatingPlaceholderStyle={{
-                  ...FONTS.body3,
-                  color: AppColors.brown,
-                }}
-                chips={inputSeedPhrase}
-                defaultChipProps={{
-                  labelStyle: {...FONTS.body1},
-                }}
-                onChange={newChips => processInput(newChips)}
-                maxChips={24}
-                autoFocus={true}
-                autoCapitalize={'none'}
-              />
-            </View>
+      <SeedPhraseInputComponent
+        onValidMnemonic={confirmSeedPhraseBtnHandler}
+        onInvalidMnemonic={() => {
+          props.dispatchSetError('', 'Invalid seed phrase!!');
+        }}
+        isFocused={false}
+        ref={seedPhraseInputRef}
+        instructions="Please enter your recovery phrase."
+      />
 
-            {/* Button group section. */}
-            <View style={style.buttonGroup}>
-              <Button
-                style={style.button}
-                outline={true}
-                outlineColor={AppColors.light_green}
-                label={'Confirm'}
-                secondary
-                labelStyle={{
-                  ...FONTS.h4,
-                }}
-                onPress={() => {
-                  confirmSeedPhraseBtnHandler();
-                }}
-                onDismiss={() => setErrorDialogVisibility(false)}
-                disabled={inputSeedPhrase.length !== 24}
-              />
-            </View>
-            <ErrorModalComponent
-              onRetry={() => {
-                setInputSeedPhrase(initInputSeedPhrase);
-                setErrorDialogVisibility(false);
-              }}
-              visible={errorDialogVisible}
-              errorMessage={'Invalid seed phrase!!'}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      <ErrorModalComponent
+        onRetry={() => {
+          seedPhraseInputRef.current?.retry();
+          props.dispatchSetNormal();
+        }}
+        visible={props.ui_status === 'error' && isFocused}
+      />
     </Screen>
   );
 };
@@ -174,11 +79,13 @@ const ConfirmRecoveryPhraseScreen = (props: Props) => {
  * @returns the props intended to be passed to the component from state variables.
  */
 const mapStateToProps = (state: RootState) => ({
-  onboarded: state.onboarding.status,
+  onboarding_status: state.onboarding.status,
+  ui_status: state.ui_state.status,
 });
 
 const mapDispatchToProps = {
-  // completeOnboarding: generateActionCompletedOnboarding,
+  dispatchSetError: generateActionSetError,
+  dispatchSetNormal: generateActionSetNormal,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
@@ -197,7 +104,7 @@ const style = StyleSheet.create({
     paddingHorizontal: wp('5%'),
   },
   button: {
-    width: wp('80.0%'),
+    width: wp('30.0%'),
   },
   buttonGroup: {
     flex: 0.23,
