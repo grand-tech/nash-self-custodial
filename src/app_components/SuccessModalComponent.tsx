@@ -5,10 +5,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Text} from 'react-native-ui-lib';
+import {Button, Text} from 'react-native-ui-lib';
 import {RootState} from '../app-redux-store/store';
 import {connect, ConnectedProps} from 'react-redux';
 import {generateActionSetNormal} from '../features/ui_state_manager/action.generators';
+import {AppColors} from '../ui_lib_configs/colors';
+import {FONTS} from '../ui_lib_configs/fonts';
 
 const SuccessModalComponent: React.FC<Props> = (props: Props) => {
   const onShow = () => {
@@ -39,11 +41,19 @@ const SuccessModalComponent: React.FC<Props> = (props: Props) => {
             loop={false}
             style={styles.animation}
           />
-          <Pressable onPress={onPressOkay}>
-            <Text style={styles.dialogText} h2>
-              Ok
-            </Text>
-          </Pressable>
+          <Button
+            style={styles.button}
+            outline={true}
+            outlineColor={AppColors.light_green}
+            label={'Okay'}
+            size={'small'}
+            labelStyle={{
+              ...FONTS.body1,
+            }}
+            onPress={() => {
+              onPressOkay();
+            }}
+          />
         </View>
       </View>
     </Modal>
@@ -55,7 +65,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   animation: {
-    height: hp('25%'),
+    height: hp('6%'),
     alignSelf: 'center',
   },
   dialogText: {
@@ -78,9 +88,14 @@ const styles = StyleSheet.create({
     padding: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.9,
+    opacity: 0.95,
     height: hp('100%'),
     width: wp('100%'),
+  },
+  button: {
+    width: wp('15.0%'),
+    marginBottom: hp('1%'),
+    marginTop: hp('5%'),
   },
 });
 

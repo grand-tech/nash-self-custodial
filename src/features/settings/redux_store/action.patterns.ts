@@ -1,0 +1,3 @@
+export enum Actions {
+  CHANGE_USER_PIN_NUMBER = 'PIN/CHANGE_USER_PIN_NUMBER',
+}

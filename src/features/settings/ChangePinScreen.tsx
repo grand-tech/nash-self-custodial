@@ -11,6 +11,7 @@ import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from '../../app-redux-store/store';
 import EnterPinModal from '../../app_components/EnterPinModal';
 import LoadingModalComponent from '../../app_components/LoadingModalComponent';
+import SuccessModalComponent from '../../app_components/SuccessModalComponent';
 import {AppColors} from '../../ui_lib_configs/colors';
 import {FONTS} from '../../ui_lib_configs/fonts';
 import {NashCache} from '../../utils/cache';
@@ -18,9 +19,11 @@ import {OnboardingNavigationStackParamsList} from '../onboarding/navigation/navi
 import {createNewAccountAction} from '../onboarding/redux_store/action.generators';
 import {OnboardingStatusNames} from '../onboarding/redux_store/reducers';
 import {generateActionSetLoading} from '../ui_state_manager/action.generators';
+import {generateActionChangePIN} from './redux_store/action.generators';
 
 const ChangePinScreen: React.FC<Props> = (props: Props) => {
-  const [newPin, setNewPin] = useState('');
+  const [newPIN, setNewPin] = useState('');
+  const [oldPIN, setOldPin] = useState('');
   const isFocused = useIsFocused();
 
   // May be useless. But lets have it for now.
@@ -33,36 +36,29 @@ const ChangePinScreen: React.FC<Props> = (props: Props) => {
   });
 
   // What to do when the user enters their pin for the first time.
+  const onOldPinMatched = (pin: string) => {
+    setOldPin(pin);
+  };
+
+  // What to do when the user enters their pin for the first time.
   const onCreateNewPin = (pin: string) => {
     setNewPin(pin);
   };
 
   // What to do when first PIN matches second PIN.
   const onConfirmNewPin = (pin: string) => {
-    NashCache.setPinCache(pin);
-    if (
-      props.onboarding_status.name ===
-      OnboardingStatusNames.choose_restore_account
-    ) {
-      // restore account.
-      props.navigation.navigate('RestoreAccount', {pin: pin});
-    } else {
-      // create new account.
-      props.dispatchActionSetLoading(
-        'Creating account...',
-        '',
-        'on pin matched',
-      );
-    }
-
-    // Reset the new pin incase the user navigates back.
-    setNewPin('');
+    // create new account.
+    props.dispatchActionSetLoading(
+      'Updating PIN number ...',
+      '',
+      'on pin matched',
+    );
   };
 
   // What to do when loading modal has opened.
   const onShowModal = () => {
     if (isFocused) {
-      props.dispatchActionCreateNewAccount(newPin);
+      props.dispatchActionChangePIN(oldPIN, newPIN);
     }
   };
 
@@ -70,23 +66,37 @@ const ChangePinScreen: React.FC<Props> = (props: Props) => {
     <Screen style={styles.screen}>
       <EnterPinModal
         target="privateKey"
+        onPinMatched={onOldPinMatched}
+        visible={isFocused && oldPIN === ''}
+        changePin={true}
+      />
+
+      <EnterPinModal
+        target="privateKey"
         onPinMatched={onCreateNewPin}
-        visible={isFocused}
+        visible={isFocused && oldPIN !== '' && newPIN === ''}
         creatingPin={true}
       />
 
       <EnterPinModal
         target="privateKey"
         onPinMatched={onConfirmNewPin}
-        visible={newPin !== '' && isFocused}
+        visible={newPIN !== '' && isFocused}
         confirmingNewPin={true}
-        validatorPin={newPin}
+        validatorPin={newPIN}
       />
 
       <LoadingModalComponent
         TAG="ConfirmPinScreen"
         visible={props.ui_screen_status === 'loading' && isFocused}
         onShowModal={onShowModal}
+      />
+
+      <SuccessModalComponent
+        visible={props.ui_screen_status === 'success' && isFocused}
+        onPressOkay={() => {
+          props.navigation.goBack();
+        }}
       />
     </Screen>
   );
@@ -104,7 +114,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {
   dispatchActionSetLoading: generateActionSetLoading,
-  dispatchActionCreateNewAccount: createNewAccountAction,
+  dispatchActionChangePIN: generateActionChangePIN,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
