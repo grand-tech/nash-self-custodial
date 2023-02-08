@@ -235,6 +235,9 @@ export function* addClientsPaymentInfoToSaga(
         paymentInfoCypherText,
       );
 
+      const privateKey: string = NashCache.getPrivateKey();
+      contractKit.addAccount(privateKey);
+
       const receipt: CeloTxReceipt = yield call(
         sendTransactionObject,
         tx,

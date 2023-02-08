@@ -36,6 +36,7 @@ import {NextUserAction} from './transaction.user.actions.enum';
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
   const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
+  const [hasPrivateKey, setHasPrivateKey] = useState(false);
 
   let tx: NashEscrowTransaction = {
     id: -1,
@@ -103,6 +104,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         props.dispatchActionSetLoading('Approving ...', '');
       }
     } else {
+      setHasPrivateKey(!hasPrivateKey);
       props.dispatchActionSetNormal();
     }
   };
@@ -167,6 +169,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
             transaction={item}
             performNextUserAction={performNextUserAction}
             navigation={props.navigation}
+            hasPrivateKey={hasPrivateKey}
           />
         )}
         keyExtractor={(item: NashEscrowTransaction) => {

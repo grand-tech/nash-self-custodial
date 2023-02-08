@@ -86,13 +86,13 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           } else {
             status = 'Awaiting Your Confirmation';
             setNextUserAction(NextUserAction.APPROVE);
-            const isRecevingEnd =
+            const isReceivingEnd =
               (transaction.agentAddress === myAddress &&
                 transaction.txType === TransactionType.DEPOSIT) ||
               (transaction.clientAddress === myAddress &&
                 transaction.txType === TransactionType.WITHDRAWAL);
 
-            if (isRecevingEnd) {
+            if (isReceivingEnd) {
               setButtonLabel(
                 'Confirm that you have received ' +
                   fiatAmount +
@@ -225,7 +225,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       NashCache.getPinCache() !== null &&
       NashCache.getPinCache()?.trim() !== ''
     ) {
-      props.dispatchActionSetLoading('', 'Send request...');
+      props.dispatchActionSetLoading('Send request...', '');
     } else {
       props.promptForPIN();
     }
