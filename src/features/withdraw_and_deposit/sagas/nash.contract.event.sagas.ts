@@ -4,7 +4,11 @@ import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {Actions} from '../redux_store/action.patterns';
 import {ActionTransactionInitializationContractEvent} from '../redux_store/actions';
 import {updatePendingTransactionsList} from './saga';
-
+/**
+ * Does the necessary updates incase the smart
+ *  contract emits a transaction initialization event.
+ * @param _action the action.
+ */
 export function* handleTransactionInitializationEvent(
   _action: ActionTransactionInitializationContractEvent,
 ) {
@@ -21,6 +25,10 @@ export function* handleTransactionInitializationEvent(
   }
 }
 
+/**
+ * Listens for the transaction initialization
+ * event from the smart contract.
+ */
 export function* watchTransactionInitializationEvent() {
   yield takeLatest(
     Actions.TRANSACTION_INIT_CONTRACT_EVENT,
