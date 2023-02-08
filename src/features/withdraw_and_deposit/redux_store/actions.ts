@@ -72,6 +72,47 @@ export interface ActionUpdateMyTransaction {
   action: ListUpdateActions;
 }
 
+// Smart contract event actions.
+export interface ActionTransactionInitializationContractEvent {
+  type: Actions.TRANSACTION_INIT_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionAgentPairingContractEvent {
+  type: Actions.AGENT_PAIRING_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionClientConfirmationContractEvent {
+  type: Actions.CLIENT_CONFIRMATION_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionAgentConfirmationContractEvent {
+  type: Actions.AGENT_CONFIRMATION_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionSavedClientCommentContractEvent {
+  type: Actions.SAVED_CLIENT_COMMENT_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionConfirmationCompletedContractEvent {
+  type: Actions.CONFIRMATION_COMPLETE_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionTransactionCompletionEvent {
+  type: Actions.TRANSACTION_COMPLETE_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionTransactionCanceledContractEvent {
+  type: Actions.TRANSACTION_CANCELED_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
 /**
  * Create a generic action type.
  */
@@ -84,4 +125,12 @@ export type ActionTypes =
   | ActionApproveTransaction
   | ActionCancelTransaction
   | ActionUpdatePendingTransaction
-  | ActionUpdateMyTransaction;
+  | ActionUpdateMyTransaction
+  | ActionTransactionInitializationContractEvent
+  | ActionAgentPairingContractEvent
+  | ActionClientConfirmationContractEvent
+  | ActionAgentConfirmationContractEvent
+  | ActionSavedClientCommentContractEvent
+  | ActionConfirmationCompletedContractEvent
+  | ActionTransactionCompletionEvent
+  | ActionTransactionCanceledContractEvent;

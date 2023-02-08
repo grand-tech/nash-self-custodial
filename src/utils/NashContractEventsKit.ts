@@ -6,6 +6,7 @@ import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
 import {
   generateActionUpdatePendingTransactions,
   generateActionUpdateMyTransactions,
+  generateActionTransactionInitializationContractEvent,
 } from '../features/withdraw_and_deposit/redux_store/action.generators';
 import ReadContractDataKit from '../features/withdraw_and_deposit/sagas/ReadContractDataKit';
 import {store} from '../app-redux-store/store';
@@ -19,18 +20,17 @@ import DeviceInfo from 'react-native-device-info';
  * Contains nash event listener logic.
  */
 export class ContractEventsListenerKit {
-  /**
-   * Tag for logging and debugging purposes.
-   */
-  private TAG = '[ ' + this.constructor.name + '] : ';
-
   private static contractsEventListenerKit: ContractEventsListenerKit;
 
   /**
    * Creates a new instance of contract kit event listeners.
    */
   static createInstance() {
-    this.contractsEventListenerKit = new ContractEventsListenerKit();
+    if (this.contractsEventListenerKit) {
+      console.log('Event listener running!!');
+    } else {
+      this.contractsEventListenerKit = new ContractEventsListenerKit();
+    }
   }
 
   /**
@@ -145,9 +145,10 @@ export class ContractEventsListenerKit {
       switch (event.event) {
         case 'TransactionInitEvent':
           if (tx.clientAddress !== publicAddress) {
-            store.dispatch(generateActionUpdatePendingTransactions(tx, 'add'));
+            store.dispatch(
+              generateActionTransactionInitializationContractEvent(tx),
+            );
           }
-          this.fetchBalance(tx);
           break;
         case 'AgentPairingEvent':
           store.dispatch(generateActionUpdatePendingTransactions(tx, 'remove'));

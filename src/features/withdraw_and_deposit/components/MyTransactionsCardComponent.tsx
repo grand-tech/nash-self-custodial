@@ -103,12 +103,14 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
     if (
       transaction.clientAddress === publicAddress &&
       transaction.clientPaymentDetails === '' &&
+      transaction.agentAddress !== '' &&
+      transaction.agentPaymentDetails === '' &&
       transaction.status !== 0 &&
       transaction.status !== 3
     ) {
       props.generateActionAddClientPaymentInfo(transaction);
     }
-  });
+  }, []);
 
   const onPress = () => {
     props.performNextUserAction(nextUserAction, transaction);

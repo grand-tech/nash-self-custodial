@@ -15,6 +15,14 @@ import {
   ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
+  ActionTransactionInitializationContractEvent,
+  ActionAgentConfirmationContractEvent,
+  ActionAgentPairingContractEvent,
+  ActionClientConfirmationContractEvent,
+  ActionConfirmationCompletedContractEvent,
+  ActionSavedClientCommentContractEvent,
+  ActionTransactionCanceledContractEvent,
+  ActionTransactionCompletionEvent,
 } from './actions';
 import {
   DataQueryTriggers,
@@ -131,5 +139,77 @@ export function generateActionUpdateMyTransactions(
     type: Actions.UPDATE_MY_TRANSACTION_LISTS,
     transaction,
     action,
+  };
+}
+
+export function generateActionTransactionInitializationContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionTransactionInitializationContractEvent {
+  return {
+    type: Actions.TRANSACTION_INIT_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionAgentPairingContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionAgentPairingContractEvent {
+  return {
+    type: Actions.AGENT_PAIRING_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionClientConfirmationContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionClientConfirmationContractEvent {
+  return {
+    type: Actions.CLIENT_CONFIRMATION_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionAgentConfirmationContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionAgentConfirmationContractEvent {
+  return {
+    type: Actions.AGENT_CONFIRMATION_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionSavedClientCommentContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionSavedClientCommentContractEvent {
+  return {
+    type: Actions.SAVED_CLIENT_COMMENT_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionConfirmationCompletedContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionConfirmationCompletedContractEvent {
+  return {
+    type: Actions.CONFIRMATION_COMPLETE_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionTransactionCompletionEvent(
+  transaction: NashEscrowTransaction,
+): ActionTransactionCompletionEvent {
+  return {
+    type: Actions.TRANSACTION_COMPLETE_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionTransactionCanceledContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionTransactionCanceledContractEvent {
+  return {
+    type: Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
+    transaction,
   };
 }

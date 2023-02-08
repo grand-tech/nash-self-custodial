@@ -419,9 +419,7 @@ export function* watchApproveTransactionSaga() {
 export function* updateMyTransactionsListSaga(
   _action: ActionUpdateMyTransaction,
 ) {
-  const txs: NashEscrowTransaction[] = yield select(selectRampMyTransactions);
-  const update = generateUpdatedList(_action.action, _action.transaction, txs);
-  yield put(generateActionSetMyTransactions(update));
+  yield call(updateMyTransactionsList, _action.action, _action.transaction);
 }
 
 export function* watchUpdateMyTransactionsListSaga() {
@@ -431,8 +429,37 @@ export function* watchUpdateMyTransactionsListSaga() {
   );
 }
 
+export function* updateMyTransactionsList(
+  _action: ListUpdateActions,
+  _transaction: NashEscrowTransaction,
+) {
+  const deviceName: string = yield call(DeviceInfo.getDeviceName);
+  console.log(
+    'updateMyTransactionsListSaga=======>' +
+      deviceName +
+      ' tx ' +
+      _transaction.id +
+      ' action ' +
+      _action,
+  );
+  const txs: NashEscrowTransaction[] = yield select(selectRampMyTransactions);
+  const update = generateUpdatedList(_action, _transaction, txs);
+  yield put(generateActionSetMyTransactions(update));
+}
+
 export function* updatePendingTransactionsListSaga(
   _action: ActionUpdatePendingTransaction,
+) {
+  yield call(
+    updatePendingTransactionsList,
+    _action.action,
+    _action.transaction,
+  );
+}
+
+export function* updatePendingTransactionsList(
+  _action: ListUpdateActions,
+  _transaction: NashEscrowTransaction,
 ) {
   const txs: NashEscrowTransaction[] = yield select(
     selectRampPendingTransactions,
@@ -440,8 +467,15 @@ export function* updatePendingTransactionsListSaga(
 
   const deviceName: string = yield call(DeviceInfo.getDeviceName);
 
-  console.log('=======>' + deviceName + ' tx ' + _action);
-  const update = generateUpdatedList(_action.action, _action.transaction, txs);
+  console.log(
+    'updateMyTransactionsListSaga=======>' +
+      deviceName +
+      ' tx ' +
+      _transaction.id +
+      ' action ' +
+      _action,
+  );
+  const update = generateUpdatedList(_action, _transaction, txs);
   yield put(generateActionSetPendingTransactions(update));
 }
 
