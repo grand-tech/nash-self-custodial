@@ -104,7 +104,6 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       transaction.clientAddress === publicAddress &&
       transaction.clientPaymentDetails === '' &&
       transaction.agentAddress !== '' &&
-      transaction.agentPaymentDetails === '' &&
       transaction.status !== 0 &&
       transaction.status !== 3
     ) {

@@ -140,7 +140,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   });
 
   /**
-   * Handle currency coversion.
+   * Handle currency conversion.
    */
   const computerFiatAmount = () => {
     if (rates) {
