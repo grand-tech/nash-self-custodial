@@ -174,19 +174,9 @@ export class ContractEventsListenerKit {
           break;
         case 'TransactionCompletionEvent':
           store.dispatch(generateActionTransactionCompletionEvent(tx));
-          this.fetchBalance(tx);
           break;
         case 'TransactionCanceledEvent':
           store.dispatch(generateActionTransactionCanceledContractEvent(tx));
-
-          if (tx.clientAddress === publicAddress) {
-            store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
-            this.fetchBalance(tx);
-          } else {
-            store.dispatch(
-              generateActionUpdatePendingTransactions(tx, 'remove'),
-            );
-          }
           break;
         default:
           // TODO: register this to crash-litics.

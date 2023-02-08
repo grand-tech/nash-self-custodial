@@ -25,12 +25,7 @@ export function* handleTransactionInitializationEvent(
   const myAddress: string = yield select(selectPublicAddress);
   if (_action.transaction.clientAddress !== myAddress) {
     yield call(updatePendingTransactionsList, 'add', _action.transaction);
-  }
-
-  if (
-    _action.transaction.clientAddress === myAddress ||
-    _action.transaction.agentAddress === myAddress
-  ) {
+  } else {
     yield put(generateActionQueryBalance());
   }
 }
@@ -59,15 +54,11 @@ export function* handleAgentPairingEvent(
     yield put(generateActionAddClientPaymentInfoToTx(_action.transaction));
     yield call(updateMyTransactionsList, 'update', _action.transaction);
   } else {
-    yield call(updateMyTransactionsList, 'add', _action.transaction);
+    yield call(updatePendingTransactionsList, 'remove', _action.transaction);
   }
 
-  yield call(updatePendingTransactionsList, 'remove', _action.transaction);
-
-  if (
-    _action.transaction.clientAddress === myAddress ||
-    _action.transaction.agentAddress === myAddress
-  ) {
+  if (_action.transaction.agentAddress === myAddress) {
+    yield call(updateMyTransactionsList, 'add', _action.transaction);
     yield put(generateActionQueryBalance());
   }
 }
@@ -95,7 +86,13 @@ export function* handleClientConfirmationEvent(
     | ActionAddClientsPaymentInfoToTransaction
     | ActionConfirmationCompletedContractEvent,
 ) {
-  yield call(updateMyTransactionsList, 'update', _action.transaction);
+  const myAddress: string = yield select(selectPublicAddress);
+  if (
+    _action.transaction.clientAddress === myAddress ||
+    _action.transaction.agentAddress === myAddress
+  ) {
+    yield call(updateMyTransactionsList, 'update', _action.transaction);
+  }
 }
 
 /**
@@ -151,12 +148,11 @@ export function* handleTransactionCanceledEvent(
   _action: ActionTransactionCanceledContractEvent,
 ) {
   const myAddress: string = yield select(selectPublicAddress);
-  if (_action.transaction.clientAddress !== myAddress) {
-    yield call(updatePendingTransactionsList, 'remove', _action.transaction);
-  }
-
   if (_action.transaction.clientAddress === myAddress) {
+    yield call(updateMyTransactionsList, 'remove', _action.transaction);
     yield put(generateActionQueryBalance());
+  } else {
+    yield call(updatePendingTransactionsList, 'remove', _action.transaction);
   }
 }
 
@@ -168,6 +164,35 @@ export function* watchTransactionCanceledEvent() {
   yield takeLatest(
     Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
     handleTransactionCanceledEvent,
+  );
+}
+
+/**
+ * Does the necessary updates incase the smart
+ *  contract emits a transaction initialization event.
+ * @param _action the action.
+ */
+export function* handleTransactionCompletedEvent(
+  _action: ActionConfirmationCompletedContractEvent,
+) {
+  const myAddress: string = yield select(selectPublicAddress);
+  if (
+    _action.transaction.clientAddress === myAddress ||
+    _action.transaction.agentAddress === myAddress
+  ) {
+    yield call(updatePendingTransactionsList, 'remove', _action.transaction);
+    yield put(generateActionQueryBalance());
+  }
+}
+
+/**
+ * Listens for the transaction initialization
+ * event from the smart contract.
+ */
+export function* watchTransactionCompletedEvent() {
+  yield takeLatest(
+    Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
+    handleTransactionCompletedEvent,
   );
 }
 
