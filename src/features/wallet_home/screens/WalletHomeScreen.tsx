@@ -29,9 +29,10 @@ const WalletHomeScreen: React.FC<Props> = (props: Props) => {
 
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
-      props.navigation.setOptions({
-        title: '',
+      props.navigation.getParent()?.setOptions({
+        title: 'Home',
         headerTransparent: true,
+        headerShown: true,
       });
     });
 
