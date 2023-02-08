@@ -7,6 +7,13 @@ import {
   generateActionUpdatePendingTransactions,
   generateActionUpdateMyTransactions,
   generateActionTransactionInitializationContractEvent,
+  generateActionAgentPairingContractEvent,
+  generateActionAgentConfirmationContractEvent,
+  generateActionClientConfirmationContractEvent,
+  generateActionConfirmationCompletedContractEvent,
+  generateActionSavedClientCommentContractEvent,
+  generateActionTransactionCanceledContractEvent,
+  generateActionTransactionCompletionEvent,
 } from '../features/withdraw_and_deposit/redux_store/action.generators';
 import ReadContractDataKit from '../features/withdraw_and_deposit/sagas/ReadContractDataKit';
 import {store} from '../app-redux-store/store';
@@ -151,26 +158,27 @@ export class ContractEventsListenerKit {
           }
           break;
         case 'AgentPairingEvent':
-          store.dispatch(generateActionUpdatePendingTransactions(tx, 'remove'));
-          if (tx.clientAddress === publicAddress) {
-            store.dispatch(generateActionAddClientPaymentInfoToTx(tx));
-            store.dispatch(generateActionUpdateMyTransactions(tx, 'update'));
-          } else {
-            store.dispatch(generateActionUpdateMyTransactions(tx, 'add'));
-          }
-          this.fetchBalance(tx);
+          store.dispatch(generateActionAgentPairingContractEvent(tx));
           break;
         case 'ClientConfirmationEvent':
+          store.dispatch(generateActionClientConfirmationContractEvent(tx));
+          break;
         case 'AgentConfirmationEvent':
+          store.dispatch(generateActionAgentConfirmationContractEvent(tx));
+          break;
         case 'SavedClientCommentEvent':
+          store.dispatch(generateActionSavedClientCommentContractEvent(tx));
+          break;
         case 'ConfirmationCompletedEvent':
-          store.dispatch(generateActionUpdateMyTransactions(tx, 'update'));
+          store.dispatch(generateActionConfirmationCompletedContractEvent(tx));
           break;
         case 'TransactionCompletionEvent':
-          store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
+          store.dispatch(generateActionTransactionCompletionEvent(tx));
           this.fetchBalance(tx);
           break;
         case 'TransactionCanceledEvent':
+          store.dispatch(generateActionTransactionCanceledContractEvent(tx));
+
           if (tx.clientAddress === publicAddress) {
             store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
             this.fetchBalance(tx);
