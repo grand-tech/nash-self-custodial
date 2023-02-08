@@ -5,6 +5,7 @@ import DisplayAccountAddress from '../DisplayAccountAddress';
 import DisplayPrivateKeyAndMnemonic from '../DisplayPrivateKeyAndMnemonic';
 import {SettingsNavigationStackParamsList} from './navigation.params.type';
 import EnterPaymentInformationScreen from '../../ramp_payment_information/screens/EnterPaymentInformationScreen';
+import ChangePinScreen from '../ChangePinScreen';
 
 const Stack = createNativeStackNavigator<SettingsNavigationStackParamsList>();
 
@@ -42,5 +43,6 @@ const navigationStack = (
       name="EnterPaymentInformationScreen"
       component={EnterPaymentInformationScreen}
     />
+    <Stack.Screen name="ChangePinScreen" component={ChangePinScreen} />
   </>
 );
