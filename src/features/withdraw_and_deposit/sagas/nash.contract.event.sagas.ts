@@ -23,10 +23,11 @@ export function* handleTransactionInitializationEvent(
   _action: ActionTransactionInitializationContractEvent,
 ) {
   const myAddress: string = yield select(selectPublicAddress);
-  if (_action.transaction.clientAddress !== myAddress) {
-    yield call(updatePendingTransactionsList, 'add', _action.transaction);
-  } else {
+  if (_action.transaction.clientAddress === myAddress) {
     yield put(generateActionQueryBalance());
+    yield call(updateMyTransactionsList, 'add', _action.transaction);
+  } else {
+    yield call(updatePendingTransactionsList, 'add', _action.transaction);
   }
 }
 
@@ -196,7 +197,7 @@ export function* watchTransactionCompletedEvent() {
   );
 }
 
-export function* onRampOffRampSagas() {
+export function* rampEscrowContractEventListenerSagas() {
   yield spawn(watchTransactionInitializationEvent);
   yield spawn(watchAgentPairingEvent);
   yield spawn(watchClientConfirmationEvent);

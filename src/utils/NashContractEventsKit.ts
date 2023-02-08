@@ -144,16 +144,12 @@ export class ContractEventsListenerKit {
         ' tx ' +
         tx?.id,
     );
-    const publicAddress = store.getState().onboarding.publicAddress;
     if (tx) {
       switch (event.event) {
         case 'TransactionInitEvent':
-          const publicAddress = store.getState().onboarding.publicAddress;
-          if (tx.clientAddress !== publicAddress) {
-            store.dispatch(
-              generateActionTransactionInitializationContractEvent(tx),
-            );
-          }
+          store.dispatch(
+            generateActionTransactionInitializationContractEvent(tx),
+          );
           break;
         case 'AgentPairingEvent':
           store.dispatch(generateActionAgentPairingContractEvent(tx));
@@ -219,6 +215,8 @@ export class ContractEventsListenerKit {
       if (!setupNewProvider) {
         setupNewProvider = true;
         this.setupProviderAndSubscriptions();
+        // re-set the event listeners for the contracts
+        this.listenToNashEscrowContract();
       }
     };
 

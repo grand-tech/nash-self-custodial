@@ -1,11 +1,4 @@
-import {
-  call,
-  put,
-  select,
-  spawn,
-  takeEvery,
-  takeLatest,
-} from 'redux-saga/effects';
+import {call, put, select, spawn, takeLatest} from 'redux-saga/effects';
 import {Actions} from '../redux_store/action.patterns';
 import {
   generateActionSetPendingTransactions,
@@ -50,7 +43,6 @@ import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ListUpdateActions} from '../redux_store/enums';
-import DeviceInfo from 'react-native-device-info';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -414,41 +406,31 @@ export function* watchApproveTransactionSaga() {
   yield takeLatest(Actions.APPROVE_TRANSACTION, approveTransactionSaga);
 }
 
+/**
+ * Update the list of my transactions.
+ * @param _action what to do with the record and the list.
+ * @param _transaction the transaction in question against the list.
+ */
 export function* updateMyTransactionsList(
   _action: ListUpdateActions,
   _transaction: NashEscrowTransaction,
 ) {
-  const deviceName: string = yield call(DeviceInfo.getDeviceName);
-  console.log(
-    'updateMyTransactionsListSaga=======>' +
-      deviceName +
-      ' tx ' +
-      _transaction.id +
-      ' action ' +
-      _action,
-  );
   const txs: NashEscrowTransaction[] = yield select(selectRampMyTransactions);
   const update = generateUpdatedList(_action, _transaction, txs);
   yield put(generateActionSetMyTransactions(update));
 }
 
+/**
+ * Update the list of pending transactions.
+ * @param _action what to do with the record and the list.
+ * @param _transaction the transaction in question against the list.
+ */
 export function* updatePendingTransactionsList(
   _action: ListUpdateActions,
   _transaction: NashEscrowTransaction,
 ) {
   const txs: NashEscrowTransaction[] = yield select(
     selectRampPendingTransactions,
-  );
-
-  const deviceName: string = yield call(DeviceInfo.getDeviceName);
-
-  console.log(
-    'updateMyTransactionsListSaga=======>' +
-      deviceName +
-      ' tx ' +
-      _transaction.id +
-      ' action ' +
-      _action,
   );
   const update = generateUpdatedList(_action, _transaction, txs);
   yield put(generateActionSetPendingTransactions(update));
