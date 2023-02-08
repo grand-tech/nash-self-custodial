@@ -52,6 +52,7 @@ import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ListUpdateActions} from '../redux_store/enums';
+import DeviceInfo from 'react-native-device-info';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -248,10 +249,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
   try {
     const transaction = _action.transaction;
 
-    const stableTokenContract = newStableToken(
-      web3,
-      transaction.enxchangeToken,
-    );
+    const stableTokenContract = newStableToken(web3, transaction.exchangeToken);
     const n = stableTokenContract.methods.symbol();
     const symbol: string = yield call(n.call);
 
@@ -280,7 +278,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
       sendTransactionObject,
       tsxObj,
       address,
-      transaction.enxchangeToken,
+      transaction.exchangeToken,
     );
     yield call(stableTokenApproveAmount, stableToken, 0, address);
     yield put(generateActionSetSuccess('Accepted transaction.'));
@@ -344,7 +342,7 @@ export function* cancelRequestSaga(_action: ActionCancelTransaction) {
       sendTransactionObject,
       txObj,
       _action.transaction.clientAddress,
-      _action.transaction.enxchangeToken,
+      _action.transaction.exchangeToken,
     );
 
     yield put(generateActionQueryBalance());
@@ -394,7 +392,7 @@ export function* approveTransactionSaga(_action: ActionCancelTransaction) {
       sendTransactionObject,
       tsxObj,
       address,
-      _action.transaction.enxchangeToken,
+      _action.transaction.exchangeToken,
     );
 
     yield put(generateActionSetSuccess('Approved transaction.'));
@@ -440,6 +438,9 @@ export function* updatePendingTransactionsListSaga(
     selectRampPendingTransactions,
   );
 
+  const deviceName: string = yield call(DeviceInfo.getDeviceName);
+
+  console.log('=======>' + deviceName + ' tx ' + _action);
   const update = generateUpdatedList(_action.action, _action.transaction, txs);
   yield put(generateActionSetPendingTransactions(update));
 }

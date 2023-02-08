@@ -34,7 +34,7 @@ export enum Status {
  * @property { boolean } clientApproval - true on clients approval.
  * @property { string } clientPaymentDetails - the client`s phone number.
  * @property { string } agentPaymentDetails - the agent`s phone number.
- * @property { string } enxchangeToken the echange token address.
+ * @property { string } exchangeToken the echange token address.
  * @property { string } exchangeTokenLabel the exchange token lable.
  */
 export type NashEscrowTransaction = {
@@ -48,7 +48,7 @@ export type NashEscrowTransaction = {
   clientApproval: string;
   agentPaymentDetails: string;
   clientPaymentDetails: string;
-  enxchangeToken: string;
+  exchangeToken: string;
   exchangeTokenLabel: string;
 };
 

@@ -191,7 +191,7 @@ const style = StyleSheet.create({
   },
   buttonLabel: {
     ...FONTS.body1,
-    fontWeight: '700',
+    fontWeight: '400',
   },
   div: {flexDirection: 'row', justifyContent: 'space-between'},
 });

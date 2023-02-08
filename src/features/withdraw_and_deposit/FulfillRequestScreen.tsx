@@ -128,7 +128,7 @@ const FulfillRequestScreen: React.FC<Props> = (props: Props) => {
       <Button
         label={'Fulfill Request'}
         labelStyle={{
-          ...FONTS.h4,
+          ...FONTS.body1,
         }}
         secondary
         onPress={sendRequest}

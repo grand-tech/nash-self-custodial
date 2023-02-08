@@ -47,7 +47,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     clientApproval: '',
     clientPaymentDetails: '',
     agentPaymentDetails: '',
-    enxchangeToken: '',
+    exchangeToken: '',
     exchangeTokenLabel: '',
   };
 

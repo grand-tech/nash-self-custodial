@@ -13,6 +13,7 @@ import {generateActionQueryBalance} from '../features/account_balance/redux_stor
 import {NashEscrowTransaction} from '../features/withdraw_and_deposit/sagas/nash_escrow_types';
 import {generateActionAddClientPaymentInfoToTx} from '../features/comment_encryption/redux_store/action.generators';
 import Config from 'react-native-config';
+import DeviceInfo from 'react-native-device-info';
 
 /**
  * Contains nash event listener logic.
@@ -128,10 +129,16 @@ export class ContractEventsListenerKit {
   }
 
   transactionEventHandler = async (event: EventData) => {
-    console.log('Event data [ ' + event.event + ' ]');
-
     const tx = ReadContractDataKit.getInstance()?.convertToNashTransactionObj(
       event.returnValues[0],
+    );
+    console.log(
+      'Event data [ ' +
+        event.event +
+        ' ] ' +
+        (await DeviceInfo.getDeviceName()) +
+        ' tx ' +
+        tx?.id,
     );
     const publicAddress = store.getState().onboarding.publicAddress;
     if (tx) {
