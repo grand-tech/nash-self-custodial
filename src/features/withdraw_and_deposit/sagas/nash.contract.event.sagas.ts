@@ -3,13 +3,13 @@ import {generateActionQueryBalance} from '../../account_balance/redux_store/acti
 import {generateActionAddClientPaymentInfoToTx} from '../../comment_encryption/redux_store/action.generators';
 import {ActionAddClientsPaymentInfoToTransaction} from '../../comment_encryption/redux_store/actions';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
-import {generateActionUpdatePendingTransactions} from '../redux_store/action.generators';
 import {Actions} from '../redux_store/action.patterns';
 import {
   ActionAgentConfirmationContractEvent,
   ActionAgentPairingContractEvent,
   ActionClientConfirmationContractEvent,
   ActionConfirmationCompletedContractEvent,
+  ActionTransactionCanceledContractEvent,
   ActionTransactionInitializationContractEvent,
 } from '../redux_store/actions';
 import {updateMyTransactionsList, updatePendingTransactionsList} from './saga';
@@ -126,7 +126,7 @@ export function* watchAgentConfirmationEvent() {
  */
 export function* watchClientSavedPaymentInformationEvent() {
   yield takeLatest(
-    Actions.AGENT_CONFIRMATION_CONTRACT_EVENT,
+    Actions.SAVED_CLIENT_PAYMENT_INFORMATION_CONTRACT_EVENT,
     handleClientConfirmationEvent,
   );
 }
@@ -137,8 +137,37 @@ export function* watchClientSavedPaymentInformationEvent() {
  */
 export function* watchConfirmationCompleteEvent() {
   yield takeLatest(
-    Actions.AGENT_CONFIRMATION_CONTRACT_EVENT,
+    Actions.CONFIRMATION_COMPLETE_CONTRACT_EVENT,
     handleClientConfirmationEvent,
+  );
+}
+
+/**
+ * Does the necessary updates incase the smart
+ *  contract emits a transaction initialization event.
+ * @param _action the action.
+ */
+export function* handleTransactionCanceledEvent(
+  _action: ActionTransactionCanceledContractEvent,
+) {
+  const myAddress: string = yield select(selectPublicAddress);
+  if (_action.transaction.clientAddress !== myAddress) {
+    yield call(updatePendingTransactionsList, 'remove', _action.transaction);
+  }
+
+  if (_action.transaction.clientAddress === myAddress) {
+    yield put(generateActionQueryBalance());
+  }
+}
+
+/**
+ * Listens for the transaction initialization
+ * event from the smart contract.
+ */
+export function* watchTransactionCanceledEvent() {
+  yield takeLatest(
+    Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
+    handleTransactionCanceledEvent,
   );
 }
 
@@ -149,4 +178,5 @@ export function* onRampOffRampSagas() {
   yield spawn(watchAgentConfirmationEvent);
   yield spawn(watchClientSavedPaymentInformationEvent);
   yield spawn(watchConfirmationCompleteEvent);
+  yield spawn(watchTransactionCanceledEvent);
 }

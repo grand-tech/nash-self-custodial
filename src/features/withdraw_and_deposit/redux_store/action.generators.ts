@@ -182,7 +182,7 @@ export function generateActionSavedClientCommentContractEvent(
   transaction: NashEscrowTransaction,
 ): ActionSavedClientCommentContractEvent {
   return {
-    type: Actions.SAVED_CLIENT_COMMENT_CONTRACT_EVENT,
+    type: Actions.SAVED_CLIENT_PAYMENT_INFORMATION_CONTRACT_EVENT,
     transaction,
   };
 }

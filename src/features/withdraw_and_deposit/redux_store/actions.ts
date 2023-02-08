@@ -94,7 +94,7 @@ export interface ActionAgentConfirmationContractEvent {
 }
 
 export interface ActionSavedClientCommentContractEvent {
-  type: Actions.SAVED_CLIENT_COMMENT_CONTRACT_EVENT;
+  type: Actions.SAVED_CLIENT_PAYMENT_INFORMATION_CONTRACT_EVENT;
   transaction: NashEscrowTransaction;
 }
 
