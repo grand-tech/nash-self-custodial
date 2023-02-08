@@ -35,6 +35,8 @@ const EnterPinModal: React.FC<Props> = (props: Props) => {
       setModalTitle('Enter new Pin');
     } else if (props.confirmingNewPin) {
       setModalTitle('Confirm new Pin');
+    } else if (props.changePin) {
+      setModalTitle('Enter old PIN');
     }
   });
 
@@ -264,6 +266,7 @@ interface Props extends ReduxProps {
   creatingPin?: boolean;
   confirmingNewPin?: boolean;
   validatorPin?: string;
+  changePin?: boolean;
 }
 
 export default connector(EnterPinModal);

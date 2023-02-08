@@ -40,11 +40,7 @@ const SettingsHomeScreen = (props: NavigationProps) => {
       <TouchableOpacity
         style={style.buttonStyle}
         onPress={async () => {
-          setComingSoonModalVisible(true);
-          await analytics().logEvent('coming_soon', {
-            feature: '[settings] change pin',
-            timestamp: new Date().getMilliseconds(),
-          });
+          props.navigation.navigate('ChangePinScreen');
         }}>
         <Text style={style.buttonLabelStyle}>Change Pin</Text>
       </TouchableOpacity>

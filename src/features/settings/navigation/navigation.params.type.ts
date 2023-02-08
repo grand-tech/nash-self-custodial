@@ -3,4 +3,5 @@ export type SettingsNavigationStackParamsList = {
   DisplayAccountAddress: undefined;
   DisplayPrivateKeyAndMnemonic: undefined;
   EnterPaymentInformationScreen: undefined;
+  ChangePinScreen: undefined;
 };
