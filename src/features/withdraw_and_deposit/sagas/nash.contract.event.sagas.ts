@@ -43,7 +43,7 @@ export function* watchTransactionInitializationEvent() {
 
 /**
  * Does the necessary updates incase the smart
- *  contract emits a transaction initialization event.
+ *  contract emits an agent paired event.
  * @param _action the action.
  */
 export function* handleAgentPairingEvent(
@@ -64,7 +64,7 @@ export function* handleAgentPairingEvent(
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the transaction agent accepted transaction
  * event from the smart contract.
  */
 export function* watchAgentPairingEvent() {
@@ -76,7 +76,7 @@ export function* watchAgentPairingEvent() {
 
 /**
  * Does the necessary updates incase the smart
- *  contract emits a transaction initialization event.
+ *  contract emits a intermediate transaction events.
  * @param _action the action.
  */
 export function* handleClientConfirmationEvent(
@@ -96,7 +96,7 @@ export function* handleClientConfirmationEvent(
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the (client confirmed transaction)
  * event from the smart contract.
  */
 export function* watchClientConfirmationEvent() {
@@ -107,7 +107,7 @@ export function* watchClientConfirmationEvent() {
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the (agent confirmed transaction)
  * event from the smart contract.
  */
 export function* watchAgentConfirmationEvent() {
@@ -118,7 +118,7 @@ export function* watchAgentConfirmationEvent() {
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the (client save payment information)
  * event from the smart contract.
  */
 export function* watchClientSavedPaymentInformationEvent() {
@@ -129,7 +129,7 @@ export function* watchClientSavedPaymentInformationEvent() {
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the (confirmation completed)
  * event from the smart contract.
  */
 export function* watchConfirmationCompleteEvent() {
@@ -141,7 +141,7 @@ export function* watchConfirmationCompleteEvent() {
 
 /**
  * Does the necessary updates incase the smart
- *  contract emits a transaction initialization event.
+ *  contract emits a transaction canceled event.
  * @param _action the action.
  */
 export function* handleTransactionCanceledEvent(
@@ -157,7 +157,7 @@ export function* handleTransactionCanceledEvent(
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the transaction canceled
  * event from the smart contract.
  */
 export function* watchTransactionCanceledEvent() {
@@ -169,7 +169,7 @@ export function* watchTransactionCanceledEvent() {
 
 /**
  * Does the necessary updates incase the smart
- *  contract emits a transaction initialization event.
+ *  contract emits a transaction completed event.
  * @param _action the action.
  */
 export function* handleTransactionCompletedEvent(
@@ -186,7 +186,7 @@ export function* handleTransactionCompletedEvent(
 }
 
 /**
- * Listens for the transaction initialization
+ * Listens for the transaction completed
  * event from the smart contract.
  */
 export function* watchTransactionCompletedEvent() {
