@@ -39,6 +39,7 @@ function* createAccount(_action: ActionCreateNewAccount) {
     yield put(generateActionSetLoading('Saving account ...', ''));
     yield call(storeEncryptedMnemonic, mnemonic, pin);
     yield call(storeEncryptedPrivateKey, newAccount.privateKey, pin);
+    NashCache.setPrivateKeyCache(newAccount.privateKey);
     yield put(
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );
@@ -70,10 +71,11 @@ function* restoreExistingAccount(action: ActionRestoreExistingAccount) {
       mnemonic,
     );
 
-    NashCache.setPinCache(action.pin);
     yield put(generateActionSetLoading('Saving account ...', ''));
     yield call(storeEncryptedMnemonic, mnemonic, action.pin);
     yield call(storeEncryptedPrivateKey, newAccount.privateKey, action.pin);
+    NashCache.setPinCache(action.pin);
+    NashCache.setPrivateKeyCache(newAccount.privateKey);
     yield put(
       generateActionAdoptedNewAccount(newAccount.address, newAccount.publicKey),
     );

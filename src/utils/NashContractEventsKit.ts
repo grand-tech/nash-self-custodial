@@ -4,32 +4,37 @@ import {EventOptions} from '@celo/contractkit/lib/generated/types';
 import {AbiItem} from 'web3-utils';
 import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
 import {
-  generateActionUpdatePendingTransactions,
-  generateActionUpdateMyTransactions,
+  generateActionTransactionInitializationContractEvent,
+  generateActionAgentPairingContractEvent,
+  generateActionAgentConfirmationContractEvent,
+  generateActionClientConfirmationContractEvent,
+  generateActionConfirmationCompletedContractEvent,
+  generateActionSavedClientCommentContractEvent,
+  generateActionTransactionCanceledContractEvent,
+  generateActionTransactionCompletionEvent,
 } from '../features/withdraw_and_deposit/redux_store/action.generators';
 import ReadContractDataKit from '../features/withdraw_and_deposit/sagas/ReadContractDataKit';
 import {store} from '../app-redux-store/store';
 import {generateActionQueryBalance} from '../features/account_balance/redux_store/action.generators';
 import {NashEscrowTransaction} from '../features/withdraw_and_deposit/sagas/nash_escrow_types';
-import {generateActionAddClientPaymentInfoToTx} from '../features/comment_encryption/redux_store/action.generators';
 import Config from 'react-native-config';
+import DeviceInfo from 'react-native-device-info';
 
 /**
  * Contains nash event listener logic.
  */
 export class ContractEventsListenerKit {
-  /**
-   * Tag for logging and debugging purposes.
-   */
-  private TAG = '[ ' + this.constructor.name + '] : ';
-
   private static contractsEventListenerKit: ContractEventsListenerKit;
 
   /**
    * Creates a new instance of contract kit event listeners.
    */
   static createInstance() {
-    this.contractsEventListenerKit = new ContractEventsListenerKit();
+    if (this.contractsEventListenerKit) {
+      console.log('Event listener running!!');
+    } else {
+      this.contractsEventListenerKit = new ContractEventsListenerKit();
+    }
   }
 
   /**
@@ -128,49 +133,45 @@ export class ContractEventsListenerKit {
   }
 
   transactionEventHandler = async (event: EventData) => {
-    console.log('Event data [ ' + event.event + ' ]');
-
     const tx = ReadContractDataKit.getInstance()?.convertToNashTransactionObj(
       event.returnValues[0],
     );
-    const publicAddress = store.getState().onboarding.publicAddress;
+    console.log(
+      'Event data [ ' +
+        event.event +
+        ' ] ' +
+        (await DeviceInfo.getDeviceName()) +
+        ' tx ' +
+        tx?.id,
+    );
     if (tx) {
       switch (event.event) {
         case 'TransactionInitEvent':
-          if (tx.clientAddress !== publicAddress) {
-            store.dispatch(generateActionUpdatePendingTransactions(tx, 'add'));
-          }
-          this.fetchBalance(tx);
+          store.dispatch(
+            generateActionTransactionInitializationContractEvent(tx),
+          );
           break;
         case 'AgentPairingEvent':
-          store.dispatch(generateActionUpdatePendingTransactions(tx, 'remove'));
-          if (tx.clientAddress === publicAddress) {
-            store.dispatch(generateActionAddClientPaymentInfoToTx(tx));
-            store.dispatch(generateActionUpdateMyTransactions(tx, 'update'));
-          } else {
-            store.dispatch(generateActionUpdateMyTransactions(tx, 'add'));
-          }
-          this.fetchBalance(tx);
+          store.dispatch(generateActionAgentPairingContractEvent(tx));
           break;
         case 'ClientConfirmationEvent':
+          store.dispatch(generateActionClientConfirmationContractEvent(tx));
+          break;
         case 'AgentConfirmationEvent':
+          store.dispatch(generateActionAgentConfirmationContractEvent(tx));
+          break;
         case 'SavedClientCommentEvent':
+          store.dispatch(generateActionSavedClientCommentContractEvent(tx));
+          break;
         case 'ConfirmationCompletedEvent':
-          store.dispatch(generateActionUpdateMyTransactions(tx, 'update'));
+          store.dispatch(generateActionConfirmationCompletedContractEvent(tx));
           break;
         case 'TransactionCompletionEvent':
-          store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
-          this.fetchBalance(tx);
+          store.dispatch(generateActionTransactionCompletionEvent(tx));
+
           break;
         case 'TransactionCanceledEvent':
-          if (tx.clientAddress === publicAddress) {
-            store.dispatch(generateActionUpdateMyTransactions(tx, 'remove'));
-            this.fetchBalance(tx);
-          } else {
-            store.dispatch(
-              generateActionUpdatePendingTransactions(tx, 'remove'),
-            );
-          }
+          store.dispatch(generateActionTransactionCanceledContractEvent(tx));
           break;
         default:
           // TODO: register this to crash-litics.
@@ -214,6 +215,8 @@ export class ContractEventsListenerKit {
       if (!setupNewProvider) {
         setupNewProvider = true;
         this.setupProviderAndSubscriptions();
+        // re-set the event listeners for the contracts
+        this.listenToNashEscrowContract();
       }
     };
 

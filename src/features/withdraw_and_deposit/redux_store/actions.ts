@@ -60,16 +60,45 @@ export interface ActionCancelTransaction {
   pin: string;
 }
 
-export interface ActionUpdatePendingTransaction {
-  type: Actions.UPDATE_PENDING_TRANSACTION_LISTS;
+// Smart contract event actions.
+export interface ActionTransactionInitializationContractEvent {
+  type: Actions.TRANSACTION_INIT_CONTRACT_EVENT;
   transaction: NashEscrowTransaction;
-  action: ListUpdateActions;
 }
 
-export interface ActionUpdateMyTransaction {
-  type: Actions.UPDATE_MY_TRANSACTION_LISTS;
+export interface ActionAgentPairingContractEvent {
+  type: Actions.AGENT_PAIRING_CONTRACT_EVENT;
   transaction: NashEscrowTransaction;
-  action: ListUpdateActions;
+}
+
+export interface ActionClientConfirmationContractEvent {
+  type: Actions.CLIENT_CONFIRMATION_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionAgentConfirmationContractEvent {
+  type: Actions.AGENT_CONFIRMATION_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionSavedClientCommentContractEvent {
+  type: Actions.SAVED_CLIENT_PAYMENT_INFORMATION_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionConfirmationCompletedContractEvent {
+  type: Actions.CONFIRMATION_COMPLETE_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionTransactionCompletionEvent {
+  type: Actions.TRANSACTION_COMPLETE_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionTransactionCanceledContractEvent {
+  type: Actions.TRANSACTION_CANCELED_CONTRACT_EVENT;
+  transaction: NashEscrowTransaction;
 }
 
 /**
@@ -83,5 +112,11 @@ export type ActionTypes =
   | ActionSetMyTransactions
   | ActionApproveTransaction
   | ActionCancelTransaction
-  | ActionUpdatePendingTransaction
-  | ActionUpdateMyTransaction;
+  | ActionTransactionInitializationContractEvent
+  | ActionAgentPairingContractEvent
+  | ActionClientConfirmationContractEvent
+  | ActionAgentConfirmationContractEvent
+  | ActionSavedClientCommentContractEvent
+  | ActionConfirmationCompletedContractEvent
+  | ActionTransactionCompletionEvent
+  | ActionTransactionCanceledContractEvent;

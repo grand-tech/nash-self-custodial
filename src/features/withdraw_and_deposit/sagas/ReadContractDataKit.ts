@@ -248,7 +248,7 @@ export default class ReadContractDataKit {
       clientApproval: tx[7],
       agentPaymentDetails: tx[8],
       clientPaymentDetails: tx[9],
-      enxchangeToken: tx[10],
+      exchangeToken: tx[10],
       exchangeTokenLabel: tx[11],
     };
     return nashTx;

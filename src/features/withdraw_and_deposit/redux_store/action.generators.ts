@@ -9,12 +9,18 @@ import {
   ActionSetMyTransactions,
   ActionApproveTransaction,
   ActionCancelTransaction,
-  ActionUpdatePendingTransaction,
-  ActionUpdateMyTransaction,
   ActionAgentFulfillRequest,
   ActionMakeRampRequest,
   ActionQueryPendingTransactions,
   ActionSetPendingTransactions,
+  ActionTransactionInitializationContractEvent,
+  ActionAgentConfirmationContractEvent,
+  ActionAgentPairingContractEvent,
+  ActionClientConfirmationContractEvent,
+  ActionConfirmationCompletedContractEvent,
+  ActionSavedClientCommentContractEvent,
+  ActionTransactionCanceledContractEvent,
+  ActionTransactionCompletionEvent,
 } from './actions';
 import {
   DataQueryTriggers,
@@ -112,24 +118,74 @@ export function generateActionCancelTransaction(
   };
 }
 
-export function generateActionUpdatePendingTransactions(
+export function generateActionTransactionInitializationContractEvent(
   transaction: NashEscrowTransaction,
-  action: ListUpdateActions,
-): ActionUpdatePendingTransaction {
+): ActionTransactionInitializationContractEvent {
   return {
-    type: Actions.UPDATE_PENDING_TRANSACTION_LISTS,
+    type: Actions.TRANSACTION_INIT_CONTRACT_EVENT,
     transaction,
-    action,
   };
 }
 
-export function generateActionUpdateMyTransactions(
+export function generateActionAgentPairingContractEvent(
   transaction: NashEscrowTransaction,
-  action: ListUpdateActions,
-): ActionUpdateMyTransaction {
+): ActionAgentPairingContractEvent {
   return {
-    type: Actions.UPDATE_MY_TRANSACTION_LISTS,
+    type: Actions.AGENT_PAIRING_CONTRACT_EVENT,
     transaction,
-    action,
+  };
+}
+
+export function generateActionClientConfirmationContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionClientConfirmationContractEvent {
+  return {
+    type: Actions.CLIENT_CONFIRMATION_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionAgentConfirmationContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionAgentConfirmationContractEvent {
+  return {
+    type: Actions.AGENT_CONFIRMATION_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionSavedClientCommentContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionSavedClientCommentContractEvent {
+  return {
+    type: Actions.SAVED_CLIENT_PAYMENT_INFORMATION_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionConfirmationCompletedContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionConfirmationCompletedContractEvent {
+  return {
+    type: Actions.CONFIRMATION_COMPLETE_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionTransactionCompletionEvent(
+  transaction: NashEscrowTransaction,
+): ActionTransactionCompletionEvent {
+  return {
+    type: Actions.TRANSACTION_COMPLETE_CONTRACT_EVENT,
+    transaction,
+  };
+}
+
+export function generateActionTransactionCanceledContractEvent(
+  transaction: NashEscrowTransaction,
+): ActionTransactionCanceledContractEvent {
+  return {
+    type: Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
+    transaction,
   };
 }

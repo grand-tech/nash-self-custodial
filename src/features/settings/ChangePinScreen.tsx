@@ -14,10 +14,7 @@ import LoadingModalComponent from '../../app_components/LoadingModalComponent';
 import SuccessModalComponent from '../../app_components/SuccessModalComponent';
 import {AppColors} from '../../ui_lib_configs/colors';
 import {FONTS} from '../../ui_lib_configs/fonts';
-import {NashCache} from '../../utils/cache';
 import {OnboardingNavigationStackParamsList} from '../onboarding/navigation/navigation.params.type';
-import {createNewAccountAction} from '../onboarding/redux_store/action.generators';
-import {OnboardingStatusNames} from '../onboarding/redux_store/reducers';
 import {generateActionSetLoading} from '../ui_state_manager/action.generators';
 import {generateActionChangePIN} from './redux_store/action.generators';
 

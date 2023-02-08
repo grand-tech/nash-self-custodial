@@ -111,7 +111,7 @@ export function* setAccountPublicDataEncryptionKey(
       new Error(error),
       '[SAGA] setAccountPublicDataEncryptionKey: ' + error.name,
     );
-    console.log('error===> ', error);
+    console.error('[ERROR] [SAGA] setAccountPublicDataEncryptionKey:', error);
   }
 }
 
@@ -214,34 +214,49 @@ export function* watchAddClientsPaymentInfoToSaga() {
 export function* addClientsPaymentInfoToSaga(
   action: ActionAddClientsPaymentInfoToTransaction,
 ) {
+  const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
+  const address: string = yield select(selectPublicAddress);
+  const transaction = action.transaction;
   try {
-    const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
-    const address: string = yield select(selectPublicAddress);
-    const transaction = action.transaction;
-    const paymentInfoCypherText: string = yield call(
-      encryptEscrowComment,
-      transaction.clientAddress,
-      transaction.agentAddress,
+    console.log(
+      'addClientsPaymentInfoToSaga===>',
+      action.transaction.id,
+      action.transaction.agentAddress,
     );
+    if (transaction.agentAddress !== '' && transaction.clientAddress !== '') {
+      const paymentInfoCypherText: string = yield call(
+        encryptEscrowComment,
+        transaction.clientAddress,
+        transaction.agentAddress,
+      );
 
-    const tx = nashEscrow.methods.clientWritePaymentInformation(
-      transaction.id,
-      paymentInfoCypherText,
-    );
+      const tx = nashEscrow.methods.clientWritePaymentInformation(
+        transaction.id,
+        paymentInfoCypherText,
+      );
 
-    const receipt: CeloTxReceipt = yield call(
-      sendTransactionObject,
-      tx,
-      address,
-      addresses[0].address,
-    );
+      const privateKey: string = NashCache.getPrivateKey();
+      contractKit.addAccount(privateKey);
+
+      const receipt: CeloTxReceipt = yield call(
+        sendTransactionObject,
+        tx,
+        address,
+        addresses[0].address,
+      );
+    } else {
+      console.error(
+        'ERROR: [addClientsPaymentInfoToSaga] invalid public addresses.',
+      );
+    }
+
     // TODO: figure out what to do with the receipt.
   } catch (error: any) {
     crashlytics().recordError(
       new Error(error),
       '[SAGA] addClientsPaymentInfoToSaga: ' + error.name,
     );
-    console.log('error===> ', error);
+    console.log('[ERROR] [SAGA] addClientsPaymentInfoToSaga:', error);
   }
 }
 

@@ -21,6 +21,7 @@ import MyTransactionsCardComponent from './components/MyTransactionsCardComponen
 import {
   generateActionSetEnterPIN,
   generateActionSetLoading,
+  generateActionSetNormal,
 } from '../ui_state_manager/action.generators';
 import EnterPinModal from '../../app_components/EnterPinModal';
 import ErrorModalComponent from '../../app_components/ErrorModalComponent';
@@ -35,6 +36,7 @@ import {NextUserAction} from './transaction.user.actions.enum';
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
   const [comingSoonModalVisible, setComingSoonModalVisible] = useState(false);
+  const [hasPrivateKey, setHasPrivateKey] = useState(false);
 
   let tx: NashEscrowTransaction = {
     id: -1,
@@ -47,7 +49,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     clientApproval: '',
     clientPaymentDetails: '',
     agentPaymentDetails: '',
-    enxchangeToken: '',
+    exchangeToken: '',
     exchangeTokenLabel: '',
   };
 
@@ -62,6 +64,13 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     InteractionManager.runAfterInteractions(() => {
       if (props.transactions === null || props.transactions.length === 0) {
         props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'ui');
+      }
+
+      if (
+        NashCache.getPrivateKey() === null ||
+        NashCache.getPrivateKey()?.trim() === ''
+      ) {
+        props.promptForPIN();
       }
     });
   }, []);
@@ -88,10 +97,15 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onPinMatched = (_p: string) => {
-    if (nextUserAction === NextUserAction.CANCEL) {
-      props.dispatchActionSetLoading('Canceling Transaction ...', '');
+    if (transaction.id >= 0) {
+      if (nextUserAction === NextUserAction.CANCEL) {
+        props.dispatchActionSetLoading('Canceling Transaction ...', '');
+      } else {
+        props.dispatchActionSetLoading('Approving ...', '');
+      }
     } else {
-      props.dispatchActionSetLoading('Approving ...', '');
+      setHasPrivateKey(!hasPrivateKey);
+      props.dispatchActionSetNormal();
     }
   };
 
@@ -129,6 +143,23 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const onRetry = () => {
+    if (transaction.id >= 0 && nextUserAction !== NextUserAction.NONE) {
+      if (
+        NashCache.getPinCache() !== null &&
+        NashCache.getPinCache()?.trim() !== ''
+      ) {
+        if (nextUserAction === NextUserAction.CANCEL) {
+          props.dispatchActionSetLoading('Canceling Transaction ...', '');
+        } else {
+          props.dispatchActionSetLoading('Approving ...', '');
+        }
+      } else {
+        props.promptForPIN();
+      }
+    }
+  };
+
   return (
     <Screen style={style.screenContainer}>
       <FlatList
@@ -138,6 +169,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
             transaction={item}
             performNextUserAction={performNextUserAction}
             navigation={props.navigation}
+            hasPrivateKey={hasPrivateKey}
           />
         )}
         keyExtractor={(item: NashEscrowTransaction) => {
@@ -171,7 +203,7 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
 
       <ErrorModalComponent
         visible={props.ui_state === 'error' && isFocused}
-        onRetry={performNextUserAction}
+        onRetry={onRetry}
       />
       <ComingSoonModalComponent
         visible={comingSoonModalVisible}
@@ -201,6 +233,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   dispatchFetchMyTransactions: generateActionQueryMyTransactions,
   dispatchActionSetLoading: generateActionSetLoading,
+  dispatchActionSetNormal: generateActionSetNormal,
   dispatchApproval: generateActionApproveTransaction,
   dispatchCancelation: generateActionCancelTransaction,
   promptForPIN: generateActionSetEnterPIN,

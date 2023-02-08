@@ -20,6 +20,7 @@ import {NextUserAction} from '../transaction.user.actions.enum';
 import {generateActionAddClientPaymentInfoToTx} from '../../comment_encryption/redux_store/action.generators';
 
 interface Props extends ReduxProps {
+  hasPrivateKey: boolean;
   transaction: NashEscrowTransaction;
   performNextUserAction: any;
   navigation: NativeStackNavigationProp<
@@ -103,12 +104,14 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
     if (
       transaction.clientAddress === publicAddress &&
       transaction.clientPaymentDetails === '' &&
+      transaction.agentAddress !== '' &&
       transaction.status !== 0 &&
       transaction.status !== 3
     ) {
+      console.log('encrypt comment');
       props.generateActionAddClientPaymentInfo(transaction);
     }
-  });
+  }, [props.hasPrivateKey]);
 
   const onPress = () => {
     props.performNextUserAction(nextUserAction, transaction);
