@@ -60,18 +60,6 @@ export interface ActionCancelTransaction {
   pin: string;
 }
 
-export interface ActionUpdatePendingTransaction {
-  type: Actions.UPDATE_PENDING_TRANSACTION_LISTS;
-  transaction: NashEscrowTransaction;
-  action: ListUpdateActions;
-}
-
-export interface ActionUpdateMyTransaction {
-  type: Actions.UPDATE_MY_TRANSACTION_LISTS;
-  transaction: NashEscrowTransaction;
-  action: ListUpdateActions;
-}
-
 // Smart contract event actions.
 export interface ActionTransactionInitializationContractEvent {
   type: Actions.TRANSACTION_INIT_CONTRACT_EVENT;
@@ -124,8 +112,6 @@ export type ActionTypes =
   | ActionSetMyTransactions
   | ActionApproveTransaction
   | ActionCancelTransaction
-  | ActionUpdatePendingTransaction
-  | ActionUpdateMyTransaction
   | ActionTransactionInitializationContractEvent
   | ActionAgentPairingContractEvent
   | ActionClientConfirmationContractEvent

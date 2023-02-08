@@ -4,8 +4,6 @@ import {EventOptions} from '@celo/contractkit/lib/generated/types';
 import {AbiItem} from 'web3-utils';
 import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
 import {
-  generateActionUpdatePendingTransactions,
-  generateActionUpdateMyTransactions,
   generateActionTransactionInitializationContractEvent,
   generateActionAgentPairingContractEvent,
   generateActionAgentConfirmationContractEvent,
@@ -19,7 +17,6 @@ import ReadContractDataKit from '../features/withdraw_and_deposit/sagas/ReadCont
 import {store} from '../app-redux-store/store';
 import {generateActionQueryBalance} from '../features/account_balance/redux_store/action.generators';
 import {NashEscrowTransaction} from '../features/withdraw_and_deposit/sagas/nash_escrow_types';
-import {generateActionAddClientPaymentInfoToTx} from '../features/comment_encryption/redux_store/action.generators';
 import Config from 'react-native-config';
 import DeviceInfo from 'react-native-device-info';
 
@@ -151,6 +148,7 @@ export class ContractEventsListenerKit {
     if (tx) {
       switch (event.event) {
         case 'TransactionInitEvent':
+          const publicAddress = store.getState().onboarding.publicAddress;
           if (tx.clientAddress !== publicAddress) {
             store.dispatch(
               generateActionTransactionInitializationContractEvent(tx),
@@ -174,6 +172,7 @@ export class ContractEventsListenerKit {
           break;
         case 'TransactionCompletionEvent':
           store.dispatch(generateActionTransactionCompletionEvent(tx));
+
           break;
         case 'TransactionCanceledEvent':
           store.dispatch(generateActionTransactionCanceledContractEvent(tx));
