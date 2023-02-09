@@ -121,13 +121,12 @@ export default connector(TermsAndConditions);
 const style = StyleSheet.create({
   container: {
     backgroundColor: AppColors.gray,
-    maxHeight: hp('95.0%'),
     justifyContent: 'space-around',
     flex: 1,
     alignContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: hp('4.5%'),
-    paddingTop: hp('2%'),
+    paddingHorizontal: hp('3%'),
+    paddingTop: hp('6%'),
   },
   button: {
     width: wp('40.0%'),
@@ -144,5 +143,5 @@ const style = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop: hp('4%'),
   },
-  scrollView: {maxHeight: hp('85%')},
+  scrollView: {maxHeight: hp('83%')},
 });

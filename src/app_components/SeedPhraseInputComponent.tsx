@@ -1,4 +1,4 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useRef, useState} from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -13,16 +13,8 @@ import {
 } from 'react-native-responsive-screen';
 import {AppColors} from '../ui_lib_configs/colors';
 import {FONTS} from '../ui_lib_configs/fonts';
-import {
-  Button,
-  ChipsInputChipProps,
-  Incubator,
-  Text,
-} from 'react-native-ui-lib';
-import {
-  constructSeedPhraseFromChipInputs,
-  validateSeedPhraseInput,
-} from '../utils/seed.phrase.validation.utils';
+import {Button, Text} from 'react-native-ui-lib';
+import {TextInput} from 'react-native-gesture-handler';
 
 /**
  * Screen component properties.
@@ -50,8 +42,12 @@ const SeedPhraseInputComponent = forwardRef<
   ErrorModalRetry,
   SeedPhraseInputComponentProps
 >((props, ref) => {
-  const initInputSeedPhrase: ChipsInputChipProps[] = [];
+  const initInputSeedPhrase: string[] = [];
   const [inputSeedPhrase, setInputSeedPhrase] = useState(initInputSeedPhrase);
+  const [seedPhrase, setSeedPhrase] = useState('');
+  const [nextWord, setNextWord] = useState('');
+  const [nextWordInputPlaceHolder, setNextWordInputPlaceHolder] =
+    useState('Next word...');
 
   useImperativeHandle(ref, () => ({
     retry() {
@@ -59,18 +55,35 @@ const SeedPhraseInputComponent = forwardRef<
     },
   }));
 
-  /**
-   * Updates the chips after an new word has been entered or deleted.
-   * @param newChips list of new chips.
-   */
-  const onChipsChangeHandler = (newChips: Incubator.ChipsInputChipProps[]) => {
-    const validatedChips = validateSeedPhraseInput(
-      initInputSeedPhrase,
-      newChips,
-    );
+  const onPressNext = () => {
+    if (nextWord.trim() !== '') {
+      let newSeedPhrase: string[] = [];
+      let phrase = '';
+      for (let i = 0; i < inputSeedPhrase.length; i++) {
+        phrase = phrase + ' ' + inputSeedPhrase[i].toLowerCase().trim();
+        newSeedPhrase.push(inputSeedPhrase[i]);
+      }
+      if (nextWord.includes(' ')) {
+        if (newSeedPhrase.length > 0) {
+          newSeedPhrase = [];
+        }
+        const newWords = nextWord.split(' ', 24);
+        for (let i = 0; i < newWords.length; i++) {
+          newSeedPhrase.push(newWords[i]);
+          phrase = phrase + ' ' + newWords[i].toLowerCase().trim();
+        }
+      } else {
+        newSeedPhrase.push(nextWord);
+        phrase = phrase + ' ' + nextWord.toLowerCase().trim();
+      }
 
-    if (validatedChips.length > 0) {
-      setInputSeedPhrase(validatedChips);
+      setNextWord('');
+      setInputSeedPhrase(newSeedPhrase);
+      setSeedPhrase(phrase.trim());
+
+      if (newSeedPhrase.length > 23) {
+        setNextWordInputPlaceHolder('');
+      }
     }
   };
 
@@ -79,11 +92,17 @@ const SeedPhraseInputComponent = forwardRef<
    */
   const confirmSeedPhraseBtnHandler = () => {
     if (inputSeedPhrase.length === 24) {
-      const seedPhraseStr = constructSeedPhraseFromChipInputs(inputSeedPhrase);
-      props.onValidMnemonic(seedPhraseStr);
+      props.onValidMnemonic(seedPhrase);
     } else {
       props.onInvalidMnemonic();
     }
+  };
+
+  const onClear = () => {
+    setInputSeedPhrase(initInputSeedPhrase);
+    setNextWord('');
+    setSeedPhrase('');
+    setNextWordInputPlaceHolder('Next word...');
   };
 
   return (
@@ -106,22 +125,51 @@ const SeedPhraseInputComponent = forwardRef<
               <Text color={AppColors.yellow} style={styles.counter} body1>
                 Word {inputSeedPhrase.length} of 24
               </Text>
-              <Incubator.ChipsInput
-                placeholder="Next word..."
-                floatingPlaceholder={inputSeedPhrase.length < 24}
-                floatingPlaceholderStyle={{
-                  ...FONTS.body1,
-                  color: AppColors.brown,
-                }}
-                chips={inputSeedPhrase}
-                defaultChipProps={{
-                  labelStyle: {...FONTS.body2},
-                }}
-                onChange={newChips => onChipsChangeHandler(newChips)}
-                maxChips={24}
-                autoFocus={true}
-                autoCapitalize={'none'}
+
+              <TextInput
+                editable={false}
+                multiline
+                numberOfLines={4}
+                value={seedPhrase}
+                style={styles.textInput}
+                placeholder={
+                  'lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+                }
+                placeholderTextColor={AppColors.gray}
               />
+              <View style={{flexDirection: 'row'}}>
+                <TextInput
+                  numberOfLines={1}
+                  value={nextWord}
+                  style={{
+                    ...FONTS.body1,
+                    width: wp('60%'),
+                    color: AppColors.black,
+                  }}
+                  placeholder={nextWordInputPlaceHolder}
+                  placeholderTextColor={AppColors.brown}
+                  onChangeText={text => setNextWord(text)}
+                  editable={inputSeedPhrase.length < 24}
+                  autoFocus={true}
+                  onEndEditing={e => {
+                    onPressNext();
+                  }}
+                />
+                <Button
+                  style={styles.nextWordBtn}
+                  outline={true}
+                  outlineColor={AppColors.yellow}
+                  label={'Next'}
+                  size={'xSmall'}
+                  disabled={inputSeedPhrase.length > 23}
+                  labelStyle={{
+                    ...FONTS.body4,
+                  }}
+                  onPress={() => {
+                    onPressNext();
+                  }}
+                />
+              </View>
             </View>
 
             {/* Button group section. */}
@@ -137,7 +185,7 @@ const SeedPhraseInputComponent = forwardRef<
                   ...FONTS.body1,
                 }}
                 onPress={() => {
-                  setInputSeedPhrase(initInputSeedPhrase);
+                  onClear();
                 }}
               />
               <Button
@@ -173,6 +221,11 @@ const styles = StyleSheet.create({
     width: wp('30.0%'),
     marginBottom: hp('1%'),
   },
+  nextWordBtn: {
+    width: wp('20.0%'),
+    marginBottom: hp('1%'),
+    alignSelf: 'flex-end',
+  },
   buttonGroup: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -191,6 +244,13 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
+  },
+  nextWordButton: {
+    width: wp('20%'),
+  },
+  textInput: {
+    ...FONTS.body1,
+    color: AppColors.black,
   },
 });
 

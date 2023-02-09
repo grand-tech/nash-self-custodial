@@ -70,7 +70,6 @@ const WriteDownRecoveryPhraseScreen = ({route, navigation}: Props) => {
             numberOfLines={4}
             value={mnemonic}
             style={style.textInput}
-            selectable={true}
           />
         </View>
 

@@ -22,7 +22,7 @@ export const seedPhraseInstructions: Array<CarouselItem> = [
 export const startScreenData: Array<CarouselItem> = [
   {
     title: 'Easy',
-    body: 'Nash makes it easy for you to top up your cUSD wallet. Both Add or withdraw cUSD',
+    body: 'Nash makes it easy for you to top up and withdraw celo stable coins from your mobile wallet.',
     lottieAnimation: require('../../../assets/lottie_animations/easy.json'),
   },
   {
