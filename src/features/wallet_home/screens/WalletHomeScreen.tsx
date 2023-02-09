@@ -14,7 +14,7 @@ import {connect, ConnectedProps, useSelector} from 'react-redux';
 import {selectSavedPublicDEK} from '../../onboarding/redux_store/selectors';
 import {generateActionSavePublicDataEncryptionKey} from '../../comment_encryption/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
-import {initializeContractKit} from '../../account_balance/contract.kit.utils';
+import {initializeContractKit} from '../../../utils/contract.kit.utils';
 import {useFocusEffect} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';

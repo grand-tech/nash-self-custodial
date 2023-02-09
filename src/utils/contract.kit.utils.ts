@@ -1,11 +1,12 @@
 import {ContractKit, newKitFromWeb3, StableToken} from '@celo/contractkit';
 import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
-import {NashEscrowAbi} from '../../utils/smart_contract_abis/NashEscrowAbi';
+import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
 import {AbiItem} from 'web3-utils';
 import BigNumber from 'bignumber.js';
 import {CeloTxObject} from '@celo/connect';
 import Config from 'react-native-config';
+import {GasEstimate} from './gas.fees.sagas';
 
 export let web3: Web3;
 
@@ -132,13 +133,12 @@ export async function sendCREAL(
 export async function sendTransactionObject(
   txObject: CeloTxObject<any>,
   senderAccount: string,
-  stableTokenAddress: string,
+  gasEstimate: GasEstimate,
 ) {
-  const gasPrice = await fetchGasPrice(stableTokenAddress);
   let txResult = await contractKit.sendTransactionObject(txObject, {
     from: senderAccount,
-    feeCurrency: stableTokenAddress,
-    gasPrice: gasPrice.toString(),
+    feeCurrency: gasEstimate.token,
+    gasPrice: gasEstimate.gasFees,
   });
 
   let receipt = await txResult.waitReceipt();
@@ -172,19 +172,4 @@ export async function stableTokenApproveAmount(
     feeCurrency: cUSD.address,
   });
   return receipt;
-}
-
-/**
- * Fetch gas fees estimate.
- * @param tokenAddress token used as gas fees (at this point still using CELO).
- * @returns the gas price estimate.
- */
-export async function fetchGasPrice(tokenAddress: string): Promise<BigNumber> {
-  // improve gass estimation algorithm to pick gass price token based on balance.
-  const gasPriceMinimum = await contractKit.contracts.getGasPriceMinimum();
-  const latestGasPrice = await gasPriceMinimum?.getGasPriceMinimum(
-    tokenAddress,
-  );
-  const inflatedGasPrice = latestGasPrice?.times(5) ?? new BigNumber(0);
-  return inflatedGasPrice;
 }

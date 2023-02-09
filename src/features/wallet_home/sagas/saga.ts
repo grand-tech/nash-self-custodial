@@ -13,7 +13,7 @@ import {
   sendCREAL,
   sendCUSD,
   web3,
-} from '../../account_balance/contract.kit.utils';
+} from '../../../utils/contract.kit.utils';
 import {NashCache} from '../../../utils/cache';
 import crashlytics from '@react-native-firebase/crashlytics';
 

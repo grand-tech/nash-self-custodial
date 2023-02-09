@@ -47,7 +47,7 @@ const SeedPhraseInputComponent = forwardRef<
   const [seedPhrase, setSeedPhrase] = useState('');
   const [nextWord, setNextWord] = useState('');
   const [nextWordInputPlaceHolder, setNextWordInputPlaceHolder] =
-    useState('Next word...');
+    useState('Next word(s)...');
 
   useImperativeHandle(ref, () => ({
     retry() {
@@ -83,6 +83,8 @@ const SeedPhraseInputComponent = forwardRef<
 
       if (newSeedPhrase.length > 23) {
         setNextWordInputPlaceHolder('');
+      } else if (newSeedPhrase.length > 22) {
+        setNextWordInputPlaceHolder('Next word...');
       }
     }
   };
@@ -102,7 +104,7 @@ const SeedPhraseInputComponent = forwardRef<
     setInputSeedPhrase(initInputSeedPhrase);
     setNextWord('');
     setSeedPhrase('');
-    setNextWordInputPlaceHolder('Next word...');
+    setNextWordInputPlaceHolder('Next word(s)...');
   };
 
   return (

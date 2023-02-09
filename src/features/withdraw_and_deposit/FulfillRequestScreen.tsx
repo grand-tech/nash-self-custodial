@@ -200,7 +200,6 @@ const style = StyleSheet.create({
 const mapStateToProps = (state: RootState) => ({
   ui_status: state.ui_state.status,
   rates: state.currency_conversion_rates.rates,
-  stable_coins: state.stable_coin_info.addresses,
 });
 
 const mapDispatchToProps = {

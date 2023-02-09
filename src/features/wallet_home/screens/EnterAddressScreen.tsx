@@ -19,7 +19,7 @@ import {Button, TextField} from 'react-native-ui-lib';
 import {FONTS} from '../../../ui_lib_configs/fonts';
 import Screen from '../../../app_components/Screen';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {web3} from '../../account_balance/contract.kit.utils';
+import {web3} from '../../../utils/contract.kit.utils';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {WalletHomeNavigationStackParamsList} from '../navigation/navigation.params.type';
 

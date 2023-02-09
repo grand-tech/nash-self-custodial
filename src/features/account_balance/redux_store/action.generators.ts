@@ -1,4 +1,4 @@
-import {WalletBalance} from '../utils';
+import {WalletBalance} from '../../../utils/account.balance.utils';
 import {
   ActionSetWalletBalance,
   ActionQueryWalletBalance,

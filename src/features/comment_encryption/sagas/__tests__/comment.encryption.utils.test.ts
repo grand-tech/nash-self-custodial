@@ -1,8 +1,8 @@
 import {
   encryptEscrowTXComment,
   nashDecryptComment,
-} from '../comment.encryption.utils';
-import {constructEscrowCommentObject} from '../comment.encryption.utils';
+} from '../../../../utils/comment.encryption.utils';
+import {constructEscrowCommentObject} from '../../../../utils/comment.encryption.utils';
 import {
   TEST_ACC_1,
   TEST_ACC_2,
@@ -10,7 +10,7 @@ import {
 import {
   constructEscrowCommentString,
   EscrowTxComment,
-} from '../comment.encryption.utils';
+} from '../../../../utils/comment.encryption.utils';
 
 describe('Construct comment string tests', () => {
   it('Test empty strings', () => {

@@ -32,7 +32,7 @@ import {
   constructEscrowCommentObject,
   EscrowTxComment,
   nashDecryptComment,
-} from '../comment_encryption/sagas/comment.encryption.utils';
+} from '../../utils/comment.encryption.utils';
 import {NextUserAction} from './transaction.user.actions.enum';
 import {HR} from '../../app_components/HRComponent';
 import {TransactionType} from './sagas/nash_escrow_types';
@@ -426,7 +426,6 @@ const style = StyleSheet.create({
 const mapStateToProps = (state: RootState) => ({
   ui_status: state.ui_state.status,
   rates: state.currency_conversion_rates.rates,
-  stable_coins: state.stable_coin_info.addresses,
 });
 
 const mapDispatchToProps = {

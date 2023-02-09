@@ -17,7 +17,7 @@ import {
   stableTokenApproveAmount,
   sendTransactionObject,
   web3,
-} from '../../account_balance/contract.kit.utils';
+} from '../../../utils/contract.kit.utils';
 import {
   generateActionSetSuccess,
   generateActionSetError,
@@ -27,7 +27,7 @@ import {
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
 import {generateActionQueryBalance} from '../../account_balance/redux_store/action.generators';
 import {NashCache} from '../../../utils/cache';
-import {nashEscrow} from '../../account_balance/contract.kit.utils';
+import {nashEscrow} from '../../../utils/contract.kit.utils';
 import {
   selectRampMyTransactions,
   selectRampPendingTransactions,
@@ -43,6 +43,7 @@ import {newStableToken} from '@celo/contractkit/lib/generated/StableToken';
 import {StableTokenWrapper} from '@celo/contractkit/lib/wrappers/StableTokenWrapper';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {ListUpdateActions} from '../redux_store/enums';
+import {estimateGasFees, GasEstimate} from '../../../utils/gas.fees.sagas';
 
 /**
  * Query the list of pending transactions in the smart contract.
@@ -156,7 +157,7 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
     const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
 
-    const address: string = yield select(selectPublicAddress);
+    const myAddress: string = yield select(selectPublicAddress);
 
     const amount = contractKit.web3.utils.toWei(_action.amount.toString());
 
@@ -165,6 +166,7 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
       _action.coin,
     );
 
+    const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
     const tx: CeloTxObject<any> = yield call(
       generateInitTransactionObject,
       amount.toString(),
@@ -173,13 +175,16 @@ export function* makeRampExchangeRequestSaga(_action: ActionMakeRampRequest) {
       _action.coin,
     );
     // TODO: Figure out what to do with the boolean result
-    yield call(stableTokenApproveAmount, _action.coin, _action.amount, address);
+    yield call(
+      stableTokenApproveAmount,
+      _action.coin,
+      _action.amount,
+      myAddress,
+    );
 
-    // TODO: figure out what to do with the receipt.
-    // const receipt: any =
-    yield call(sendTransactionObject, tx, address, tokenContract.address);
+    yield call(sendTransactionObject, tx, myAddress, gasFees);
 
-    yield call(stableTokenApproveAmount, _action.coin, 0, address);
+    yield call(stableTokenApproveAmount, _action.coin, 0, myAddress);
 
     yield put(generateActionSetSuccess('Initialized transaction.'));
 
@@ -247,12 +252,12 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
 
     const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
-    const address: string = yield select(selectPublicAddress);
+    const myAddress: string = yield select(selectPublicAddress);
     yield call(
       stableTokenApproveAmount,
       stableToken,
       transaction.amount,
-      address,
+      myAddress,
     );
     const paymentInfoCypherText: string = yield call(
       encryptEscrowComment,
@@ -263,14 +268,9 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
       transaction,
       paymentInfoCypherText,
     );
-
-    yield call(
-      sendTransactionObject,
-      tsxObj,
-      address,
-      transaction.exchangeToken,
-    );
-    yield call(stableTokenApproveAmount, stableToken, 0, address);
+    const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
+    yield call(sendTransactionObject, tsxObj, myAddress, gasFees);
+    yield call(stableTokenApproveAmount, stableToken, 0, myAddress);
     yield put(generateActionSetSuccess('Accepted transaction.'));
     yield put(generateActionQueryBalance());
   } catch (error: any) {
@@ -325,15 +325,11 @@ export function* cancelRequestSaga(_action: ActionCancelTransaction) {
     yield put(generateActionSetLoading('Canceling transaction...', ''));
     const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
+    const myAddress = _action.transaction.clientAddress;
 
     const txObj = nashEscrow.methods.cancelTransaction(_action.transaction.id);
-
-    yield call(
-      sendTransactionObject,
-      txObj,
-      _action.transaction.clientAddress,
-      _action.transaction.exchangeToken,
-    );
+    const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
+    yield call(sendTransactionObject, txObj, myAddress, gasFees);
 
     yield put(generateActionQueryBalance());
     yield put(
@@ -371,19 +367,14 @@ export function* approveTransactionSaga(_action: ActionCancelTransaction) {
     const privateKey: string = NashCache.getPrivateKey();
     contractKit.addAccount(privateKey);
 
-    const address: string = yield select(selectPublicAddress);
+    const myAddress: string = yield select(selectPublicAddress);
 
     const tsxObj = generateApproveRequestTransaction(
       _action.transaction,
-      address,
+      myAddress,
     );
-
-    yield call(
-      sendTransactionObject,
-      tsxObj,
-      address,
-      _action.transaction.exchangeToken,
-    );
+    const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
+    yield call(sendTransactionObject, tsxObj, myAddress, gasFees);
 
     yield put(generateActionSetSuccess('Approved transaction.'));
 

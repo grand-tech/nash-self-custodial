@@ -21,7 +21,7 @@ import {
   contractKit,
   nashEscrow,
   sendTransactionObject,
-} from '../../account_balance/contract.kit.utils';
+} from '../../../utils/contract.kit.utils';
 import {compressedPubKey} from '@celo/cryptographic-utils';
 import {hexToBuffer} from '@celo/utils/lib/address';
 import {
@@ -32,13 +32,12 @@ import {generateActionSavedPublicDataEncryptionKey} from '../redux_store/action.
 import {
   encryptEscrowTXComment,
   EscrowTxComment,
-} from './comment.encryption.utils';
+} from '../../../utils/comment.encryption.utils';
 import {selectFiatPaymentMethod} from '../../ramp_payment_information/redux_store/selectors';
 import {PaymentDetails} from '../../ramp_payment_information/redux_store/reducers';
 import {NashCache} from '../../../utils/cache';
-import {selectStableCoinAddresses} from '../../../app-redux-store/global_redux_actions/selectors';
-import {ReduxCoin} from '../../../app-redux-store/global_redux_actions/reducers';
 import crashlytics from '@react-native-firebase/crashlytics';
+import {estimateGasFees, GasEstimate} from '../../../utils/gas.fees.sagas';
 
 /**
  * Listen for the action to set an accounts public data
@@ -59,8 +58,7 @@ export function* setAccountPublicDataEncryptionKey(
   action: ActionSavePublicDataEncryptionKey,
 ) {
   try {
-    const address: string = yield select(selectPublicAddress);
-    const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
+    const myAddress: string = yield select(selectPublicAddress);
 
     // create a private key session.
     const privateKey: string = NashCache.getPrivateKey();
@@ -73,7 +71,10 @@ export function* setAccountPublicDataEncryptionKey(
 
     const shortenedDEK = compressedPubKey(hexToBuffer(privateKey));
 
-    const isExistingAccount: boolean = yield call(accounts.isAccount, address);
+    const isExistingAccount: boolean = yield call(
+      accounts.isAccount,
+      myAddress,
+    );
 
     if (!isExistingAccount) {
       // Register account on accounts smart contract.
@@ -81,23 +82,18 @@ export function* setAccountPublicDataEncryptionKey(
         accounts,
         accounts.createAccount,
       ]);
+      const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
+      yield call(sendTransactionObject, tx.txo, myAddress, gasFees);
 
-      const receipt: CeloTxReceipt = yield call(
-        sendTransactionObject,
-        tx.txo,
-        address,
-        addresses[0].address,
-      );
-
-      yield call(setDEKSaga, accounts, address, shortenedDEK);
+      yield call(setDEKSaga, accounts, myAddress, shortenedDEK);
     } else {
       const savedDEK: string = yield call(
         accounts.getDataEncryptionKey,
-        address,
+        myAddress,
       );
 
       if (shortenedDEK !== savedDEK) {
-        yield call(setDEKSaga, accounts, address, shortenedDEK);
+        yield call(setDEKSaga, accounts, myAddress, shortenedDEK);
       }
     }
 
@@ -126,7 +122,8 @@ export function* setDEKSaga(
   accountAddress: string,
   shortenedDEK: string,
 ) {
-  const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
+  const myAddress: string = yield select(selectPublicAddress);
+  const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
   const tx: CeloTransactionObject<void> =
     accountsWrapper.setAccountDataEncryptionKey(shortenedDEK);
 
@@ -134,7 +131,7 @@ export function* setDEKSaga(
     sendTransactionObject,
     tx.txo,
     accountAddress,
-    addresses[0].address,
+    gasFees,
   );
 }
 
@@ -214,15 +211,10 @@ export function* watchAddClientsPaymentInfoToSaga() {
 export function* addClientsPaymentInfoToSaga(
   action: ActionAddClientsPaymentInfoToTransaction,
 ) {
-  const addresses: ReduxCoin[] = yield select(selectStableCoinAddresses);
-  const address: string = yield select(selectPublicAddress);
+  const myAddress: string = yield select(selectPublicAddress);
+  const gasFees: GasEstimate = yield call(estimateGasFees, myAddress);
   const transaction = action.transaction;
   try {
-    console.log(
-      'addClientsPaymentInfoToSaga===>',
-      action.transaction.id,
-      action.transaction.agentAddress,
-    );
     if (transaction.agentAddress !== '' && transaction.clientAddress !== '') {
       const paymentInfoCypherText: string = yield call(
         encryptEscrowComment,
@@ -238,12 +230,7 @@ export function* addClientsPaymentInfoToSaga(
       const privateKey: string = NashCache.getPrivateKey();
       contractKit.addAccount(privateKey);
 
-      const receipt: CeloTxReceipt = yield call(
-        sendTransactionObject,
-        tx,
-        address,
-        addresses[0].address,
-      );
+      yield call(sendTransactionObject, tx, myAddress, gasFees);
     } else {
       console.error(
         'ERROR: [addClientsPaymentInfoToSaga] invalid public addresses.',

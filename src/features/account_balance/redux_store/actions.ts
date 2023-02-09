@@ -1,5 +1,5 @@
 import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
-import {WalletBalance} from '../utils';
+import {WalletBalance} from '../../../utils/account.balance.utils';
 export enum Actions {
   QUERY_WALLET_BALANCE = 'WALLET_BALANCE/QUERY_WALLET_BALANCE',
 
