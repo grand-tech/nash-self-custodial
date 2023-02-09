@@ -7,7 +7,6 @@ import {settingsSagas} from '../features/settings/sagas/sagas';
 import {walletSagas} from '../features/wallet_home/sagas/saga';
 import {rampEscrowContractEventListenerSagas} from '../features/withdraw_and_deposit/sagas/nash.contract.event.sagas';
 import {onRampOffRampSagas} from '../features/withdraw_and_deposit/sagas/saga';
-import {globalSagas} from './global_redux_actions/sagas';
 import {waitForRehydrate} from './redux.persist.helpers';
 
 export function* rootSaga() {
@@ -19,6 +18,5 @@ export function* rootSaga() {
   yield spawn(onRampOffRampSagas);
   yield spawn(rampEscrowContractEventListenerSagas);
   yield spawn(dataEncryptionSagas);
-  yield spawn(globalSagas);
   yield spawn(settingsSagas);
 }

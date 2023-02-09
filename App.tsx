@@ -25,12 +25,11 @@ import ReadContractDataKit from './src/features/withdraw_and_deposit/sagas/ReadC
 import {ApolloProvider} from '@apollo/client';
 import {apolloClient} from './src/features/graphql/graphql_client';
 import {ContractEventsListenerKit} from './src/utils/NashContractEventsKit';
-import {initializeContractKit} from './src/features/account_balance/contract.kit.utils';
+import {initializeContractKit} from './src/utils/contract.kit.utils';
 import {
   generateActionQueryMyTransactions,
   generateActionQueryPendingTransactions,
 } from './src/features/withdraw_and_deposit/redux_store/action.generators';
-import {generateActionQueryStableCoinInfo} from './src/app-redux-store/global_redux_actions/action.generators';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz'",
@@ -53,8 +52,6 @@ const App: React.FC<Props> = (props: Props) => {
     if (props.publicAddress !== '') {
       ContractEventsListenerKit.createInstance();
       props.dispatchFetchPendingTransactions('refetch', 'background');
-      props.dispatchActionQueryStableCoinInfo();
-
       props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'background');
     }
   }, [props, props.publicAddress]);
@@ -111,7 +108,6 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   dispatchFetchMyTransactions: generateActionQueryMyTransactions,
   dispatchFetchPendingTransactions: generateActionQueryPendingTransactions,
-  dispatchActionQueryStableCoinInfo: generateActionQueryStableCoinInfo,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

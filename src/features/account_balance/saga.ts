@@ -1,7 +1,7 @@
 import {selectPublicAddress} from './../onboarding/redux_store/selectors';
 import {call, select, spawn, takeLatest, put} from 'redux-saga/effects';
 import {Actions} from './redux_store/actions';
-import {getBalance, WalletBalance} from './utils';
+import {getBalance, WalletBalance} from '../../utils/account.balance.utils';
 import {generateActionSetBalance} from './redux_store/action.generators';
 import {selectCurrencyRates} from '../currency_conversion/selectors';
 import {CurrencyLayerRates} from '../currency_conversion/currencyLayerUtils';

@@ -133,7 +133,6 @@ const style = StyleSheet.create({
 
 const mapStateToProps = (state: RootState) => ({
   currency_conversion_rates: state.currency_conversion_rates.rates,
-  stable_coins: state.stable_coin_info.addresses,
 });
 
 const mapDispatchToProps = {};
