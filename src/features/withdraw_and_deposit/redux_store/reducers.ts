@@ -16,6 +16,7 @@ interface RampState {
   pending_transactions: Array<NashEscrowTransaction>;
   my_transactions: Array<NashEscrowTransaction>;
   last_updated: number;
+  selected_request: NashEscrowTransaction | undefined;
 }
 
 /**
@@ -25,6 +26,7 @@ const initialState: RampState = {
   pending_transactions: [],
   my_transactions: [],
   last_updated: new Date().getTime(),
+  selected_request: undefined,
 };
 
 export const rampStateReducer = (
@@ -43,6 +45,11 @@ export const rampStateReducer = (
         ...state,
         my_transactions: action.transactions,
         last_updated: new Date().getTime(),
+      };
+    case Actions.UPDATE_SELECTED_TRANSACTION:
+      return {
+        ...state,
+        selected_request: action.transaction,
       };
     case GlobalActions.LOG_OUT: // should be the second last case in all reducers
       return {

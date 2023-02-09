@@ -4,6 +4,7 @@ import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
 import {NashCache} from '../../../utils/cache';
+import {web3} from '../../../utils/contract.kit.utils';
 import {KARMA_ABI} from '../../../utils/smart_contract_abis/KarmaAbi';
 import {NashEscrowAbi} from '../../../utils/smart_contract_abis/NashEscrowAbi';
 import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
@@ -253,4 +254,35 @@ export default class ReadContractDataKit {
     };
     return nashTx;
   }
+}
+
+/**
+ * Convert response to nash transaction object.
+ * @param tx the response object.
+ * @returns the nash transaction object.
+ */
+export function convertToNashTransactionObj(
+  tx: string[],
+): NashEscrowTransaction {
+  let txType = TransactionType.DEPOSIT;
+
+  if (parseInt(tx[1], 10) === 1) {
+    txType = TransactionType.WITHDRAWAL;
+  }
+
+  const nashTx: NashEscrowTransaction = {
+    id: parseInt(tx[0], 10),
+    txType: txType,
+    clientAddress: tx[2],
+    agentAddress: tx[3],
+    status: parseInt(tx[4], 10),
+    amount: Number(web3.utils.fromWei(tx[5], 'ether')),
+    agentApproval: tx[6],
+    clientApproval: tx[7],
+    agentPaymentDetails: tx[8],
+    clientPaymentDetails: tx[9],
+    exchangeToken: tx[10],
+    exchangeTokenLabel: tx[11],
+  };
+  return nashTx;
 }

@@ -21,12 +21,10 @@ import {
   ActionSavedClientCommentContractEvent,
   ActionTransactionCanceledContractEvent,
   ActionTransactionCompletionEvent,
+  ActionUpdateSelectedTransaction,
+  ActionRefetchSelectedTransaction,
 } from './actions';
-import {
-  DataQueryTriggers,
-  ListUpdateActions,
-  QueryTransactionsUserActions,
-} from './enums';
+import {DataQueryTriggers, QueryTransactionsUserActions} from './enums';
 
 export function generateActionQueryPendingTransactions(
   userAction: QueryTransactionsUserActions,
@@ -187,5 +185,23 @@ export function generateActionTransactionCanceledContractEvent(
   return {
     type: Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
     transaction,
+  };
+}
+
+export function generateActionUpdateSelectedTransaction(
+  transaction: NashEscrowTransaction,
+): ActionUpdateSelectedTransaction {
+  return {
+    type: Actions.UPDATE_SELECTED_TRANSACTION,
+    transaction: transaction,
+  };
+}
+
+export function generateActionRefetchTransaction(
+  transaction: NashEscrowTransaction,
+): ActionRefetchSelectedTransaction {
+  return {
+    type: Actions.REFETCH_SELECTED_TRANSACTION,
+    transaction: transaction,
   };
 }

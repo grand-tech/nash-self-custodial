@@ -5,11 +5,7 @@ import {
   TransactionType,
 } from '../sagas/nash_escrow_types';
 import {ActionLogOut} from '../../../app-redux-store/global_redux_actions/actions';
-import {
-  DataQueryTriggers,
-  ListUpdateActions,
-  QueryTransactionsUserActions,
-} from './enums';
+import {DataQueryTriggers, QueryTransactionsUserActions} from './enums';
 
 export interface ActionQueryPendingTransactions {
   type: Actions.QUERY_PENDING_TRANSACTION_REQUESTS;
@@ -101,6 +97,16 @@ export interface ActionTransactionCanceledContractEvent {
   transaction: NashEscrowTransaction;
 }
 
+export interface ActionUpdateSelectedTransaction {
+  type: Actions.UPDATE_SELECTED_TRANSACTION;
+  transaction: NashEscrowTransaction;
+}
+
+export interface ActionRefetchSelectedTransaction {
+  type: Actions.REFETCH_SELECTED_TRANSACTION;
+  transaction: NashEscrowTransaction;
+}
+
 /**
  * Create a generic action type.
  */
@@ -119,4 +125,5 @@ export type ActionTypes =
   | ActionSavedClientCommentContractEvent
   | ActionConfirmationCompletedContractEvent
   | ActionTransactionCompletionEvent
-  | ActionTransactionCanceledContractEvent;
+  | ActionTransactionCanceledContractEvent
+  | ActionUpdateSelectedTransaction;
