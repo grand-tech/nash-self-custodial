@@ -44,7 +44,6 @@ import {NextUserAction} from './transaction.user.actions.enum';
 import {HR} from '../../app_components/HRComponent';
 import {TransactionType} from './sagas/nash_escrow_types';
 import {EncryptionStatus} from '@celo/cryptographic-utils';
-import DeviceInfo from 'react-native-device-info';
 
 const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
@@ -96,13 +95,12 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       let status = '';
       const fiatAmount = computerFiatAmount();
       setAmountFiat(fiatAmount);
-      console.log(fiatAmount, 'use effect status', props.transaction);
       switch (props.transaction?.status) {
         case 0:
           status = 'Awaiting Agent';
           setNextUserAction(NextUserAction.CANCEL);
           setNextActionDescription(
-            'Waiting for someone to fulfill your transaction.',
+            'Waiting for an agent to fulfill your transaction.',
           );
           break;
         case 1:
@@ -114,15 +112,15 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             setNextUserAction(NextUserAction.NONE);
             if (isReceivingEnd()) {
               setNextActionDescription(
-                'Waiting for the client to confirm that s/he has received ' +
-                  fiatAmount +
-                  ' from your account.',
-              );
-            } else {
-              setNextActionDescription(
                 'Waiting for the client to confirm that s/he has sent ' +
                   fiatAmount +
                   ' to your account.',
+              );
+            } else {
+              setNextActionDescription(
+                'Waiting for the client to confirm that s/he has received ' +
+                  fiatAmount +
+                  ' from your account.',
               );
             }
           } else if (
@@ -133,15 +131,15 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
             setNextUserAction(NextUserAction.NONE);
             if (isReceivingEnd()) {
               setNextActionDescription(
-                'Wait for the agent to confirm that s/he has received ' +
-                  fiatAmount +
-                  ' from your account.',
-              );
-            } else {
-              setNextActionDescription(
                 'Wait for the agent to confirm that s/he has sent ' +
                   fiatAmount +
                   ' to your account.',
+              );
+            } else {
+              setNextActionDescription(
+                'Wait for the agent to confirm that s/he has received ' +
+                  fiatAmount +
+                  ' from your account.',
               );
             }
           } else {
@@ -239,15 +237,11 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         props.transaction?.agentPaymentDetails === ''
       ) {
         // TODO: Error handling for missing comment.
-        console.log('Error: Missing comments await comment');
-        console.log('prompt pin' + isReceivingEnd());
       } else if (privateKey === '') {
         // Retrieve and decrypt the private
         //  key for comment decryption.
-        console.log('prompt pin' + isReceivingEnd());
         props.promptForPIN();
       } else {
-        console.log('decrypt data' + isReceivingEnd());
         let comment = '';
         let plainText: EncryptionStatus = {
           success: false,
