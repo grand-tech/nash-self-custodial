@@ -44,6 +44,7 @@ import {NextUserAction} from './transaction.user.actions.enum';
 import {HR} from '../../app_components/HRComponent';
 import {TransactionType} from './sagas/nash_escrow_types';
 import {EncryptionStatus} from '@celo/cryptographic-utils';
+import DeviceInfo from 'react-native-device-info';
 
 const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
@@ -78,6 +79,15 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     }, []),
   );
 
+  const isReceivingEnd = () => {
+    return (
+      (props.transaction?.agentAddress === myAddress &&
+        props.transaction?.txType === TransactionType.DEPOSIT) ||
+      (props.transaction?.clientAddress === myAddress &&
+        props.transaction?.txType === TransactionType.WITHDRAWAL)
+    );
+  };
+
   /**
    * Process transaction status.
    */
@@ -86,7 +96,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       let status = '';
       const fiatAmount = computerFiatAmount();
       setAmountFiat(fiatAmount);
-      console.log('use effect status', props.transaction);
+      console.log(fiatAmount, 'use effect status', props.transaction);
       switch (props.transaction?.status) {
         case 0:
           status = 'Awaiting Agent';
@@ -102,22 +112,43 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           ) {
             status = 'Awaiting Client`s Confirmation';
             setNextUserAction(NextUserAction.NONE);
+            if (isReceivingEnd()) {
+              setNextActionDescription(
+                'Waiting for the client to confirm that s/he has received ' +
+                  fiatAmount +
+                  ' from your account.',
+              );
+            } else {
+              setNextActionDescription(
+                'Waiting for the client to confirm that s/he has sent ' +
+                  fiatAmount +
+                  ' to your account.',
+              );
+            }
           } else if (
             props.transaction?.clientApproval &&
             props.transaction?.clientAddress === myAddress
           ) {
             status = 'Awaiting Agent Confirmation';
             setNextUserAction(NextUserAction.NONE);
+            if (isReceivingEnd()) {
+              setNextActionDescription(
+                'Wait for the agent to confirm that s/he has received ' +
+                  fiatAmount +
+                  ' from your account.',
+              );
+            } else {
+              setNextActionDescription(
+                'Wait for the agent to confirm that s/he has sent ' +
+                  fiatAmount +
+                  ' to your account.',
+              );
+            }
           } else {
             status = 'Awaiting Your Confirmation';
             setNextUserAction(NextUserAction.APPROVE);
-            const isReceivingEnd =
-              (props.transaction?.agentAddress === myAddress &&
-                props.transaction?.txType === TransactionType.DEPOSIT) ||
-              (props.transaction?.clientAddress === myAddress &&
-                props.transaction?.txType === TransactionType.WITHDRAWAL);
 
-            if (isReceivingEnd) {
+            if (isReceivingEnd()) {
               setNextActionDescription(
                 'Confirm that you have received ' +
                   fiatAmount +
@@ -190,7 +221,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         rate = rates.KESBRL;
       }
 
-      amount = props.transaction?.amount ?? 0 / rate;
+      amount = (props.transaction?.amount ?? 0) / rate;
+
       return Number(amount.toFixed(2)).toLocaleString();
     } else {
       return '-';
@@ -208,11 +240,14 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       ) {
         // TODO: Error handling for missing comment.
         console.log('Error: Missing comments await comment');
+        console.log('prompt pin' + isReceivingEnd());
       } else if (privateKey === '') {
         // Retrieve and decrypt the private
         //  key for comment decryption.
+        console.log('prompt pin' + isReceivingEnd());
         props.promptForPIN();
       } else {
+        console.log('decrypt data' + isReceivingEnd());
         let comment = '';
         let plainText: EncryptionStatus = {
           success: false,
