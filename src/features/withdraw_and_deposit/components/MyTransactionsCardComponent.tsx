@@ -110,9 +110,9 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       props.transaction.clientPaymentDetails === '' &&
       props.transaction.agentAddress !== '' &&
       props.transaction.status !== 0 &&
-      props.transaction.status !== 3
+      props.transaction.status !== 3 &&
+      props.hasPrivateKey
     ) {
-      console.log('transacton', props.transaction);
       props.generateActionAddClientPaymentInfo(props.transaction);
     }
   }, [props.hasPrivateKey]);

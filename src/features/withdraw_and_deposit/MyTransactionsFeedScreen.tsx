@@ -32,6 +32,7 @@ import BottomMenu from './components/BottomMenu';
 import FeedEmptyListComponent from '../../app_components/FeedEmptyListComponent';
 import ComingSoonModalComponent from '../../app_components/ComingSoonModalComponent';
 import {NextUserAction} from './transaction.user.actions.enum';
+import {DEVICE_NAME} from '../../utils/device.info';
 
 const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
@@ -71,6 +72,8 @@ const MyTransactionsFeedScreen: React.FC<Props> = (props: Props) => {
         NashCache.getPrivateKey()?.trim() === ''
       ) {
         props.promptForPIN();
+      } else {
+        setHasPrivateKey(true);
       }
     });
   }, []);

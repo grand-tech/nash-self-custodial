@@ -30,6 +30,7 @@ import {
   generateActionQueryMyTransactions,
   generateActionQueryPendingTransactions,
 } from './src/features/withdraw_and_deposit/redux_store/action.generators';
+import {setDeviceName} from './src/utils/device.info';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz'",
@@ -43,6 +44,7 @@ const App: React.FC<Props> = (props: Props) => {
   initializeContractKit();
   ReadContractDataKit.createInstance();
   const routeNameRef = React.useRef<String>();
+  setDeviceName();
 
   useEffect(() => {
     SplashScreen.hide();
