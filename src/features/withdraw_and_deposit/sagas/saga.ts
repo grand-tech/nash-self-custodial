@@ -269,6 +269,7 @@ export function* agentFullfilRequestSaga(_action: ActionAgentFulfillRequest) {
       transaction.clientAddress,
       transaction.agentAddress,
     );
+
     const tsxObj = generateAgentFulfillRequestTransactionObject(
       transaction,
       paymentInfoCypherText,

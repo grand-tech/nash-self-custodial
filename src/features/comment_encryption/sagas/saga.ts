@@ -161,7 +161,7 @@ export function* encryptEscrowComment(
   agentAddress: string,
 ) {
   const myAddress: string = yield select(selectPublicAddress);
-  let recepientDEK = '';
+  let recipientDEK = '';
   let senderDEK = '';
   const paymentInfo: PaymentDetails = yield select(selectFiatPaymentMethod);
   const comment: EscrowTxComment = {
@@ -172,20 +172,20 @@ export function* encryptEscrowComment(
   };
   if (myAddress === clientAddress) {
     senderDEK = yield select(selectPublicKey);
-    recepientDEK = yield call(
+    recipientDEK = yield call(
       fetchAccountPublicDataEncryptionKey,
       agentAddress,
     );
   } else {
     senderDEK = yield call(fetchAccountPublicDataEncryptionKey, clientAddress);
-    recepientDEK = yield select(selectPublicKey);
+    recipientDEK = yield select(selectPublicKey);
   }
 
-  if (!recepientDEK || !senderDEK || recepientDEK === '' || senderDEK === '') {
+  if (!recipientDEK || !senderDEK || recipientDEK === '' || senderDEK === '') {
     return '';
   }
 
-  const cypherText = encryptEscrowTXComment(comment, senderDEK, recepientDEK);
+  const cypherText = encryptEscrowTXComment(comment, senderDEK, recipientDEK);
 
   if (cypherText.success) {
     return cypherText.comment;

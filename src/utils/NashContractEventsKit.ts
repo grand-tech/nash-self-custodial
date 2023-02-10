@@ -143,6 +143,7 @@ export class ContractEventsListenerKit {
         (await DeviceInfo.getDeviceName()) +
         ' tx ' +
         tx?.id,
+      tx,
     );
     if (tx) {
       switch (event.event) {
