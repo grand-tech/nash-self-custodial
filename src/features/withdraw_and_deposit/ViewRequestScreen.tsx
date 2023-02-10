@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Screen from '../../app_components/Screen';
-import {InteractionManager, StyleSheet, Text, View} from 'react-native';
+import {
+  BackHandler,
+  InteractionManager,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {connect, ConnectedProps, useSelector} from 'react-redux';
 import {Button} from 'react-native-ui-lib';
@@ -25,6 +31,7 @@ import SuccessModalComponent from '../../app_components/SuccessModalComponent';
 import {
   generateActionApproveTransaction,
   generateActionCancelTransaction,
+  generateActionUpdateSelectedTransaction,
 } from './redux_store/action.generators';
 import ErrorModalComponent from '../../app_components/ErrorModalComponent';
 import {selectPublicAddress} from '../onboarding/redux_store/selectors';
@@ -40,7 +47,6 @@ import {EncryptionStatus} from '@celo/cryptographic-utils';
 
 const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   const isFocused = useIsFocused();
-  const transaction = props.route.params.transaction;
   const rates = props.rates;
   const [amountFiat, setAmountFiat] = useState('-');
   const myAddress = useSelector(selectPublicAddress);
@@ -51,10 +57,35 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     paymentName: '',
   };
   const [nextUserAction, setNextUserAction] = useState(NextUserAction.NONE);
-  const [buttonLabel, setButtonLabel] = useState('');
+  const [nextActionDescription, setNextActionDescription] = useState('');
   const [paymentDetails, setPaymentDetails] = useState(paymentInfo);
   const [transactionStatus, setTransactionStatus] = useState('-');
   const [privateKey, setPrivateKey] = useState(NashCache.getPrivateKey());
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        props.dispatchActionUpdateSelectedTx(undefined);
+        return true;
+      };
+
+      const subscription = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
+
+      return () => subscription.remove();
+    }, []),
+  );
+
+  const isReceivingEnd = () => {
+    return (
+      (props.transaction?.agentAddress === myAddress &&
+        props.transaction?.txType === TransactionType.DEPOSIT) ||
+      (props.transaction?.clientAddress === myAddress &&
+        props.transaction?.txType === TransactionType.WITHDRAWAL)
+    );
+  };
 
   /**
    * Process transaction status.
@@ -64,42 +95,65 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       let status = '';
       const fiatAmount = computerFiatAmount();
       setAmountFiat(fiatAmount);
-      switch (transaction.status) {
+      switch (props.transaction?.status) {
         case 0:
           status = 'Awaiting Agent';
           setNextUserAction(NextUserAction.CANCEL);
-          setButtonLabel('Waiting for someone to fulfill your transaction.');
+          setNextActionDescription(
+            'Waiting for an agent to fulfill your transaction.',
+          );
           break;
         case 1:
           if (
-            transaction.agentApproval &&
-            transaction.agentAddress === myAddress
+            props.transaction?.agentApproval &&
+            props.transaction?.agentAddress === myAddress
           ) {
             status = 'Awaiting Client`s Confirmation';
             setNextUserAction(NextUserAction.NONE);
+            if (isReceivingEnd()) {
+              setNextActionDescription(
+                'Waiting for the client to confirm that s/he has sent ' +
+                  fiatAmount +
+                  ' to your account.',
+              );
+            } else {
+              setNextActionDescription(
+                'Waiting for the client to confirm that s/he has received ' +
+                  fiatAmount +
+                  ' from your account.',
+              );
+            }
           } else if (
-            transaction.clientApproval &&
-            transaction.clientAddress === myAddress
+            props.transaction?.clientApproval &&
+            props.transaction?.clientAddress === myAddress
           ) {
             status = 'Awaiting Agent Confirmation';
             setNextUserAction(NextUserAction.NONE);
+            if (isReceivingEnd()) {
+              setNextActionDescription(
+                'Wait for the agent to confirm that s/he has sent ' +
+                  fiatAmount +
+                  ' to your account.',
+              );
+            } else {
+              setNextActionDescription(
+                'Wait for the agent to confirm that s/he has received ' +
+                  fiatAmount +
+                  ' from your account.',
+              );
+            }
           } else {
             status = 'Awaiting Your Confirmation';
             setNextUserAction(NextUserAction.APPROVE);
-            const isReceivingEnd =
-              (transaction.agentAddress === myAddress &&
-                transaction.txType === TransactionType.DEPOSIT) ||
-              (transaction.clientAddress === myAddress &&
-                transaction.txType === TransactionType.WITHDRAWAL);
 
-            if (isReceivingEnd) {
-              setButtonLabel(
+            if (isReceivingEnd()) {
+              setNextActionDescription(
                 'Confirm that you have received ' +
                   fiatAmount +
                   ' ksh from an account with the above details.',
               );
             } else {
-              setButtonLabel(
+              setNextActionDescription(
                 'Confirm that you have sent ' +
                   fiatAmount +
                   ' ksh to the above details.',
@@ -109,18 +163,24 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           break;
         case 2:
           status = 'Confirmed';
+          setNextActionDescription('');
+          setNextUserAction(NextUserAction.NONE);
           break;
         case 3:
           status = 'Canceled';
+          setNextActionDescription('');
+          setNextUserAction(NextUserAction.NONE);
           break;
         default:
           status = 'Completed';
+          setNextActionDescription('');
+          setNextUserAction(NextUserAction.NONE);
           break;
       }
 
       setTransactionStatus(status);
     });
-  }, [myAddress, rates, transaction]);
+  }, [myAddress, rates, props.transaction]);
 
   /**
    * Handle the activity header.
@@ -128,7 +188,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   useFocusEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       let title = 'Withdraw Request';
-      if (transaction.txType === 'DEPOSIT') {
+      if (props.transaction?.txType === 'DEPOSIT') {
         title = 'Deposit Request';
       }
       props.navigation.getParent()?.setOptions({headerShown: false});
@@ -147,19 +207,20 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       let amount = 0;
 
       let rate = rates?.KESUSD;
-      if (transaction.exchangeTokenLabel === 'cUSD') {
+      if (props.transaction?.exchangeTokenLabel === 'cUSD') {
         rate = rates.KESUSD;
       }
 
-      if (transaction.exchangeTokenLabel === 'cEUR') {
+      if (props.transaction?.exchangeTokenLabel === 'cEUR') {
         rate = rates.KESEUR;
       }
 
-      if (transaction.exchangeTokenLabel === 'cREAL') {
+      if (props.transaction?.exchangeTokenLabel === 'cREAL') {
         rate = rates.KESBRL;
       }
 
-      amount = transaction.amount / rate;
+      amount = (props.transaction?.amount ?? 0) / rate;
+
       return Number(amount.toFixed(2)).toLocaleString();
     } else {
       return '-';
@@ -172,11 +233,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     InteractionManager.runAfterInteractions(() => {
       if (
-        transaction.clientPaymentDetails === '' ||
-        transaction.agentPaymentDetails === ''
+        props.transaction?.clientPaymentDetails === '' ||
+        props.transaction?.agentPaymentDetails === ''
       ) {
         // TODO: Error handling for missing comment.
-        console.log('Error: Missing comments await comment');
       } else if (privateKey === '') {
         // Retrieve and decrypt the private
         //  key for comment decryption.
@@ -188,10 +248,10 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           comment: '',
         };
 
-        if (myAddress === transaction.agentAddress) {
+        if (myAddress === props.transaction?.agentAddress) {
           // TODO: Figure out where and how to get the private key.
           plainText = nashDecryptComment(
-            transaction.clientPaymentDetails,
+            props.transaction?.clientPaymentDetails,
             privateKey,
             false,
           );
@@ -199,9 +259,9 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           if (plainText.success) {
             comment = plainText.comment;
           }
-        } else if (myAddress === transaction.clientAddress) {
+        } else if (myAddress === props.transaction?.clientAddress) {
           plainText = nashDecryptComment(
-            transaction.agentPaymentDetails,
+            props.transaction?.agentPaymentDetails,
             privateKey,
             true,
           );
@@ -215,7 +275,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         setPaymentDetails(constructEscrowCommentObject(comment));
       }
     });
-  }, [transaction, privateKey]);
+  }, [props.transaction, privateKey]);
 
   /**
    * Display loading modal or prompt user for PIN.
@@ -231,6 +291,11 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const goBack = () => {
+    props.dispatchActionUpdateSelectedTx(undefined);
+    props.navigation.goBack();
+  };
+
   const onPinMatched = async (p: string) => {
     await NashCache.setPinCache(p);
     setPrivateKey(NashCache.getPrivateKey());
@@ -238,14 +303,17 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onShowLoadingModal = () => {
-    if (isFocused) {
+    if (isFocused && props.transaction) {
       if (nextUserAction === NextUserAction.APPROVE) {
         // dispatch approval action
-        props.dispatchApproval(transaction, NashCache.getPinCache() ?? '');
+        props.dispatchApproval(
+          props.transaction,
+          NashCache.getPinCache() ?? '',
+        );
       } else if (nextUserAction === NextUserAction.CANCEL) {
         // dispatch agent approve action
         props.dispatchCancelation(
-          transaction,
+          props.transaction,
           NashCache.getPinCache() ?? 'Cancel request',
         );
       }
@@ -253,7 +321,7 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
   };
 
   const onPressOkay = () => {
-    props.navigation.goBack();
+    // props.navigation.goBack();
   };
 
   return (
@@ -263,8 +331,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           <View style={style.div}>
             <Text style={style.amountLabel}>Amount</Text>
             <Text style={style.amountValue}>
-              {Number(transaction.amount.toFixed(2)).toLocaleString()}{' '}
-              {transaction.exchangeTokenLabel}
+              {Number(props.transaction?.amount.toFixed(2)).toLocaleString()}{' '}
+              {props.transaction?.exchangeTokenLabel}
             </Text>
           </View>
           <View style={style.div}>
@@ -275,8 +343,8 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
           <HR weight={1} additionalContainerStyling={style.hrSpacing} />
 
           {/* The payment details section */}
-          {transaction.clientPaymentDetails !== '' &&
-            transaction.agentPaymentDetails !== '' && (
+          {props.transaction?.clientPaymentDetails !== '' &&
+            props.transaction?.agentPaymentDetails !== '' && (
               <>
                 <Text style={style.paymentDetailsTitle}>Payment Details</Text>
                 <View style={style.div}>
@@ -314,16 +382,27 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
       </View>
 
       <View style={style.div}>
-        <Text style={style.nextActionDescription}>{buttonLabel}</Text>
+        <Text style={style.nextActionDescription}>{nextActionDescription}</Text>
       </View>
 
       {nextUserAction === NextUserAction.NONE ? (
-        <Text></Text>
+        <Button
+          label={'Back'}
+          size={'small'}
+          labelStyle={{
+            ...FONTS.body1,
+          }}
+          secondary
+          onPress={goBack}
+          outline={true}
+          outlineColor={AppColors.light_green}
+        />
       ) : (
         <Button
           label={nextUserAction}
+          size={'small'}
           labelStyle={{
-            ...FONTS.h4,
+            ...FONTS.body1,
           }}
           secondary
           onPress={sendRequest}
@@ -426,6 +505,7 @@ const style = StyleSheet.create({
 const mapStateToProps = (state: RootState) => ({
   ui_status: state.ui_state.status,
   rates: state.currency_conversion_rates.rates,
+  transaction: state.ramp.selected_request,
 });
 
 const mapDispatchToProps = {
@@ -435,6 +515,7 @@ const mapDispatchToProps = {
   dispatchApproval: generateActionApproveTransaction,
   dispatchCancelation: generateActionCancelTransaction,
   dispatchActionSetNormal: generateActionSetNormal,
+  dispatchActionUpdateSelectedTx: generateActionUpdateSelectedTransaction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -17,3 +17,7 @@ export const selectRampPendingTransactions = (state: RootState) => {
 export const selectRampMyTransactions = (state: RootState) => {
   return state.ramp.my_transactions;
 };
+
+export const selectCurrentTransaction = (state: RootState) => {
+  return state.ramp.selected_request;
+};

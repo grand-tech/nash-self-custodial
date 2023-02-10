@@ -4,13 +4,17 @@ import {
   generateActionSetPendingTransactions,
   generateActionSetMyTransactions,
   generateActionQueryMyTransactions,
+  generateActionUpdateSelectedTransaction,
 } from '../redux_store/action.generators';
-import ReadContractDataKit from './ReadContractDataKit';
+import ReadContractDataKit, {
+  convertToNashTransactionObj,
+} from './ReadContractDataKit';
 import {NashEscrowTransaction, TransactionType} from './nash_escrow_types';
 import {
   ActionQueryPendingTransactions,
   ActionMakeRampRequest,
   ActionAgentFulfillRequest,
+  ActionRefetchSelectedTransaction,
 } from '../redux_store/actions';
 import {
   contractKit,
@@ -29,6 +33,7 @@ import {generateActionQueryBalance} from '../../account_balance/redux_store/acti
 import {NashCache} from '../../../utils/cache';
 import {nashEscrow} from '../../../utils/contract.kit.utils';
 import {
+  selectCurrentTransaction,
   selectRampMyTransactions,
   selectRampPendingTransactions,
 } from '../redux_store/selectors';
@@ -477,6 +482,41 @@ export function generateUpdatedList(
   return updates;
 }
 
+/**
+ * Re-fetches the selected transaction to give the
+ *  user the accurate state of the transaction.
+ * @param _action the redux action object.
+ */
+export function* refetchSelectedTransaction(
+  _action: ActionRefetchSelectedTransaction,
+) {
+  const latestTx: NashEscrowTransaction = yield call(
+    queryTransactionByIndex,
+    _action.transaction.id,
+  );
+  yield put(generateActionUpdateSelectedTransaction(latestTx));
+}
+
+/**
+ * Queries transactions by index.
+ * @param index the transaction index.
+ * @returns the queried transaction.
+ */
+async function queryTransactionByIndex(
+  index: number,
+): Promise<NashEscrowTransaction> {
+  const tx = await nashEscrow?.methods.getTransactionByIndex(index).call();
+  let nashTx = convertToNashTransactionObj(tx);
+  return nashTx;
+}
+
+export function* watchRefetchSelectedTransaction() {
+  yield takeLatest(
+    Actions.REFETCH_SELECTED_TRANSACTION,
+    refetchSelectedTransaction,
+  );
+}
+
 export function* onRampOffRampSagas() {
   yield spawn(watchQueryPendingTransactionsSaga);
   yield spawn(watchMakeRampExchangeRequestSaga);
@@ -484,4 +524,5 @@ export function* onRampOffRampSagas() {
   yield spawn(watchQueryMyTransactionsSaga);
   yield spawn(watchApproveTransactionSaga);
   yield spawn(watchCancelRequestSaga);
+  yield spawn(watchRefetchSelectedTransaction);
 }

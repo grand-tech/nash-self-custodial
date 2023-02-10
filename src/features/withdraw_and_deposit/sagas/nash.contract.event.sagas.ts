@@ -3,6 +3,7 @@ import {generateActionQueryBalance} from '../../account_balance/redux_store/acti
 import {generateActionAddClientPaymentInfoToTx} from '../../comment_encryption/redux_store/action.generators';
 import {ActionAddClientsPaymentInfoToTransaction} from '../../comment_encryption/redux_store/actions';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
+import {generateActionRefetchTransaction} from '../redux_store/action.generators';
 import {Actions} from '../redux_store/action.patterns';
 import {
   ActionAgentConfirmationContractEvent,
@@ -12,6 +13,8 @@ import {
   ActionTransactionCanceledContractEvent,
   ActionTransactionInitializationContractEvent,
 } from '../redux_store/actions';
+import {selectCurrentTransaction} from '../redux_store/selectors';
+import {NashEscrowTransaction} from './nash_escrow_types';
 import {updateMyTransactionsList, updatePendingTransactionsList} from './saga';
 
 /**
@@ -62,6 +65,13 @@ export function* handleAgentPairingEvent(
     yield call(updateMyTransactionsList, 'add', _action.transaction);
     yield put(generateActionQueryBalance());
   }
+
+  const currentTx: NashEscrowTransaction = yield select(
+    selectCurrentTransaction,
+  );
+  if (currentTx && currentTx.id === _action.transaction.id) {
+    yield put(generateActionRefetchTransaction(_action.transaction));
+  }
 }
 
 /**
@@ -93,6 +103,12 @@ export function* handleClientConfirmationEvent(
     _action.transaction.agentAddress === myAddress
   ) {
     yield call(updateMyTransactionsList, 'update', _action.transaction);
+    const currentTx: NashEscrowTransaction = yield select(
+      selectCurrentTransaction,
+    );
+    if (currentTx && currentTx.id === _action.transaction.id) {
+      yield put(generateActionRefetchTransaction(_action.transaction));
+    }
   }
 }
 
@@ -155,6 +171,12 @@ export function* handleTransactionCanceledEvent(
   } else {
     yield call(updatePendingTransactionsList, 'remove', _action.transaction);
   }
+  const currentTx: NashEscrowTransaction = yield select(
+    selectCurrentTransaction,
+  );
+  if (currentTx && currentTx.id === _action.transaction.id) {
+    yield put(generateActionRefetchTransaction(_action.transaction));
+  }
 }
 
 /**
@@ -183,6 +205,12 @@ export function* handleTransactionCompletedEvent(
   ) {
     yield call(updatePendingTransactionsList, 'remove', _action.transaction);
     yield put(generateActionQueryBalance());
+    const currentTx: NashEscrowTransaction = yield select(
+      selectCurrentTransaction,
+    );
+    if (currentTx && currentTx.id === _action.transaction.id) {
+      yield put(generateActionRefetchTransaction(_action.transaction));
+    }
   }
 }
 
@@ -192,7 +220,7 @@ export function* handleTransactionCompletedEvent(
  */
 export function* watchTransactionCompletedEvent() {
   yield takeLatest(
-    Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
+    Actions.TRANSACTION_COMPLETE_CONTRACT_EVENT,
     handleTransactionCompletedEvent,
   );
 }
@@ -205,4 +233,5 @@ export function* rampEscrowContractEventListenerSagas() {
   yield spawn(watchClientSavedPaymentInformationEvent);
   yield spawn(watchConfirmationCompleteEvent);
   yield spawn(watchTransactionCanceledEvent);
+  yield spawn(watchTransactionCompletedEvent);
 }
