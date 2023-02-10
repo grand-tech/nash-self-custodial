@@ -99,7 +99,7 @@ export interface ActionTransactionCanceledContractEvent {
 
 export interface ActionUpdateSelectedTransaction {
   type: Actions.UPDATE_SELECTED_TRANSACTION;
-  transaction: NashEscrowTransaction;
+  transaction?: NashEscrowTransaction;
 }
 
 export interface ActionRefetchSelectedTransaction {

@@ -189,17 +189,19 @@ export function generateActionTransactionCanceledContractEvent(
 }
 
 export function generateActionUpdateSelectedTransaction(
-  transaction: NashEscrowTransaction,
+  transaction?: NashEscrowTransaction,
 ): ActionUpdateSelectedTransaction {
+  console.log('generateActionUpdateSelectedTransaction()====>.');
   return {
     type: Actions.UPDATE_SELECTED_TRANSACTION,
-    transaction: transaction,
+    transaction,
   };
 }
 
 export function generateActionRefetchTransaction(
   transaction: NashEscrowTransaction,
 ): ActionRefetchSelectedTransaction {
+  console.log('generateActionRefetchTransaction()======>.');
   return {
     type: Actions.REFETCH_SELECTED_TRANSACTION,
     transaction: transaction,

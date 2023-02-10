@@ -18,6 +18,10 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {WithdrawalAndDepositNavigationStackParamsList} from '../navigation/navigation.params.type';
 import {NextUserAction} from '../transaction.user.actions.enum';
 import {generateActionAddClientPaymentInfoToTx} from '../../comment_encryption/redux_store/action.generators';
+import {
+  generateActionUpdateSelectedTransaction,
+  generateActionRefetchTransaction,
+} from '../redux_store/action.generators';
 
 interface Props extends ReduxProps {
   hasPrivateKey: boolean;
@@ -31,7 +35,6 @@ interface Props extends ReduxProps {
 }
 
 const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
-  const transaction = props.transaction;
   const rates = props.currency_conversion_rates;
   const publicAddress = useSelector(selectPublicAddress);
   const [fiatNetValue, setFiatNetValue] = useState('-');
@@ -54,34 +57,34 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
         rate = rates.KESBRL;
       }
 
-      let fiatValue = transaction.amount / rate;
+      let fiatValue = props.transaction.amount / rate;
       setFiatNetValue(Number(fiatValue.toFixed(2)).toLocaleString());
     }
 
     let status = '';
-    switch (transaction.status) {
+    switch (props.transaction.status) {
       case 0:
         status = 'Awaiting Agent';
         setNextUserAction(NextUserAction.CANCEL);
         break;
       case 1:
         if (
-          transaction.agentApproval &&
-          transaction.agentAddress === publicAddress
+          props.transaction.agentApproval &&
+          props.transaction.agentAddress === publicAddress
         ) {
           status = 'Awaiting Client`s Approval';
           setNextUserAction(NextUserAction.NONE);
         } else if (
-          transaction.clientApproval &&
-          transaction.clientAddress === publicAddress
+          props.transaction.clientApproval &&
+          props.transaction.clientAddress === publicAddress
         ) {
           status = 'Awaiting Agent Approval';
           setNextUserAction(NextUserAction.NONE);
         } else {
           status = 'Awaiting Your Approval';
-          if (transaction.agentAddress === publicAddress) {
+          if (props.transaction.agentAddress === publicAddress) {
             setNextUserAction(NextUserAction.APPROVE);
-          } else if (transaction.clientAddress === publicAddress) {
+          } else if (props.transaction.clientAddress === publicAddress) {
             setNextUserAction(NextUserAction.APPROVE);
           }
         }
@@ -98,28 +101,31 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
     }
 
     setTransactionStatus(status);
-  }, [publicAddress, rates, transaction]);
+  }, [publicAddress, rates, props.transaction]);
 
   useEffect(() => {
     if (
-      transaction.clientAddress === publicAddress &&
-      transaction.clientPaymentDetails === '' &&
-      transaction.agentAddress !== '' &&
-      transaction.status !== 0 &&
-      transaction.status !== 3
+      props.transaction &&
+      props.transaction.clientAddress === publicAddress &&
+      props.transaction.clientPaymentDetails === '' &&
+      props.transaction.agentAddress !== '' &&
+      props.transaction.status !== 0 &&
+      props.transaction.status !== 3
     ) {
-      console.log('encrypt comment');
-      props.generateActionAddClientPaymentInfo(transaction);
+      console.log('transactopn', props.transaction);
+      props.generateActionAddClientPaymentInfo(props.transaction);
     }
   }, [props.hasPrivateKey]);
 
   const onPress = () => {
-    props.performNextUserAction(nextUserAction, transaction);
+    props.performNextUserAction(nextUserAction, props.transaction);
   };
 
   const onCardPress = () => {
     if (props.ui_status !== 'loading') {
-      props.navigation.navigate('ViewRequestScreen', {transaction});
+      props.dispatchActionUpdateSelectedTx(props.transaction);
+      props.dispatchActionRefetchTransaction(props.transaction);
+      props.navigation.navigate('ViewRequestScreen', props.transaction);
     }
   };
 
@@ -129,10 +135,10 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
         <View style={style.cardContainer}>
           <Identicon
             value={
-              transaction.agentAddress +
-              transaction.id +
-              transaction.clientAddress +
-              transaction.amount +
+              props.transaction.agentAddress +
+              props.transaction.id +
+              props.transaction.clientAddress +
+              props.transaction.amount +
               Date.now().toString()
             }
             style={style.identicon}
@@ -140,14 +146,14 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
           />
           <View>
             <Text style={style.cardTitle}>
-              {transaction.txType === TransactionType.DEPOSIT
+              {props.transaction.txType === TransactionType.DEPOSIT
                 ? 'Deposit'
                 : 'Withdraw'}{' '}
               request
             </Text>
             <Text style={style.cryptoAmount}>
-              {transaction.exchangeTokenLabel}{' '}
-              {Number(transaction.amount.toFixed(2)).toLocaleString()}
+              {props.transaction.exchangeTokenLabel}{' '}
+              {Number(props.transaction.amount.toFixed(2)).toLocaleString()}
             </Text>
             <Text style={style.fiatAmount}>Ksh {fiatNetValue}</Text>
           </View>
@@ -240,6 +246,8 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = {
+  dispatchActionUpdateSelectedTx: generateActionUpdateSelectedTransaction,
+  dispatchActionRefetchTransaction: generateActionRefetchTransaction,
   generateActionAddClientPaymentInfo: generateActionAddClientPaymentInfoToTx,
 };
 

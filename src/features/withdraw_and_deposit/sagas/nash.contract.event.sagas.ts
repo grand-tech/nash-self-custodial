@@ -220,7 +220,7 @@ export function* handleTransactionCompletedEvent(
  */
 export function* watchTransactionCompletedEvent() {
   yield takeLatest(
-    Actions.TRANSACTION_CANCELED_CONTRACT_EVENT,
+    Actions.TRANSACTION_COMPLETE_CONTRACT_EVENT,
     handleTransactionCompletedEvent,
   );
 }
@@ -233,4 +233,5 @@ export function* rampEscrowContractEventListenerSagas() {
   yield spawn(watchClientSavedPaymentInformationEvent);
   yield spawn(watchConfirmationCompleteEvent);
   yield spawn(watchTransactionCanceledEvent);
+  yield spawn(watchTransactionCompletedEvent);
 }
