@@ -3,7 +3,7 @@ import {generateActionQueryBalance} from '../../account_balance/redux_store/acti
 import {generateActionAddClientPaymentInfoToTx} from '../../comment_encryption/redux_store/action.generators';
 import {ActionAddClientsPaymentInfoToTransaction} from '../../comment_encryption/redux_store/actions';
 import {selectPublicAddress} from '../../onboarding/redux_store/selectors';
-import {generateActionUpdateSelectedTransaction} from '../redux_store/action.generators';
+import {generateActionRefetchTransaction} from '../redux_store/action.generators';
 import {Actions} from '../redux_store/action.patterns';
 import {
   ActionAgentConfirmationContractEvent,
@@ -70,7 +70,7 @@ export function* handleAgentPairingEvent(
     selectCurrentTransaction,
   );
   if (currentTx && currentTx.id === _action.transaction.id) {
-    yield put(generateActionUpdateSelectedTransaction(_action.transaction));
+    yield put(generateActionRefetchTransaction(_action.transaction));
   }
 }
 
@@ -107,7 +107,7 @@ export function* handleClientConfirmationEvent(
       selectCurrentTransaction,
     );
     if (currentTx && currentTx.id === _action.transaction.id) {
-      yield put(generateActionUpdateSelectedTransaction(_action.transaction));
+      yield put(generateActionRefetchTransaction(_action.transaction));
     }
   }
 }
@@ -175,7 +175,7 @@ export function* handleTransactionCanceledEvent(
     selectCurrentTransaction,
   );
   if (currentTx && currentTx.id === _action.transaction.id) {
-    yield put(generateActionUpdateSelectedTransaction(_action.transaction));
+    yield put(generateActionRefetchTransaction(_action.transaction));
   }
 }
 
@@ -209,7 +209,7 @@ export function* handleTransactionCompletedEvent(
       selectCurrentTransaction,
     );
     if (currentTx && currentTx.id === _action.transaction.id) {
-      yield put(generateActionUpdateSelectedTransaction(_action.transaction));
+      yield put(generateActionRefetchTransaction(_action.transaction));
     }
   }
 }

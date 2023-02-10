@@ -135,14 +135,17 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         case 2:
           status = 'Confirmed';
           setNextActionDescription('');
+          setNextUserAction(NextUserAction.NONE);
           break;
         case 3:
           status = 'Canceled';
           setNextActionDescription('');
+          setNextUserAction(NextUserAction.NONE);
           break;
         default:
           status = 'Completed';
           setNextActionDescription('');
+          setNextUserAction(NextUserAction.NONE);
           break;
       }
 
@@ -259,6 +262,11 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
     }
   };
 
+  const goBack = () => {
+    props.dispatchActionUpdateSelectedTx(undefined);
+    props.navigation.goBack();
+  };
+
   const onPinMatched = async (p: string) => {
     await NashCache.setPinCache(p);
     setPrivateKey(NashCache.getPrivateKey());
@@ -348,9 +356,18 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         <Text style={style.nextActionDescription}>{nextActionDescription}</Text>
       </View>
 
-      {nextUserAction === NextUserAction.NONE ||
-      props.transaction?.status === 3 ? (
-        <Text></Text>
+      {nextUserAction === NextUserAction.NONE ? (
+        <Button
+          label={'Back'}
+          size={'small'}
+          labelStyle={{
+            ...FONTS.body1,
+          }}
+          secondary
+          onPress={goBack}
+          outline={true}
+          outlineColor={AppColors.light_green}
+        />
       ) : (
         <Button
           label={nextUserAction}

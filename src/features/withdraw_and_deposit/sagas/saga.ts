@@ -14,7 +14,6 @@ import {
   ActionQueryPendingTransactions,
   ActionMakeRampRequest,
   ActionAgentFulfillRequest,
-  ActionUpdateSelectedTransaction,
   ActionRefetchSelectedTransaction,
 } from '../redux_store/actions';
 import {
