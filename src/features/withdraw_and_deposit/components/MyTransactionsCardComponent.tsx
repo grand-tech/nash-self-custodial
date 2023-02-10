@@ -112,7 +112,7 @@ const MyTransactionsCardComponent: React.FC<Props> = (props: Props) => {
       props.transaction.status !== 0 &&
       props.transaction.status !== 3
     ) {
-      console.log('transactopn', props.transaction);
+      console.log('transacton', props.transaction);
       props.generateActionAddClientPaymentInfo(props.transaction);
     }
   }, [props.hasPrivateKey]);

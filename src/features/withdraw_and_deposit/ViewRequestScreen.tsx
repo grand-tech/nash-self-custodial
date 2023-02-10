@@ -348,13 +348,15 @@ const ViewRequestScreen: React.FC<Props> = (props: Props) => {
         <Text style={style.nextActionDescription}>{nextActionDescription}</Text>
       </View>
 
-      {nextUserAction === NextUserAction.NONE ? (
+      {nextUserAction === NextUserAction.NONE ||
+      props.transaction?.status === 3 ? (
         <Text></Text>
       ) : (
         <Button
           label={nextUserAction}
+          size={'small'}
           labelStyle={{
-            ...FONTS.h4,
+            ...FONTS.body1,
           }}
           secondary
           onPress={sendRequest}
