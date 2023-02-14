@@ -66,6 +66,7 @@ const SeedPhraseInputComponent = forwardRef<
       if (nextWord.includes(' ')) {
         if (newSeedPhrase.length > 0) {
           newSeedPhrase = [];
+          phrase = '';
         }
         const newWords = nextWord.split(' ', 24);
         for (let i = 0; i < newWords.length; i++) {
@@ -253,6 +254,7 @@ const styles = StyleSheet.create({
   textInput: {
     ...FONTS.body1,
     color: AppColors.black,
+    textAlign: 'justify',
   },
 });
 
