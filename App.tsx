@@ -24,13 +24,13 @@ import {LogBox} from 'react-native';
 import ReadContractDataKit from './src/features/withdraw_and_deposit/sagas/ReadContractDataKit';
 import {ApolloProvider} from '@apollo/client';
 import {apolloClient} from './src/features/graphql/graphql_client';
-import {ContractEventsListenerKit} from './src/utils/NashContractEventsKit';
 import {initializeContractKit} from './src/utils/contract.kit.utils';
 import {
   generateActionQueryMyTransactions,
   generateActionQueryPendingTransactions,
 } from './src/features/withdraw_and_deposit/redux_store/action.generators';
 import {setDeviceName} from './src/utils/device.info';
+import {startSmartContractEventLiteners} from './src/utils/eventlisteners/init.listeners';
 
 LogBox.ignoreLogs([
   "Warning: The provided value 'moz'",
@@ -52,7 +52,7 @@ const App: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (props.publicAddress !== '') {
-      ContractEventsListenerKit.createInstance();
+      startSmartContractEventLiteners();
       props.dispatchFetchPendingTransactions('refetch', 'background');
       props.dispatchFetchMyTransactions('refetch', [0, 1, 2], 'background');
     }
