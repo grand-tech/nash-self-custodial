@@ -2,38 +2,27 @@ import {Contract, EventData} from 'web3-eth-contract';
 import Web3 from 'web3';
 import {EventOptions} from '@celo/contractkit/lib/generated/types';
 import {AbiItem} from 'web3-utils';
-import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
-import {
-  generateActionTransactionInitializationContractEvent,
-  generateActionAgentPairingContractEvent,
-  generateActionAgentConfirmationContractEvent,
-  generateActionClientConfirmationContractEvent,
-  generateActionConfirmationCompletedContractEvent,
-  generateActionSavedClientCommentContractEvent,
-  generateActionTransactionCanceledContractEvent,
-  generateActionTransactionCompletionEvent,
-} from '../features/withdraw_and_deposit/redux_store/action.generators';
-import ReadContractDataKit from '../features/withdraw_and_deposit/sagas/ReadContractDataKit';
-import {store} from '../app-redux-store/store';
-import {generateActionQueryBalance} from '../features/account_balance/redux_store/action.generators';
-import {NashEscrowTransaction} from '../features/withdraw_and_deposit/sagas/nash_escrow_types';
+
 import Config from 'react-native-config';
 import DeviceInfo from 'react-native-device-info';
+import {store} from '../../app-redux-store/store';
+import {generateActionQueryBalance} from '../../features/account_balance/redux_store/action.generators';
+import {ECR20_ABI} from '../smart_contract_abis/ERC20.abi';
 
 /**
  * Contains nash event listener logic.
  */
-export class ContractEventsListenerKit {
-  private static contractsEventListenerKit: ContractEventsListenerKit;
+export class CREALEventListeners {
+  private static contractsEventListenerKit: CREALEventListeners;
 
   /**
    * Creates a new instance of contract kit event listeners.
    */
-  static createInstance() {
+  static createInstance(cREALAddress: string) {
     if (this.contractsEventListenerKit) {
       console.log('Event listener running!!');
     } else {
-      this.contractsEventListenerKit = new ContractEventsListenerKit();
+      this.contractsEventListenerKit = new CREALEventListeners(cREALAddress);
     }
   }
 
@@ -48,7 +37,7 @@ export class ContractEventsListenerKit {
   /**
    * Instance of nash escrow smart contract.
    */
-  public nashEscrowContract?: Contract;
+  public cUSDEscrowContract?: Contract;
 
   /**
    * Instance of websocket provider.
@@ -66,45 +55,26 @@ export class ContractEventsListenerKit {
   /**
    * Class constructor.
    */
-  private constructor() {
-    this.setupProviderAndSubscriptions();
-    this.listenToNashEscrowContract();
+  private constructor(cREALAddress: string) {
+    this.setupProviderAndSubscriptions(cREALAddress);
+    this.listenToCUSDContractEvents();
   }
 
   /**
    * Listen for events and update the data on redux.
    */
-  listenToNashEscrowContract() {
-    this.addContractEventListener(
-      'TransactionInitEvent',
-      this.transactionEventHandler,
-    );
-
-    this.addContractEventListener(
-      'AgentPairingEvent',
-      this.transactionEventHandler,
-    );
-
-    this.addContractEventListener(
-      'TransactionCanceledEvent',
-      this.transactionEventHandler,
-    );
-
-    this.setFilteredEventListener('ClientConfirmationEvent');
-    this.setFilteredEventListener('AgentConfirmationEvent');
-    this.setFilteredEventListener('ConfirmationCompletedEvent');
-    this.setFilteredEventListener('SavedClientCommentEvent');
-    this.setFilteredEventListener('TransactionCompletionEvent');
+  listenToCUSDContractEvents() {
+    this.setFilteredEventListener('Transfer');
   }
 
   setFilteredEventListener(eventName: string) {
     const publicAddress = store.getState().onboarding.publicAddress;
     const agentFilter = {
-      agentAddress: publicAddress,
+      to: publicAddress,
     };
 
     const clientFilter = {
-      clientAddress: publicAddress,
+      from: publicAddress,
     };
 
     this.addContractEventListener(
@@ -122,70 +92,21 @@ export class ContractEventsListenerKit {
     );
   }
 
-  fetchBalance(tx: NashEscrowTransaction) {
-    const publicAddress = store.getState().onboarding.publicAddress;
-    if (
-      tx.agentAddress === publicAddress ||
-      tx.clientAddress === publicAddress
-    ) {
-      store.dispatch(generateActionQueryBalance());
-    }
-  }
-
   transactionEventHandler = async (event: EventData) => {
-    const tx = ReadContractDataKit.getInstance()?.convertToNashTransactionObj(
-      event.returnValues[0],
-    );
     console.log(
-      'Event data [ ' +
+      'Event cREAL data [ ' +
         event.event +
         ' ] ' +
-        (await DeviceInfo.getDeviceName()) +
-        ' tx ' +
-        tx?.id,
-      tx,
+        (await DeviceInfo.getDeviceName()),
     );
-    if (tx) {
-      switch (event.event) {
-        case 'TransactionInitEvent':
-          store.dispatch(
-            generateActionTransactionInitializationContractEvent(tx),
-          );
-          break;
-        case 'AgentPairingEvent':
-          store.dispatch(generateActionAgentPairingContractEvent(tx));
-          break;
-        case 'ClientConfirmationEvent':
-          store.dispatch(generateActionClientConfirmationContractEvent(tx));
-          break;
-        case 'AgentConfirmationEvent':
-          store.dispatch(generateActionAgentConfirmationContractEvent(tx));
-          break;
-        case 'SavedClientCommentEvent':
-          store.dispatch(generateActionSavedClientCommentContractEvent(tx));
-          break;
-        case 'ConfirmationCompletedEvent':
-          store.dispatch(generateActionConfirmationCompletedContractEvent(tx));
-          break;
-        case 'TransactionCompletionEvent':
-          store.dispatch(generateActionTransactionCompletionEvent(tx));
 
-          break;
-        case 'TransactionCanceledEvent':
-          store.dispatch(generateActionTransactionCanceledContractEvent(tx));
-          break;
-        default:
-          // TODO: register this to crash-litics.
-          console.error('Unknown event', event.event);
-          break;
-      }
-    }
+    store.dispatch(generateActionQueryBalance());
   };
 
   /**
    * Set up provider and subscription.
    */
-  setupProviderAndSubscriptions() {
+  setupProviderAndSubscriptions(cREALAddress: string) {
     let setupNewProvider = false;
 
     // Keeps track of the number of times we've retried to set up a new provider
@@ -198,9 +119,9 @@ export class ContractEventsListenerKit {
 
     this.web3 = new Web3(this.provider);
 
-    this.nashEscrowContract = new this.web3.eth.Contract(
-      NashEscrowAbi as AbiItem[],
-      Config.NASH_CONTRACT_ADDRESS,
+    this.cUSDEscrowContract = new this.web3.eth.Contract(
+      ECR20_ABI as AbiItem[],
+      cREALAddress,
     );
 
     // logic to reset the connection.
@@ -215,9 +136,9 @@ export class ContractEventsListenerKit {
       // To avoid a situation where multiple error events are triggered
       if (!setupNewProvider) {
         setupNewProvider = true;
-        this.setupProviderAndSubscriptions();
+        this.setupProviderAndSubscriptions(cREALAddress);
         // re-set the event listeners for the contracts
-        this.listenToNashEscrowContract();
+        this.listenToCUSDContractEvents();
       }
     };
 
@@ -276,7 +197,7 @@ export class ContractEventsListenerKit {
       };
     }
 
-    this.nashEscrowContract?.events[event](options)
+    this.cUSDEscrowContract?.events[event](options)
       .on('data', (eventData: EventData) => {
         //data – Will fire each time an event of the type you are listening for has been emitted
         // console.log(`[ ${this.TAG} ] [ ${tag} ] data`);
