@@ -3,7 +3,6 @@ import Web3 from 'web3';
 import {Contract} from 'web3-eth-contract';
 import {NashEscrowAbi} from './smart_contract_abis/NashEscrowAbi';
 import {AbiItem} from 'web3-utils';
-import BigNumber from 'bignumber.js';
 import {CeloTxObject} from '@celo/connect';
 import Config from 'react-native-config';
 import {GasEstimate} from './gas.fees.sagas';
@@ -62,16 +61,18 @@ export async function getCurrentAccountBalance(publicAddress: string) {
  * @param senderAddress the senders address.
  * @param recipientAddress the address receiving the funds
  * @param amount the number of tokens to be sent in wei.
+ * @param encryptedComment the encrypted comment.
  * @returns the transaction receipt.
  */
 export async function sendCUSD(
   senderAddress: string,
   recipientAddress: string,
   amount: string,
+  encryptedComment: string,
 ) {
   let cUSDToken = await contractKit.contracts.getStableToken(StableToken.cUSD);
   let cUSDtx = await cUSDToken
-    ?.transfer(recipientAddress, amount)
+    ?.transferWithComment(recipientAddress, amount, encryptedComment)
     .sendAndWaitForReceipt({
       from: senderAddress,
       feeCurrency: cUSDToken?.address,
@@ -84,16 +85,18 @@ export async function sendCUSD(
  * @param senderAddress the senders address.
  * @param recipientAddress the address receiving the funds
  * @param amount the number of tokens to be sent in wei.
+ * @param encryptedComment the encrypted comment.
  * @returns the transaction receipt.
  */
 export async function sendCEUR(
   senderAddress: string,
   recipientAddress: string,
   amount: string,
+  encryptedComment: string,
 ) {
   let cEURToken = await contractKit.contracts.getStableToken(StableToken.cEUR);
   let cUSDtx = await cEURToken
-    ?.transfer(recipientAddress, amount)
+    ?.transferWithComment(recipientAddress, amount, encryptedComment)
     .sendAndWaitForReceipt({
       from: senderAddress,
       feeCurrency: cEURToken?.address,
@@ -106,18 +109,20 @@ export async function sendCEUR(
  * @param senderAddress the senders address.
  * @param recipientAddress the address receiving the funds
  * @param amount the number of tokens to be sent in wei.
+ * @param encryptedComment the encrypted comment.
  * @returns the transaction receipt.
  */
 export async function sendCREAL(
   senderAddress: string,
   recipientAddress: string,
   amount: string,
+  encryptedComment: string,
 ) {
   let cREALToken = await contractKit.contracts.getStableToken(
     StableToken.cREAL,
   );
   let cUSDtx = await cREALToken
-    ?.transfer(recipientAddress, amount)
+    ?.transferWithComment(recipientAddress, amount, encryptedComment)
     .sendAndWaitForReceipt({
       from: senderAddress,
       feeCurrency: cREALToken?.address,

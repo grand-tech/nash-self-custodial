@@ -3,6 +3,7 @@ import {
   EncryptionStatus,
 } from '@celo/cryptographic-utils';
 import {hexToBuffer} from '@celo/utils/lib/address';
+
 /**
  * Comments saved by the agent or client on the escrow transaction.
  * @typedef {Record<string, string>} EscrowTxComment properties crypto account.
