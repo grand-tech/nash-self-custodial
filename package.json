@@ -22,7 +22,6 @@
     "@celo/cryptographic-utils": "^3.1.0",
     "@celo/phone-utils": "^3.1.0",
     "@react-native-clipboard/clipboard": "^1.11.1",
-    "@react-native-community/blur": "^4.3.0",
     "@react-native-firebase/analytics": "^16.5.2",
     "@react-native-firebase/app": "^16.5.2",
     "@react-native-firebase/crashlytics": "^16.5.2",
